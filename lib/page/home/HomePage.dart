@@ -3,101 +3,89 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+import '../../widget/FocusTime.dart';
 
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  double minutes = 10;
+
+  String get plantName {
+    if (minutes < 20) {
+      return 'assets/plant_1.png';
+    } else if (minutes < 40) {
+      return 'assets/plant_2.png';
+    } else if (minutes < 60) {
+      return 'assets/plant_3.png';
+    } else {
+      return 'assets/plant_4.png';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF4CAF93),
       extendBody: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+      ),
       body: Center(
-        child: FocusCircle(totalSeconds: 20 * 65, remainingSeconds: 10),
+        child: Column(
+          children: [
+            SizedBox(
+              width: 320,
+              height: 320,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  FocusTimerWidget(
+                    initialMinutes: minutes,
+                    maxMinutes: 100,
+                    onChanged: (value){
+                      setState(() {
+                        minutes = value;
+                      });
+                    },
+                  ),
+                  Image.asset(
+                      plantName
+                  ),
+                ],
+              )
+            ),
+
+
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  minutes.round().toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 64,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Text(
+                  "minutes",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        )
       )
     );
   }
 }
 
-class FocusCircle extends StatelessWidget {
-  final int totalSeconds;
-  final int remainingSeconds;
-
-  const FocusCircle({
-    super.key,
-    required this.totalSeconds,
-    required this.remainingSeconds,
-  });
-
-  String get timeText {
-    final m = remainingSeconds ~/ 60;
-    final s = remainingSeconds % 60;
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final progress =
-        (totalSeconds - remainingSeconds) / totalSeconds;
-
-    return SizedBox(
-      width: 240,
-      height: 240,
-      child: CustomPaint(
-        painter: CirclePainter(progress),
-        child: Center(
-          child: Text(
-            timeText,
-            style: const TextStyle(
-              fontSize: 42,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CirclePainter extends CustomPainter {
-  final double progress;
-
-  CirclePainter(this.progress);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-
-    /// 背景圆环
-    final bgPaint = Paint()
-      ..color = Colors.white.withOpacity(0.2)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10;
-
-    canvas.drawCircle(center, radius, bgPaint);
-
-    /// 进度圆环
-    final progressPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10
-      ..strokeCap = StrokeCap.round;
-
-    final sweepAngle = 2 * pi * progress;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -pi / 2,
-      sweepAngle,
-      false,
-      progressPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CirclePainter oldDelegate) {
-    return oldDelegate.progress != progress;
-  }
-}
