@@ -55,7 +55,9 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   Image.asset(
-                      plantName
+                      plantName,
+                    width: 200,
+                    height: 200,
                   ),
                 ],
               )
