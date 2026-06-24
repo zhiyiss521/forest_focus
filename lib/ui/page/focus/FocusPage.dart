@@ -27,18 +27,6 @@ class FocusPage extends StatelessWidget {
                 ? AppBar(
               backgroundColor: const Color(0xFF4CAF93),
               elevation: 0,
-              title: const Text('Forest Focus'),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: Center(
-                    child: Text(
-                      '🪙 1250',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ),
-              ],
             ) : null,
             body: SafeArea(
               child: LayoutBuilder(
