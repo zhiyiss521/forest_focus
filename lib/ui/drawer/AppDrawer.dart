@@ -1,0 +1,49 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:forest_focus/theme/app_colors.dart';
+
+import '../page/timeline/timeline_page.dart';
+
+class AppDrawer extends StatelessWidget {
+  const AppDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      width: 200,
+      backgroundColor: AppColors.primary,
+      child: ListView(
+        children: [
+
+          // DrawerHeader(
+          //   child: Text('Forest Focus'),
+          // ),
+
+          ListTile(
+            leading: Icon(Icons.bar_chart),
+            title: Text('统计'),
+          ),
+
+          ListTile(
+            leading: Icon(Icons.park),
+            title: Text('时间历程'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const TimelinePage(),
+                ),
+              );
+            },
+          ),
+
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+}

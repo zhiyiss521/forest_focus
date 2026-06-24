@@ -2,7 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../model/FocusState.dart';
+import '../../../model/FocusRecord.dart';
+import '../../../repository/FocusRecordRepository.dart';
+import '../../../model/FocusState.dart';
+import '../../../repository/DBManager.dart';
 
 
 class FocusProvider extends ChangeNotifier {
@@ -14,6 +17,7 @@ class FocusProvider extends ChangeNotifier {
   static const _kPausedRemaining = 'paused_remaining';
 
   Duration userSetDuration = Duration(minutes: 10); // 用户一开始设定的时间
+  String totalMinute = "";
 
   FocusState state = FocusState.setting;
   Duration pausedRemaining = Duration.zero; // 暂停后的剩余时间
@@ -64,14 +68,21 @@ class FocusProvider extends ChangeNotifier {
       endTime = DateTime.fromMillisecondsSinceEpoch(endMs);
     }
 
-    checkPageState();
+    await checkPageState();
+    await loadTotalMinute();
     notifyListeners();
   }
 
-  void checkPageState() { // 更正页面状态
+  Future<void> loadTotalMinute() async{
+    final totalSeconds = await FocusRecordRepository().getTotalFocusSeconds();
+    totalMinute = formatTotalFocusTime(totalSeconds);
+    notifyListeners();
+  }
+
+  Future<void> checkPageState() async{ // 更正页面状态
     if (state == FocusState.running){
       if(endTime != null && DateTime.now().isAfter(endTime!)){
-        state = FocusState.finished;
+        await finish();
       }
     }
   }
@@ -137,8 +148,32 @@ class FocusProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> restart() async{
-    await cancel();
+  // 完成专注
+  Future<void> finish() async {
+    if (state == FocusState.finished) {
+      return;
+    }
+    await recordFocus();
+    state = FocusState.finished;
+    startTime = null;
+    endTime = null;
+    pausedRemaining = Duration.zero;
+    await saveState();
+    await loadTotalMinute();
+    notifyListeners();
+  }
+
+  Future<void> recordFocus() async {
+    final record = FocusRecord(
+      startTime: startTime!,
+      endTime: endTime!,
+      targetSeconds: userSetDuration.inSeconds,
+      actualSeconds: userSetDuration.inSeconds,
+      completed: true,
+      createdAt: DateTime.now(),
+    );
+
+    await FocusRecordRepository().insert(record);
   }
 
   // endregion
@@ -163,6 +198,14 @@ class FocusProvider extends ChangeNotifier {
     if (m < 60) return 'assets/plant_3.png';
     return 'assets/plant_4.png';
   }
+
+  String formatTotalFocusTime(int totalSeconds) {
+    final duration = Duration(seconds: totalSeconds);
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    return '${hours}小时${minutes}分钟';
+  }
+
   // endregion
 
   // region help func
