@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class FocusTimerWidget extends StatefulWidget {
-  final double initialMinutes;
-  final double maxMinutes;
-  final ValueChanged<double>? onChanged;
+  final int initialMinutes;
+  final int maxMinutes;
+  final ValueChanged<int>? onChanged;
 
   const FocusTimerWidget({
     super.key,
@@ -19,7 +19,7 @@ class FocusTimerWidget extends StatefulWidget {
 }
 
 class _FocusTimerWidgetState extends State<FocusTimerWidget> {
-  late double minutes;
+  late int minutes;
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
       axes: <RadialAxis>[
         RadialAxis(
           minimum: 1,
-          maximum: widget.maxMinutes,
+          maximum: widget.maxMinutes.toDouble(),
           startAngle: 270,
           endAngle: 270,
           showTicks: false,
@@ -45,7 +45,7 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
           ),
           pointers: <GaugePointer>[
             MarkerPointer(
-              value: minutes,
+              value: minutes.toDouble(),
               enableDragging: true,
               markerType: MarkerType.circle,
               color: Colors.white,
@@ -53,44 +53,18 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
               markerHeight: 24,
               onValueChanged: (value) {
                 setState(() {
-                  minutes = value;
+                  minutes = value.toInt();
                 });
-                widget.onChanged?.call(value);
+                widget.onChanged?.call(value.toInt());
               },
             ),
             RangePointer(
-              value: minutes,
-              width: 12,
+              value: minutes.toDouble(),
+              width: 10,
               color: Colors.white,
               cornerStyle: CornerStyle.bothCurve,
             ),
           ],
-          // annotations: <GaugeAnnotation>[
-          //   GaugeAnnotation(
-          //     angle: 90,
-          //     positionFactor: 0.1,
-          //     widget: Column(
-          //       mainAxisSize: MainAxisSize.min,
-          //       children: [
-          //         Text(
-          //           minutes.round().toString(),
-          //           style: const TextStyle(
-          //             color: Colors.white,
-          //             fontSize: 64,
-          //             fontWeight: FontWeight.w700,
-          //           ),
-          //         ),
-          //         const Text(
-          //           "minutes",
-          //           style: TextStyle(
-          //             color: Colors.white70,
-          //             fontSize: 18,
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ],
         ),
       ],
     );
