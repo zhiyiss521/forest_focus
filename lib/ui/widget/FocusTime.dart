@@ -28,6 +28,17 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
   }
 
   @override
+  void didUpdateWidget(
+      covariant FocusTimerWidget oldWidget,
+      ) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.initialMinutes != widget.initialMinutes) {
+      minutes = widget.initialMinutes;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SfRadialGauge(
       axes: <RadialAxis>[
@@ -41,14 +52,23 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
           axisLineStyle: const AxisLineStyle(
             thickness: 0.12,
             thicknessUnit: GaugeSizeUnit.factor,
-            color: Color(0x33FFFFFF),
+            color: Color(0xFFD9C2A0),
           ),
           pointers: <GaugePointer>[
+            RangePointer(
+              value: minutes.toDouble(),
+              width: 0.12,
+              sizeUnit: GaugeSizeUnit.factor,
+              color: const Color(0xFF83C26F),
+              cornerStyle: CornerStyle.bothCurve,
+            ),
             MarkerPointer(
               value: minutes.toDouble(),
               enableDragging: true,
               markerType: MarkerType.circle,
-              color: Colors.white,
+              color: const Color(0xFFD7B98D),
+              borderColor: const Color(0xFFC9AA7A),
+              borderWidth: 3,
               markerWidth: 24,
               markerHeight: 24,
               onValueChanged: (value) {
@@ -57,12 +77,6 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
                 });
                 widget.onChanged?.call(value.toInt());
               },
-            ),
-            RangePointer(
-              value: minutes.toDouble(),
-              width: 10,
-              color: Colors.white,
-              cornerStyle: CornerStyle.bothCurve,
             ),
           ],
         ),

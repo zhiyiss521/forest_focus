@@ -98,14 +98,24 @@ class _DateHeader extends StatelessWidget {
         top: 24,
         bottom: 12,
       ),
-      child: Text(
-        _title(),
-        style: const TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF5D4037),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
         ),
-      ),
+        decoration: BoxDecoration(
+          color: Color(0xFFD8B17A),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Text(
+          _title(),
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF5D4037),
+          ),
+        ),
+      )
     );
   }
 
@@ -152,18 +162,16 @@ class JournalCell extends StatelessWidget {
       padding: const EdgeInsets.all(16),
 
       decoration: BoxDecoration(
-
-        color: const Color(0xFFF8F1E7),
-
-        borderRadius:
-        BorderRadius.circular(24),
-
-        border: Border.all(
-          color: const Color(0xFFD9C2A3),
-          width: 2,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 12,
+            offset: Offset(0,4),
+            color: Colors.black12,
+          ),
+        ],
       ),
-
       child: Row(
         crossAxisAlignment:
         CrossAxisAlignment.start,

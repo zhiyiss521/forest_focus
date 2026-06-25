@@ -26,10 +26,8 @@ class FocusPage extends StatelessWidget {
             extendBody: true,
             extendBodyBehindAppBar: true,
             drawer: const AppDrawer(),
-            backgroundColor: AppColors.primary,
             appBar: provider.state == FocusState.setting
                 ? AppBar(
-              backgroundColor: AppColors.primary,
               elevation: 0,
             ) : null,
             body: SafeArea(
@@ -81,7 +79,6 @@ class _SettingView extends StatelessWidget {
           provider.totalMinute,
           style: const TextStyle(
             fontSize: 32,
-            color: Colors.white,
           ),
         ),
         SizedBox(
@@ -108,7 +105,6 @@ class _SettingView extends StatelessWidget {
           provider.userSetDuration.mmss,
           style: const TextStyle(
             fontSize: 64,
-            color: Colors.white,
           ),
         ),
 
@@ -149,7 +145,6 @@ class _RunningView extends StatelessWidget {
           provider.remaining.mmss,
           style: const TextStyle(
             fontSize: 72,
-            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -237,44 +232,6 @@ class _FinishedView extends StatelessWidget {
           child: const Text("Again"),
         ),
       ],
-    );
-  }
-}
-
-class _TopBar extends StatelessWidget {
-  const _TopBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
-      ),
-      child: Row(
-        children: [
-
-          IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.white,
-            ),
-          ),
-
-          const Spacer(),
-
-          const Text(
-            '🪙 1250',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
