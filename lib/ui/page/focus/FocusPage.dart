@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
 import '../../../theme/app_colors.dart';
 import '../../drawer/AppDrawer.dart';
+import '../../widget/forest_dialog.dart';
 import './FocusProvider.dart';
 import '../../widget/FocusTime.dart';
 
@@ -160,7 +161,29 @@ class _RunningView extends StatelessWidget {
           children: [
 
             OutlinedButton(
-              onPressed: provider.cancel,
+              onPressed: () async {
+
+                showDialog(
+                  context: context,
+                  builder: (_) => ForestDialog(
+                    emoji: '🌱',
+                    title: '小树苗还没长大呢',
+                    message: '如果现在离开，本次专注将不会获得奖励。',
+                    confirmText: '继续专注',
+                    cancelText: '结束专注',
+
+                    onConfirm: () {
+                      Navigator.of(context).pop();
+                    },
+
+                    onCancel: () async {
+                      Navigator.of(context).pop();
+                      await provider.cancel();
+                    },
+                  ),
+                );
+
+              },
               child: const Text("Cancel"),
             ),
 

@@ -22,12 +22,18 @@ class _TimelineView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final provider = context.watch<TimelineProvider>();
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5EEDC),
+
       appBar: AppBar(
-        title: const Text('Growth Timeline'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFD8B17A),
+        title: const Text('🌳 森林日记'),
       ),
+
       body: provider.loading
           ? const Center(
         child: CircularProgressIndicator(),
@@ -35,98 +41,173 @@ class _TimelineView extends StatelessWidget {
           : ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: provider.records.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (_, index) {
+
           final record = provider.records[index];
 
-          return TimelineCell(
-            record: record,
-            isLast: index == provider.records.length - 1,
+          final showDateHeader =
+              index == 0 ||
+                  !_isSameDay(
+                    provider.records[index - 1].createdAt,
+                    record.createdAt,
+                  );
+
+          return Column(
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
+            children: [
+
+              if (showDateHeader)
+                _DateHeader(
+                  date: record.createdAt,
+                ),
+
+              JournalCell(
+                record: record,
+              ),
+            ],
           );
         },
       ),
     );
   }
+
+  bool _isSameDay(
+      DateTime a,
+      DateTime b,
+      ) {
+    return a.year == b.year &&
+        a.month == b.month &&
+        a.day == b.day;
+  }
 }
 
-class TimelineCell extends StatelessWidget {
-  final FocusRecord record;
-  final bool isLast;
+class _DateHeader extends StatelessWidget {
 
-  const TimelineCell({
-    required this.record,
-    required this.isLast,
+  final DateTime date;
+
+  const _DateHeader({
+    required this.date,
   });
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicHeight(
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 24,
+        bottom: 12,
+      ),
+      child: Text(
+        _title(),
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF5D4037),
+        ),
+      ),
+    );
+  }
+
+  String _title() {
+
+    final now = DateTime.now();
+
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      return '☀️ 今天';
+    }
+
+    final yesterday =
+    now.subtract(const Duration(days: 1));
+
+    if (date.year == yesterday.year &&
+        date.month == yesterday.month &&
+        date.day == yesterday.day) {
+      return '🌙 昨天';
+    }
+
+    return '${date.year}-${date.month}-${date.day}';
+  }
+}
+
+class JournalCell extends StatelessWidget {
+
+  final FocusRecord record;
+
+  const JournalCell({
+    super.key,
+    required this.record,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 12,
+      ),
+
+      padding: const EdgeInsets.all(16),
+
+      decoration: BoxDecoration(
+
+        color: const Color(0xFFF8F1E7),
+
+        borderRadius:
+        BorderRadius.circular(24),
+
+        border: Border.all(
+          color: const Color(0xFFD9C2A3),
+          width: 2,
+        ),
+      ),
+
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
         children: [
 
-          SizedBox(
-            width: 60,
-            child: Column(
-              children: [
-
-                Text(
-                  _emoji(record.actualSeconds),
-                  style: const TextStyle(fontSize: 30),
-                ),
-
-                if (!isLast)
-                  Expanded(
-                    child: Container(
-                      width: 2,
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-              ],
+          Text(
+            _emoji(),
+            style: const TextStyle(
+              fontSize: 36,
             ),
           ),
 
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
 
           Expanded(
-            child: Card(
-              elevation: 2,
-              margin: const EdgeInsets.only(
-                bottom: 24,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-                  children: [
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+              children: [
 
-                    Text(
-                      Duration(seconds: record.actualSeconds).mmss,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      _formatDate(record.createdAt),
-                    ),
-
-                    const SizedBox(height: 4),
-
-                    Text(
-                      '${_formatTime(record.startTime)}'
-                          ' - '
-                          '${_formatTime(record.endTime)}',
-                    ),
-                  ],
+                Text(
+                  _title(),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight:
+                    FontWeight.bold,
+                  ),
                 ),
-              ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  '持续 ${Duration(seconds: record.actualSeconds).mmss}',
+                ),
+
+                const SizedBox(height: 4),
+
+                Text(
+                  '${_time(record.startTime)} - ${_time(record.endTime!)}',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -134,20 +215,49 @@ class TimelineCell extends StatelessWidget {
     );
   }
 
-  String _emoji(int seconds) {
-    final minutes = seconds ~/ 60;
+  String _emoji() {
 
-    if (minutes < 20) return '🌱';
-    if (minutes < 40) return '🌿';
-    if (minutes < 60) return '🌳';
+    if (!record.completed) {
+      return '🥀';
+    }
+
+    final m =
+        record.actualSeconds ~/ 60;
+
+    if (m < 20) return '🌱';
+    if (m < 40) return '🌿';
+    if (m < 60) return '🌳';
+
     return '🌲';
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  String _title() {
+
+    if (!record.completed) {
+      return '幼苗枯萎了';
+    }
+
+    final m =
+        record.actualSeconds ~/ 60;
+
+    if (m < 20) {
+      return '种子发芽';
+    }
+
+    if (m < 40) {
+      return '灌木成长';
+    }
+
+    if (m < 60) {
+      return '小树长高';
+    }
+
+    return '橡树成熟';
   }
 
-  String _formatTime(DateTime date) {
-    return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+  String _time(DateTime time) {
+
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 }
+
