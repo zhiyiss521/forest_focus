@@ -8,6 +8,13 @@ import '../../../model/FocusState.dart';
 import '../../../repository/DBManager.dart';
 
 
+
+// 核心玩法，收集系统
+// 农作物：小麦，胡萝卜，玉米啥的
+// 鸡，鸭，鱼，牛，羊，猪
+// 小麦啥的，可以做饲料，鸡吃了饲料可以产鸡蛋，鸡蛋可以做面包，面包可以喂鸭子啥的
+
+
 class FocusProvider extends ChangeNotifier {
 
   static const _kState = 'state';
@@ -15,6 +22,7 @@ class FocusProvider extends ChangeNotifier {
   static const _kEnd = 'end';
   static const _kUserSetDuration = 'user_set_duration';
   static const _kPausedRemaining = 'paused_remaining';
+  static const _kCurrentRecordId = 'current_record_id';
 
   Duration userSetDuration = Duration(minutes: 10); // 用户一开始设定的时间
   String totalMinute = "";
@@ -22,12 +30,13 @@ class FocusProvider extends ChangeNotifier {
   FocusState state = FocusState.setting;
   Duration pausedRemaining = Duration.zero; // 暂停后的剩余时间
   DateTime? startTime;
-  DateTime? endTime;
+  DateTime? scheduleEndTime; // 预计结束时间，用来记录还剩下多长时间
+  int? currentRecordId;// 当前专注的id
 
   Timer? _ticker;
 
   FocusProvider() {
-    loadDataFromDB();
+    loadFromSharedPreferences();
     startTimer();
   }
 
@@ -37,7 +46,7 @@ class FocusProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> loadDataFromDB() async {
+  Future<void> loadFromSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
 
     final stateStr = prefs.getString(_kState); // 获取之前的状态
@@ -45,9 +54,14 @@ class FocusProvider extends ChangeNotifier {
     final endMs = prefs.getInt(_kEnd); // 获取结束时间
     final userSetSeconds = prefs.getInt(_kUserSetDuration); // 获取设定时间
     final pausedSeconds = prefs.getInt(_kPausedRemaining); // 暂停恢复时间
+    final localCurrentRecordId = prefs.getInt(_kCurrentRecordId);// 当前任务ID
 
     if (pausedSeconds != null) {
       pausedRemaining = Duration(seconds: pausedSeconds);
+    }
+
+    if(localCurrentRecordId != null){
+      currentRecordId = localCurrentRecordId;
     }
 
     if (userSetSeconds != null) {
@@ -65,7 +79,7 @@ class FocusProvider extends ChangeNotifier {
     }
 
     if (endMs != null) {
-      endTime = DateTime.fromMillisecondsSinceEpoch(endMs);
+      scheduleEndTime = DateTime.fromMillisecondsSinceEpoch(endMs);
     }
 
     await checkPageState();
@@ -81,7 +95,7 @@ class FocusProvider extends ChangeNotifier {
 
   Future<void> checkPageState() async{ // 更正页面状态
     if (state == FocusState.running){
-      if(endTime != null && DateTime.now().isAfter(endTime!)){
+      if(scheduleEndTime != null && DateTime.now().isAfter(scheduleEndTime!)){
         await finish();
       }
     }
@@ -104,46 +118,63 @@ class FocusProvider extends ChangeNotifier {
   // 定时器圆盘更新函数
   Future<void> updateMinutes(int value) async{
     userSetDuration = Duration(minutes: value);
-    await saveState();
+    await saveDataToPrefs();
     notifyListeners();
   }
 
   Future<void> start() async {
     pausedRemaining = Duration.zero;
     startTime = DateTime.now();
-    endTime = startTime!.add(userSetDuration);
+    scheduleEndTime = startTime!.add(userSetDuration);
     state = FocusState.running;
-    await saveState();
+    // 生成一条记录
+    final record = FocusRecord(
+      startTime: startTime!,
+      endTime: scheduleEndTime!,
+      targetSeconds: userSetDuration.inSeconds,
+      actualSeconds: 0,
+      completed: false,
+      createdAt: DateTime.now(),
+    );
+    currentRecordId = await FocusRecordRepository().insert(record);
+    await saveDataToPrefs();
 
     notifyListeners();
   }
 
   Future<void> cancel() async {
+    if (currentRecordId != null) {
+      final record = await FocusRecordRepository().findById(currentRecordId!);
+      if (record != null) {
+        record.endTime = DateTime.now();
+        record.actualSeconds = userSetDuration.inSeconds - remaining.inSeconds;
+        record.completed = false;
+        await FocusRecordRepository().update(record);
+      }
+    }
+    currentRecordId = null;
     pausedRemaining = Duration.zero;
     startTime = null;
-    endTime = null;
+    scheduleEndTime = null;
     state = FocusState.setting;
-    await saveState();
+    await saveDataToPrefs();
 
     notifyListeners();
   }
 
   Future<void> pause() async {
     pausedRemaining = remaining;
-    startTime = null;
-    endTime = null;
     state = FocusState.paused;
-    await saveState();
+    await saveDataToPrefs();
 
     notifyListeners();
   }
 
   Future<void> resume() async {
-    startTime = DateTime.now();
-    endTime = startTime!.add(pausedRemaining);
+    scheduleEndTime = DateTime.now().add(pausedRemaining);
     pausedRemaining = Duration.zero;
     state = FocusState.running;
-    await saveState();
+    await saveDataToPrefs();
 
     notifyListeners();
   }
@@ -153,39 +184,38 @@ class FocusProvider extends ChangeNotifier {
     if (state == FocusState.finished) {
       return;
     }
-    await recordFocus();
+
+    if (currentRecordId != null) {
+      final record = await FocusRecordRepository().findById(currentRecordId!);
+      if (record != null) {
+        record.endTime = DateTime.now();
+        record.actualSeconds = userSetDuration.inSeconds;
+        record.completed = true;
+        await FocusRecordRepository().update(record);
+      }
+    }
+
+    currentRecordId = null;
     state = FocusState.finished;
     startTime = null;
-    endTime = null;
+    scheduleEndTime = null;
     pausedRemaining = Duration.zero;
-    await saveState();
+    await saveDataToPrefs();
     await loadTotalMinute();
     notifyListeners();
-  }
-
-  Future<void> recordFocus() async {
-    final record = FocusRecord(
-      startTime: startTime!,
-      endTime: endTime!,
-      targetSeconds: userSetDuration.inSeconds,
-      actualSeconds: userSetDuration.inSeconds,
-      completed: true,
-      createdAt: DateTime.now(),
-    );
-
-    await FocusRecordRepository().insert(record);
   }
 
   // endregion
 
   // region get
+
   Duration get remaining {
     if (state == FocusState.paused) {
       return pausedRemaining;
     }
-    if (endTime == null) return Duration.zero;
+    if (scheduleEndTime == null) return Duration.zero;
 
-    final diff = endTime!.difference(DateTime.now());
+    final diff = scheduleEndTime!.difference(DateTime.now());
 
     return diff.isNegative ? Duration.zero : diff;
   }
@@ -210,7 +240,7 @@ class FocusProvider extends ChangeNotifier {
 
   // region help func
 
-  Future<void> saveState() async {
+  Future<void> saveDataToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(_kState, state.name);
@@ -223,10 +253,16 @@ class FocusProvider extends ChangeNotifier {
       await prefs.remove(_kStart);
     }
 
-    if (endTime != null) {
-      await prefs.setInt(_kEnd, endTime!.millisecondsSinceEpoch);
+    if (scheduleEndTime != null) {
+      await prefs.setInt(_kEnd, scheduleEndTime!.millisecondsSinceEpoch);
     }else {
       await prefs.remove(_kEnd);
+    }
+
+    if (currentRecordId != null) {
+      await prefs.setInt(_kCurrentRecordId, currentRecordId!,);
+    } else {
+      await prefs.remove(_kCurrentRecordId,);
     }
   }
 

@@ -45,4 +45,29 @@ class FocusRecordRepository {
     return value as int;
   }
 
+  Future<int> update(FocusRecord record) async {
+    final db = await DBManager.instance.database;
+    return db.update(
+      'focus_record',
+      record.toMap(),
+      where: 'id = ?',
+      whereArgs: [record.id],
+    );
+  }
+
+  Future<FocusRecord?> findById(int id) async {
+    final db = await DBManager.instance.database;
+    final result = await db.query(
+      'focus_record',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (result.isEmpty) {
+      return null;
+    }
+    return FocusRecord.fromMap(result.first);
+  }
+
 }

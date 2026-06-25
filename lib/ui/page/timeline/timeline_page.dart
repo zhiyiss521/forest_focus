@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/timeline/timeline_provider.dart';
+import 'package:forest_focus/util/extension.dart';
 import 'package:provider/provider.dart';
 
 import '../../../model/FocusRecord.dart';
@@ -37,7 +38,7 @@ class _TimelineView extends StatelessWidget {
         itemBuilder: (context, index) {
           final record = provider.records[index];
 
-          return _TimelineItem(
+          return TimelineCell(
             record: record,
             isLast: index == provider.records.length - 1,
           );
@@ -47,11 +48,11 @@ class _TimelineView extends StatelessWidget {
   }
 }
 
-class _TimelineItem extends StatelessWidget {
+class TimelineCell extends StatelessWidget {
   final FocusRecord record;
   final bool isLast;
 
-  const _TimelineItem({
+  const TimelineCell({
     required this.record,
     required this.isLast,
   });
@@ -103,7 +104,7 @@ class _TimelineItem extends StatelessWidget {
                   children: [
 
                     Text(
-                      '${record.actualSeconds ~/ 60} 分钟',
+                      Duration(seconds: record.actualSeconds).mmss,
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,

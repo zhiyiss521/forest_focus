@@ -3,10 +3,10 @@ class FocusRecord {
   int? id;
 
   final DateTime startTime;
-  final DateTime endTime;
+  DateTime endTime;
   final int targetSeconds;
-  final int actualSeconds;
-  final bool completed;
+  int actualSeconds;
+  bool completed;
   final String? rewardId;
   final DateTime createdAt;
 

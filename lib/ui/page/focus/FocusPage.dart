@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:forest_focus/util/extension.dart';
 import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
+import '../../../theme/app_colors.dart';
 import '../../drawer/AppDrawer.dart';
 import './FocusProvider.dart';
 import '../../widget/FocusTime.dart';
@@ -21,11 +22,13 @@ class FocusPage extends StatelessWidget {
       child:Consumer<FocusProvider>(
         builder: (context, provider, child) {
           return Scaffold(
+            extendBody: true,
+            extendBodyBehindAppBar: true,
             drawer: const AppDrawer(),
-            backgroundColor: const Color(0xFF4CAF93),
+            backgroundColor: AppColors.primary,
             appBar: provider.state == FocusState.setting
                 ? AppBar(
-              backgroundColor: const Color(0xFF4CAF93),
+              backgroundColor: AppColors.primary,
               elevation: 0,
             ) : null,
             body: SafeArea(
