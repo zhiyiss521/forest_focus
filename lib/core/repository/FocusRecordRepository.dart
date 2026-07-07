@@ -1,5 +1,5 @@
 import 'DBManager.dart';
-import '../model/FocusRecord.dart';
+import '../../model/FocusRecord.dart';
 
 class FocusRecordRepository {
 

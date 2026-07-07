@@ -1,0 +1,38 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'FocusProvider.dart';
+
+class FocusFinishedView extends StatelessWidget {
+  const FocusFinishedView();
+
+  @override
+  Widget build(BuildContext context) {
+
+    final provider = context.watch<FocusProvider>();
+
+    return Column(
+      key: const ValueKey('finished'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+
+        Image.asset(
+          provider.plantName,
+          width: 200,
+        ),
+
+        const SizedBox(height: 24),
+
+        const Text(
+          "Congratulations 🎉",
+        ),
+
+        ElevatedButton(
+          onPressed: provider.cancel,
+          child: const Text("Again"),
+        ),
+      ],
+    );
+  }
+}

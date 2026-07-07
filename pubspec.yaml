@@ -20,6 +20,8 @@ dependencies:
   path_provider: ^2.1.5 #返回存储路径的把
   sqflite: ^2.4.2
   google_fonts: ^6.2.1
+#  flutter_local_notifications: ^19.4.0
+#  timezone: ^0.10.1
 
 
 dev_dependencies:
@@ -35,6 +37,9 @@ flutter:
 
   assets:
     - assets/
+    - assets/data/
+    - assets/images/
+    - assets/images/flower/
 
 flutter_launcher_icons:
   android: true

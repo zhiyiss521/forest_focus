@@ -2,18 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/repository/FocusRecordRepository.dart';
+import '../../../model/CollectibleItem.dart';
 import '../../../model/FocusRecord.dart';
-import '../../../repository/FocusRecordRepository.dart';
 import '../../../model/FocusState.dart';
-import '../../../repository/DBManager.dart';
-
-
-
-// 核心玩法，收集系统
-// 农作物：小麦，胡萝卜，玉米啥的
-// 鸡，鸭，鱼，牛，羊，猪
-// 小麦啥的，可以做饲料，鸡吃了饲料可以产鸡蛋，鸡蛋可以做面包，面包可以喂鸭子啥的
-
 
 class FocusProvider extends ChangeNotifier {
 
@@ -23,6 +15,8 @@ class FocusProvider extends ChangeNotifier {
   static const _kUserSetDuration = 'user_set_duration';
   static const _kPausedRemaining = 'paused_remaining';
   static const _kCurrentRecordId = 'current_record_id';
+
+  CollectibleItem? selectedReward;
 
   Duration userSetDuration = Duration(minutes: 10); // 用户一开始设定的时间
   String totalMinute = "";
@@ -115,6 +109,11 @@ class FocusProvider extends ChangeNotifier {
   }
 
   // region method
+  void selectReward(CollectibleItem reward) {
+    selectedReward = reward;
+    notifyListeners();
+  }
+
   // 定时器圆盘更新函数
   Future<void> updateMinutes(int value) async{
     userSetDuration = Duration(minutes: value);
