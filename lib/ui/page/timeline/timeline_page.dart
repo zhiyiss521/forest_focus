@@ -4,6 +4,7 @@ import 'package:forest_focus/util/extension.dart';
 import 'package:provider/provider.dart';
 
 import '../../../model/FocusRecord.dart';
+import '../reward_picker/collectible_provider.dart';
 
 class TimelinePage extends StatelessWidget {
   const TimelinePage({super.key});
@@ -143,7 +144,6 @@ class _DateHeader extends StatelessWidget {
 }
 
 class JournalCell extends StatelessWidget {
-
   final FocusRecord record;
 
   const JournalCell({
@@ -153,51 +153,37 @@ class JournalCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
-      margin: const EdgeInsets.only(
-        bottom: 12,
-      ),
-
+      margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(28),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             blurRadius: 12,
-            offset: Offset(0,4),
+            offset: Offset(0, 4),
             color: Colors.black12,
           ),
         ],
       ),
       child: Row(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          Text(
-            _emoji(),
-            style: const TextStyle(
-              fontSize: 36,
-            ),
-          ),
+          _buildIcon(context),
 
           const SizedBox(width: 16),
 
           Expanded(
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   _title(),
                   style: const TextStyle(
                     fontSize: 18,
-                    fontWeight:
-                    FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
 
@@ -212,7 +198,7 @@ class JournalCell extends StatelessWidget {
                 Text(
                   '${_time(record.startTime)} - ${_time(record.endTime!)}',
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Colors.grey,
                   ),
                 ),
               ],
@@ -223,48 +209,52 @@ class JournalCell extends StatelessWidget {
     );
   }
 
-  String _emoji() {
+  Widget _buildIcon(BuildContext context) {
+    final provider = context.read<CollectibleProvider>();
 
-    if (!record.completed) {
-      return '🥀';
+    final item = provider.getById(record.rewardId ?? "");
+
+    if (item == null) {
+      return const SizedBox(
+        width: 56,
+        height: 56,
+        child: Center(
+          child: Icon(Icons.image_not_supported),
+        ),
+      );
     }
 
-    final m =
-        record.actualSeconds ~/ 60;
-
-    if (m < 20) return '🌱';
-    if (m < 40) return '🌿';
-    if (m < 60) return '🌳';
-
-    return '🌲';
+    return Container(
+      width: 56,
+      height: 56,
+      decoration: BoxDecoration(
+        color: const Color(0xffF6F1E5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Image.asset(
+        item.assetPath,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.none,
+      ),
+    );
   }
 
   String _title() {
-
     if (!record.completed) {
       return '幼苗枯萎了';
     }
 
-    final m =
-        record.actualSeconds ~/ 60;
+    final m = record.actualSeconds ~/ 60;
 
-    if (m < 20) {
-      return '种子发芽';
-    }
-
-    if (m < 40) {
-      return '灌木成长';
-    }
-
-    if (m < 60) {
-      return '小树长高';
-    }
+    if (m < 20) return '种子发芽';
+    if (m < 40) return '灌木成长';
+    if (m < 60) return '小树长高';
 
     return '橡树成熟';
   }
 
   String _time(DateTime time) {
-
     return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 }

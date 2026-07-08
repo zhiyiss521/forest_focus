@@ -1,144 +1,138 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../model/CollectibleItem.dart';
+import '../../widget/app_dialog_action.dart';
+import '../../widget/app_window.dart';
+import '../../widget/inventory_grid.dart';
+import '../../widget/inventory_slot.dart';
+import 'collectible_category_bar.dart';
 import 'collectible_provider.dart';
 
-class CollectibleDialog extends StatelessWidget {
-  const CollectibleDialog({super.key});
+class CollectibleDialog extends StatefulWidget {
+  final CollectibleItem? selected;
+
+  final ValueChanged<CollectibleItem>? onConfirm;
+
+  const CollectibleDialog({
+    super.key,
+    this.selected,
+    this.onConfirm,
+  });
+
+  @override
+  State<CollectibleDialog> createState() => _CollectibleDialogState();
+}
+
+class _CollectibleDialogState extends State<CollectibleDialog> {
+  CollectibleItem? _selected;
+
+  CollectibleType? _selectedType;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.selected;
+  }
+
+  List<CollectibleType> _categories(List<CollectibleItem> items) {
+    final list = items.map((e) => e.type).toSet().toList();
+
+    list.sort((a, b) => a.index.compareTo(b.index));
+
+    return list;
+  }
+
+  List<CollectibleItem> _filteredItems(List<CollectibleItem> items) {
+    if (_selectedType == null) {
+      return items;
+    }
+
+    return items.where((e) => e.type == _selectedType).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
 
-    return Dialog(
-      child: SizedBox(
-        width: 500,
-        height: 500,
-        child: Column(
-          children: [
+    return AppWindow(
+      title: "选择素材",
+      width: size.width * 0.8,
+      child: Consumer<CollectibleProvider>(
+        builder: (_, provider, __) {
+          final items = provider.items;
 
-            const SizedBox(height: 16),
+          final categories = _categories(items);
 
-            const Text(
-              "选择素材",
-              style: TextStyle(fontSize: 22),
-            ),
+          final filteredItems = _filteredItems(items);
 
-            const Divider(),
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CollectibleCategoryBar(
+                categories: [
+                  null,
+                  ...categories,
+                ],
+                selectedType: _selectedType,
+                onSelected: (type) {
+                  setState(() {
+                    _selectedType = type;
 
-            Expanded(
-              child: Consumer<CollectibleProvider>(
-                builder: (_, provider, __) {
-
-                  return GridView.builder(
-
-                    padding: const EdgeInsets.all(16),
-
-                    gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-
-                    itemCount: provider.items.length,
-
-                    itemBuilder: (_, index) {
-
-                      final item = provider.items[index];
-
-                      final selected =
-                          provider.selected?.id == item.id;
-
-                      return InkWell(
-
-                        onTap: () {
-                          provider.select(item);
-                        },
-
-                        child: Container(
-
-                          decoration: BoxDecoration(
-
-                            border: Border.all(
-
-                              color: selected
-                                  ? Colors.orange
-                                  : Colors.grey,
-
-                              width: selected ? 3 : 1,
-                            ),
-                          ),
-
-                          child: Column(
-
-                            mainAxisAlignment:
-                            MainAxisAlignment.center,
-
-                            children: [
-
-                              Expanded(
-                                child: Image.asset(item.assetPath),
-                              ),
-
-                              const SizedBox(height: 6),
-
-                              Text(item.name),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                    if (_selected != null &&
+                        type != null &&
+                        _selected!.type != type) {
+                      _selected = filteredItems.isNotEmpty
+                          ? filteredItems.first
+                          : null;
+                    }
+                  });
                 },
               ),
-            ),
 
-            const Divider(),
+              SizedBox(
+                height: 240,
+                child: InventoryGrid(
+                  scrollDirection: Axis.horizontal,
+                  crossAxisCount: 3,
+                  itemCount: filteredItems.length,
+                  itemBuilder: (_, index) {
+                    final item = filteredItems[index];
 
-            Consumer<CollectibleProvider>(
-              builder: (_, provider, __) {
-
-                final item = provider.selected;
-
-                if (item == null) {
-                  return const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text("请选择一个素材"),
-                  );
-                }
-
-                return Padding(
-
-                  padding: const EdgeInsets.all(16),
-
-                  child: Column(
-
-                    children: [
-
-                      Text(
-                        item.name,
-                        style: const TextStyle(
-                          fontSize: 20,
+                    return InventorySlot(
+                      selected: _selected?.id == item.id,
+                      onTap: () {
+                        setState(() {
+                          _selected = item;
+                        });
+                      },
+                      image: Padding(
+                        padding: const EdgeInsets.all(1),
+                        child: Image.asset(
+                          item.assetPath,
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.none,
                         ),
                       ),
+                    );
+                  },
+                ),
+              ),
 
-                      const SizedBox(height: 8),
-
-                      Text(item.id),
-
-                      const SizedBox(height: 8),
-
-                      Text(item.type.name),
-                    ],
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 12),
-          ],
-        ),
+              AppDialogActions(
+                onCancel: () {
+                  Navigator.pop(context);
+                },
+                onConfirm: _selected == null
+                    ? null
+                    : () {
+                  widget.onConfirm?.call(_selected!);
+                  Navigator.pop(context, _selected);
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

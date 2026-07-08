@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
 import '../../../util/extension.dart';
 import '../../widget/forest_dialog.dart';
+import '../reward_picker/collectible_provider.dart';
 import 'FocusProvider.dart';
 
 class FocusRunningView extends StatelessWidget {
@@ -14,6 +15,7 @@ class FocusRunningView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final provider = context.watch<FocusProvider>();
+    final rewardProvider = context.read<CollectibleProvider>();
 
     return Column(
       key: const ValueKey('running'),
@@ -24,7 +26,7 @@ class FocusRunningView extends StatelessWidget {
           scale: 1.15,
           duration: const Duration(milliseconds: 400),
           child: Image.asset(
-            provider.plantName,
+            rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
             width: 200,
           ),
         ),
@@ -51,7 +53,7 @@ class FocusRunningView extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (_) => ForestDialog(
-                    emoji: '🌱',
+                    image: rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
                     title: '小树苗还没长大呢',
                     message: '如果现在离开，本次专注将不会获得奖励。',
                     confirmText: '继续专注',

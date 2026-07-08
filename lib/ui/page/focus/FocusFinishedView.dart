@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'FocusProvider.dart';
@@ -11,6 +12,7 @@ class FocusFinishedView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final provider = context.watch<FocusProvider>();
+    final rewardProvider = context.read<CollectibleProvider>();
 
     return Column(
       key: const ValueKey('finished'),
@@ -18,7 +20,7 @@ class FocusFinishedView extends StatelessWidget {
       children: [
 
         Image.asset(
-          provider.plantName,
+          rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
           width: 200,
         ),
 

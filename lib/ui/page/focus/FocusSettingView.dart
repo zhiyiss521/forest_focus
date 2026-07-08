@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/focus/FocusProvider.dart';
+import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/widget/FocusTime.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,7 @@ class FocusSettingView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final provider = context.watch<FocusProvider>();
+    final rewardProvider = context.read<CollectibleProvider>();
 
     return Column(
       children: [
@@ -41,12 +43,17 @@ class FocusSettingView extends StatelessWidget {
                     context: context,
                     barrierDismissible: true,
                     builder: (context) {
-                      return const CollectibleDialog();
+                      return CollectibleDialog(
+                        selected: rewardProvider.getById(provider.selectedRewardId),
+                        onConfirm: (item){
+                          provider.selectReward(item);
+                        },
+                      );
                     },
                   );
                 },
                 child: Image.asset(
-                  provider.plantName,
+                  rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
                   width: 150,
                 ),
               )

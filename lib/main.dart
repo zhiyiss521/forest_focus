@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:forest_focus/theme/app_theme.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
 import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
@@ -42,66 +43,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: ThemeData(
-          scaffoldBackgroundColor: AppColors.background,
-          appBarTheme: const AppBarTheme(
-            backgroundColor:AppColors.background,
-            foregroundColor: AppColors.tree,
-            centerTitle: true,
-            elevation: 0,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor:
-              AppColors.leaf,
-      
-              foregroundColor:
-              Colors.white,
-      
-              shape:
-              RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(18),
-              ),
-            ),
-          ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.tree,
-      
-              side: BorderSide(
-                color: AppColors.woodBorder,
-                width: 2,
-              ),
-      
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(18),
-              ),
-            ),
-          ),
-          cardTheme: CardThemeData(
-            color: AppColors.paper,
-            shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.circular(24),
-              side: BorderSide(
-                color: AppColors.woodBorder,
-                width: 2,
-              ),
-            ),
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor:
-              AppColors.tree,
-            ),
-          ),
-          textTheme: GoogleFonts.nunitoTextTheme().apply(
-            bodyColor: AppColors.tree,
-            displayColor: AppColors.tree,
-          ),
-        ),
+        theme: AppTheme.light,
         home: const FocusPage(),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ForestDialog extends StatelessWidget {
 
-  final String emoji;
+  final String image;
 
   final String title;
 
@@ -18,7 +18,7 @@ class ForestDialog extends StatelessWidget {
 
   const ForestDialog({
     super.key,
-    required this.emoji,
+    required this.image,
     required this.title,
     required this.message,
     required this.confirmText,
@@ -61,11 +61,9 @@ class ForestDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
 
-            Text(
-              emoji,
-              style: const TextStyle(
-                fontSize: 72,
-              ),
+            Image.asset(
+              image,
+              width: 150,
             ),
 
             const SizedBox(height: 16),

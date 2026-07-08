@@ -1,5 +1,28 @@
 enum CollectibleType {
-  flower;
+  flower,
+  shrub, // 灌木
+  grass, // 草
+  mushroom,// 蘑菇
+  tree;
+
+  String get displayName {
+    switch (this) {
+      case CollectibleType.flower:
+        return "花";
+
+      case CollectibleType.tree:
+        return "树";
+
+      case CollectibleType.shrub:
+        return "灌木";
+
+      case CollectibleType.grass:
+        return "草";
+
+      case CollectibleType.mushroom:
+        return "蘑菇";
+    }
+  }
 
   static CollectibleType fromString(String value) {
     return CollectibleType.values.firstWhere(

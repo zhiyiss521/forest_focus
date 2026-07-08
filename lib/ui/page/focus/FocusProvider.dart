@@ -15,8 +15,7 @@ class FocusProvider extends ChangeNotifier {
   static const _kUserSetDuration = 'user_set_duration';
   static const _kPausedRemaining = 'paused_remaining';
   static const _kCurrentRecordId = 'current_record_id';
-
-  CollectibleItem? selectedReward;
+  static const _kSelectedRewardId = 'selected_reward_id';
 
   Duration userSetDuration = Duration(minutes: 10); // 用户一开始设定的时间
   String totalMinute = "";
@@ -26,6 +25,7 @@ class FocusProvider extends ChangeNotifier {
   DateTime? startTime;
   DateTime? scheduleEndTime; // 预计结束时间，用来记录还剩下多长时间
   int? currentRecordId;// 当前专注的id
+  String selectedRewardId = "2";
 
   Timer? _ticker;
 
@@ -49,6 +49,7 @@ class FocusProvider extends ChangeNotifier {
     final userSetSeconds = prefs.getInt(_kUserSetDuration); // 获取设定时间
     final pausedSeconds = prefs.getInt(_kPausedRemaining); // 暂停恢复时间
     final localCurrentRecordId = prefs.getInt(_kCurrentRecordId);// 当前任务ID
+    final currentRewardId = prefs.getString(_kSelectedRewardId); // 当前选中的礼物Id
 
     if (pausedSeconds != null) {
       pausedRemaining = Duration(seconds: pausedSeconds);
@@ -74,6 +75,10 @@ class FocusProvider extends ChangeNotifier {
 
     if (endMs != null) {
       scheduleEndTime = DateTime.fromMillisecondsSinceEpoch(endMs);
+    }
+
+    if(currentRewardId != null){
+      selectedRewardId = currentRewardId;
     }
 
     await checkPageState();
@@ -110,7 +115,7 @@ class FocusProvider extends ChangeNotifier {
 
   // region method
   void selectReward(CollectibleItem reward) {
-    selectedReward = reward;
+    selectedRewardId = reward.id;
     notifyListeners();
   }
 
@@ -133,6 +138,7 @@ class FocusProvider extends ChangeNotifier {
       targetSeconds: userSetDuration.inSeconds,
       actualSeconds: 0,
       completed: false,
+      rewardId: selectedRewardId,
       createdAt: DateTime.now(),
     );
     currentRecordId = await FocusRecordRepository().insert(record);
@@ -219,21 +225,14 @@ class FocusProvider extends ChangeNotifier {
     return diff.isNegative ? Duration.zero : diff;
   }
 
-  String get plantName {
-    final m = userSetDuration.inMinutes;
-
-    if (m < 20) return 'assets/plant_1.png';
-    if (m < 40) return 'assets/plant_2.png';
-    if (m < 60) return 'assets/plant_3.png';
-    return 'assets/plant_4.png';
-  }
-
   String formatTotalFocusTime(int totalSeconds) {
     final duration = Duration(seconds: totalSeconds);
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;
     return '${hours}小时${minutes}分钟';
   }
+
+
 
   // endregion
 
@@ -263,6 +262,13 @@ class FocusProvider extends ChangeNotifier {
     } else {
       await prefs.remove(_kCurrentRecordId,);
     }
+
+    if (selectedRewardId != null) {
+      await prefs.setString(_kSelectedRewardId, selectedRewardId!);
+    }else{
+      await prefs.remove(_kSelectedRewardId,);
+    }
+
   }
 
   // endregion
