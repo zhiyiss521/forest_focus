@@ -3,7 +3,8 @@ enum CollectibleType {
   shrub, // 灌木
   grass, // 草
   mushroom,// 蘑菇
-  tree;
+  tree,
+  house;
 
   String get displayName {
     switch (this) {
@@ -21,6 +22,8 @@ enum CollectibleType {
 
       case CollectibleType.mushroom:
         return "蘑菇";
+      case CollectibleType.house:
+        return "房子";
     }
   }
 
