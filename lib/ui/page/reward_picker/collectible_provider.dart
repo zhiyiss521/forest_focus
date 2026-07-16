@@ -1,36 +1,40 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import '../../../core/repository/collectible_repository.dart';
+import '../../../model/collectible_item.dart';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-
-import '../../../model/CollectibleItem.dart';
-
+// 这里会一次性读取出来，相当于全局变量了
 class CollectibleProvider extends ChangeNotifier {
   final List<CollectibleItem> _items = [];
 
-  List<CollectibleItem> get items => _items;
+  List<CollectibleItem> get items => List.unmodifiable(_items);
 
   Future<void> load() async {
-    final jsonString = await rootBundle.loadString(
-      'assets/data/collectibles.json',
-    );
-
-    final List<dynamic> list = jsonDecode(jsonString);
+    final list = await CollectibleRepository.instance.findAll();
 
     _items
       ..clear()
-      ..addAll(
-        list.map((e) => CollectibleItem.fromJson(e)).toList(),
-      );
+      ..addAll(list);
 
     notifyListeners();
   }
 
-  CollectibleItem? getById(String id) {
-    try {
-      return _items.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
+  CollectibleItem? getById(int? id) {
+    if (id == null) return null;
+
+    for (final item in _items) {
+      if (item.id == id) {
+        return item;
+      }
     }
+
+    return null;
+  }
+
+  List<CollectibleItem> getByIds(Iterable<int> ids) {
+    if (ids.isEmpty) return [];
+
+    final idSet = ids.toSet();
+
+    return _items.where((e) => idSet.contains(e.id)).toList();
   }
 }

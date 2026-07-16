@@ -1,71 +1,60 @@
-import 'dart:convert';
+import '../../model/collectible_item.dart';
+import 'DBManager.dart';
 
-import 'package:flutter/services.dart';
-
-import '../../model/CollectibleItem.dart';
-
-// 读取json文件
 class CollectibleRepository {
   CollectibleRepository._();
-
   static final CollectibleRepository instance = CollectibleRepository._();
 
-  List<CollectibleItem>? _cache;
+  Future<List<CollectibleItem>> findAll() async {
+    final db = DBManager.instance.database;
 
-  /// 加载所有收藏品（自动缓存）
-  Future<List<CollectibleItem>> load() async {
-    if (_cache != null) {
-      return _cache!;
-    }
-
-    final jsonString = await rootBundle.loadString(
-      'assets/data/collectibles.json',
+    final result = await db.query(
+      'collectible',
+      orderBy: 'id ASC',
     );
 
-    final List<dynamic> list = jsonDecode(jsonString);
-
-    _cache = list
-        .map((e) => CollectibleItem.fromJson(e))
-        .toList();
-
-    return _cache!;
-  }
-
-  /// 根据 id 查找
-  Future<CollectibleItem?> findById(String? id) async {
-    if (id == null || id.isEmpty) {
-      return null;
-    }
-
-    final items = await load();
-
-    try {
-      return items.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  /// 根据多个 id 查找
-  Future<List<CollectibleItem>> findByIds(
-      Iterable<String> ids,
-      ) async {
-    final items = await load();
-
-    final idSet = ids.toSet();
-
-    return items
-        .where((e) => idSet.contains(e.id))
+    return result
+        .map(CollectibleItem.fromMap)
         .toList();
   }
 
-  /// 获取全部
-  Future<List<CollectibleItem>> findAll() async {
-    return await load();
+  Future<CollectibleItem?> findById(int? id) async {
+    if (id == null) return null;
+
+    final db = DBManager.instance.database;
+
+    final result = await db.query(
+      'collectible',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (result.isEmpty) {
+      return null;
+    }
+
+    return CollectibleItem.fromMap(result.first);
   }
 
-  /// 清除缓存（开发调试时可用）
-  void clearCache() {
-    _cache = null;
+  Future<List<CollectibleItem>> findByIds( Iterable<int> ids,) async {
+    if (ids.isEmpty) {
+      return [];
+    }
+
+    final db = DBManager.instance.database;
+
+    final placeholders = List.filled(ids.length, '?').join(',');
+
+    final result = await db.query(
+      'collectible',
+      where: 'id IN ($placeholders)',
+      whereArgs: ids.toList(),
+      orderBy: 'id ASC',
+    );
+
+    return result
+        .map(CollectibleItem.fromMap)
+        .toList();
   }
 }

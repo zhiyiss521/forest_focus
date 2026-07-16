@@ -1,36 +1,30 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter/material.dart';
 import '../../../core/repository/FocusRecordRepository.dart';
-import '../../../model/CollectibleItem.dart';
+import '../../../core/repository/focus_session_repository.dart';
 import '../../../model/FocusRecord.dart';
 import '../../../model/FocusState.dart';
+import '../../../model/collectible_item.dart';
 
 class FocusProvider extends ChangeNotifier {
-
-  static const _kState = 'state';
-  static const _kStart = 'start';
-  static const _kEnd = 'end';
-  static const _kUserSetDuration = 'user_set_duration';
-  static const _kPausedRemaining = 'paused_remaining';
-  static const _kCurrentRecordId = 'current_record_id';
-  static const _kSelectedRewardId = 'selected_reward_id';
-
-  Duration userSetDuration = Duration(minutes: 10); // 用户一开始设定的时间
+  Duration userSetDuration = const Duration(minutes: 10);
   String totalMinute = "";
-
   FocusState state = FocusState.setting;
-  Duration pausedRemaining = Duration.zero; // 暂停后的剩余时间
+  Duration pausedRemaining = Duration.zero;
   DateTime? startTime;
-  DateTime? scheduleEndTime; // 预计结束时间，用来记录还剩下多长时间
-  int? currentRecordId;// 当前专注的id
-  String selectedRewardId = "2";
+  DateTime? scheduleEndTime;
+  int? currentRecordId;
+  int selectedRewardId = 2;
 
   Timer? _ticker;
 
+  final _recordRepository = FocusRecordRepository();
+
+  final _sessionRepository = FocusSessionRepository.instance;
+
   FocusProvider() {
-    loadFromSharedPreferences();
+    loadSession();
     startTimer();
   }
 
@@ -40,63 +34,58 @@ class FocusProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> loadFromSharedPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> loadSession() async {
+    final FocusSession session =
+    await _sessionRepository.load();
 
-    final stateStr = prefs.getString(_kState); // 获取之前的状态
-    final startMs = prefs.getInt(_kStart); // 获取开始时间
-    final endMs = prefs.getInt(_kEnd); // 获取结束时间
-    final userSetSeconds = prefs.getInt(_kUserSetDuration); // 获取设定时间
-    final pausedSeconds = prefs.getInt(_kPausedRemaining); // 暂停恢复时间
-    final localCurrentRecordId = prefs.getInt(_kCurrentRecordId);// 当前任务ID
-    final currentRewardId = prefs.getString(_kSelectedRewardId); // 当前选中的礼物Id
-
-    if (pausedSeconds != null) {
-      pausedRemaining = Duration(seconds: pausedSeconds);
-    }
-
-    if(localCurrentRecordId != null){
-      currentRecordId = localCurrentRecordId;
-    }
-
-    if (userSetSeconds != null) {
-      userSetDuration = Duration(seconds: userSetSeconds);
-    }
-
-    if (stateStr == null) return;
-    state = FocusState.values.firstWhere(
-          (e) => e.name == stateStr,
-      orElse: () => FocusState.setting,
-    );
-
-    if (startMs != null) {
-      startTime = DateTime.fromMillisecondsSinceEpoch(startMs);
-    }
-
-    if (endMs != null) {
-      scheduleEndTime = DateTime.fromMillisecondsSinceEpoch(endMs);
-    }
-
-    if(currentRewardId != null){
-      selectedRewardId = currentRewardId;
-    }
+    state = session.state;
+    userSetDuration = session.userSetDuration;
+    pausedRemaining = session.pausedRemaining;
+    startTime = session.startTime;
+    scheduleEndTime = session.scheduleEndTime;
+    currentRecordId = session.currentRecordId;
+    selectedRewardId = session.selectedRewardId;
 
     await checkPageState();
     await loadTotalMinute();
+
     notifyListeners();
   }
 
-  Future<void> loadTotalMinute() async{
-    final totalSeconds = await FocusRecordRepository().getTotalFocusSeconds();
+  Future<void> saveSession() async {
+    await _sessionRepository.save(
+      FocusSession(
+        state: state,
+        userSetDuration: userSetDuration,
+        pausedRemaining: pausedRemaining,
+        startTime: startTime,
+        scheduleEndTime: scheduleEndTime,
+        currentRecordId: currentRecordId,
+        selectedRewardId: selectedRewardId,
+      ),
+    );
+  }
+
+  Future<void> loadTotalMinute() async {
+    final totalSeconds =
+    await _recordRepository.getTotalFocusSeconds();
+
     totalMinute = formatTotalFocusTime(totalSeconds);
+
     notifyListeners();
   }
 
-  Future<void> checkPageState() async{ // 更正页面状态
-    if (state == FocusState.running){
-      if(scheduleEndTime != null && DateTime.now().isAfter(scheduleEndTime!)){
-        await finish();
-      }
+  Future<void> checkPageState() async {
+    if (state != FocusState.running) {
+      return;
+    }
+
+    if (scheduleEndTime == null) {
+      return;
+    }
+
+    if (DateTime.now().isAfter(scheduleEndTime!)) {
+      await finish();
     }
   }
 
@@ -104,34 +93,49 @@ class FocusProvider extends ChangeNotifier {
     _ticker?.cancel();
 
     _ticker = Timer.periodic(
-      const Duration(seconds: 1), (_) {
-        if (state == FocusState.running) {
-          checkPageState();
-          notifyListeners();
+      const Duration(seconds: 1),
+          (_) async {
+        if (state != FocusState.running) {
+          return;
         }
+
+        await checkPageState();
+
+        notifyListeners();
       },
     );
   }
 
-  // region method
+  // MARK: Reward
+
   void selectReward(CollectibleItem reward) {
     selectedRewardId = reward.id;
+    saveSession();
+
     notifyListeners();
   }
 
-  // 定时器圆盘更新函数
-  Future<void> updateMinutes(int value) async{
+  // MARK: Duration
+
+  Future<void> updateMinutes(int value) async {
     userSetDuration = Duration(minutes: value);
-    await saveDataToPrefs();
+
+    await saveSession();
+
     notifyListeners();
   }
+
+  // MARK: Focus
 
   Future<void> start() async {
     pausedRemaining = Duration.zero;
+
     startTime = DateTime.now();
+
     scheduleEndTime = startTime!.add(userSetDuration);
+
     state = FocusState.running;
-    // 生成一条记录
+
     final record = FocusRecord(
       startTime: startTime!,
       endTime: scheduleEndTime!,
@@ -141,84 +145,117 @@ class FocusProvider extends ChangeNotifier {
       rewardId: selectedRewardId,
       createdAt: DateTime.now(),
     );
-    currentRecordId = await FocusRecordRepository().insert(record);
-    await saveDataToPrefs();
+
+    currentRecordId =
+    await _recordRepository.insert(record);
+
+    await saveSession();
 
     notifyListeners();
   }
 
   Future<void> cancel() async {
     if (currentRecordId != null) {
-      final record = await FocusRecordRepository().findById(currentRecordId!);
+      final record =
+      await _recordRepository.findById(currentRecordId!);
+
       if (record != null) {
         record.endTime = DateTime.now();
-        record.actualSeconds = userSetDuration.inSeconds - remaining.inSeconds;
+
+        record.actualSeconds =
+            userSetDuration.inSeconds - remaining.inSeconds;
+
         record.completed = false;
-        await FocusRecordRepository().update(record);
+
+        await _recordRepository.update(record);
       }
     }
+
     currentRecordId = null;
+
     pausedRemaining = Duration.zero;
+
     startTime = null;
+
     scheduleEndTime = null;
+
     state = FocusState.setting;
-    await saveDataToPrefs();
+
+    await _sessionRepository.clear();
 
     notifyListeners();
   }
 
   Future<void> pause() async {
     pausedRemaining = remaining;
+
     state = FocusState.paused;
-    await saveDataToPrefs();
+
+    await saveSession();
 
     notifyListeners();
   }
 
   Future<void> resume() async {
-    scheduleEndTime = DateTime.now().add(pausedRemaining);
+    scheduleEndTime =
+        DateTime.now().add(pausedRemaining);
+
     pausedRemaining = Duration.zero;
+
     state = FocusState.running;
-    await saveDataToPrefs();
+
+    await saveSession();
 
     notifyListeners();
   }
 
-  // 完成专注
   Future<void> finish() async {
     if (state == FocusState.finished) {
       return;
     }
 
     if (currentRecordId != null) {
-      final record = await FocusRecordRepository().findById(currentRecordId!);
+      final record =
+      await _recordRepository.findById(currentRecordId!);
+
       if (record != null) {
         record.endTime = DateTime.now();
+
         record.actualSeconds = userSetDuration.inSeconds;
+
         record.completed = true;
-        await FocusRecordRepository().update(record);
+
+        await _recordRepository.update(record);
       }
     }
 
     currentRecordId = null;
+
     state = FocusState.finished;
+
     startTime = null;
+
     scheduleEndTime = null;
+
     pausedRemaining = Duration.zero;
-    await saveDataToPrefs();
+
+    await _sessionRepository.clear();
+
     await loadTotalMinute();
+
     notifyListeners();
   }
 
-  // endregion
-
-  // region get
+  // MARK: Getter
 
   Duration get remaining {
     if (state == FocusState.paused) {
       return pausedRemaining;
     }
-    if (scheduleEndTime == null) return Duration.zero;
+
+    if (scheduleEndTime == null) {
+      return Duration.zero;
+    }
 
     final diff = scheduleEndTime!.difference(DateTime.now());
 
@@ -227,50 +264,39 @@ class FocusProvider extends ChangeNotifier {
 
   String formatTotalFocusTime(int totalSeconds) {
     final duration = Duration(seconds: totalSeconds);
+
     final hours = duration.inHours;
+
     final minutes = duration.inMinutes % 60;
+
     return '${hours}小时${minutes}分钟';
   }
 
-
-
-  // endregion
-
-  // region help func
-
-  Future<void> saveDataToPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(_kState, state.name);
-    await prefs.setInt(_kUserSetDuration, userSetDuration.inSeconds);
-    await prefs.setInt(_kPausedRemaining, pausedRemaining.inSeconds);
-
-    if (startTime != null) {
-      await prefs.setInt(_kStart, startTime!.millisecondsSinceEpoch);
-    }else {
-      await prefs.remove(_kStart);
+  double get progress {
+    if (state == FocusState.setting) {
+      return 0;
     }
 
-    if (scheduleEndTime != null) {
-      await prefs.setInt(_kEnd, scheduleEndTime!.millisecondsSinceEpoch);
-    }else {
-      await prefs.remove(_kEnd);
+    if (state == FocusState.finished) {
+      return 1;
     }
 
-    if (currentRecordId != null) {
-      await prefs.setInt(_kCurrentRecordId, currentRecordId!,);
-    } else {
-      await prefs.remove(_kCurrentRecordId,);
+    if (userSetDuration.inSeconds == 0) {
+      return 0;
     }
 
-    if (selectedRewardId != null) {
-      await prefs.setString(_kSelectedRewardId, selectedRewardId!);
-    }else{
-      await prefs.remove(_kSelectedRewardId,);
-    }
+    final passed =
+        userSetDuration.inSeconds - remaining.inSeconds;
 
+    return (passed / userSetDuration.inSeconds)
+        .clamp(0.0, 1.0);
   }
 
-  // endregion
+  bool get isRunning => state == FocusState.running;
 
+  bool get isPaused => state == FocusState.paused;
+
+  bool get isFinished => state == FocusState.finished;
+
+  bool get isSetting => state == FocusState.setting;
 }

@@ -212,7 +212,7 @@ class JournalCell extends StatelessWidget {
   Widget _buildIcon(BuildContext context) {
     final provider = context.read<CollectibleProvider>();
 
-    final item = provider.getById(record.rewardId ?? "");
+    final item = provider.getById(record.rewardId);
 
     if (item == null) {
       return const SizedBox(

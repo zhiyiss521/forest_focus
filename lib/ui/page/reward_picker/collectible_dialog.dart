@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../model/CollectibleItem.dart';
+import '../../../model/collectible_item.dart';
 import '../../widget/app_dialog_action.dart';
 import '../../widget/app_window.dart';
 import '../../widget/inventory_grid.dart';

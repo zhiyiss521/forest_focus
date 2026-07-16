@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../../model/CollectibleItem.dart';
+import '../../../model/collectible_item.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_size.dart';
-
 
 class CollectibleCategoryBar extends StatelessWidget {
   const CollectibleCategoryBar({
@@ -13,7 +11,6 @@ class CollectibleCategoryBar extends StatelessWidget {
     required this.onSelected,
   });
 
-  /// null 表示“全部”
   final List<CollectibleType?> categories;
 
   final CollectibleType? selectedType;

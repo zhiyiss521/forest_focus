@@ -3,7 +3,7 @@ import 'package:forest_focus/ui/page/sta/sta_card.dart';
 import 'package:forest_focus/ui/page/sta/sta_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../model/CollectibleItem.dart';
+import '../../../model/collectible_item.dart';
 
 class RewardCard extends StatelessWidget {
   const RewardCard({super.key});

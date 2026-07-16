@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/repository/FocusRecordRepository.dart';
 import '../../../core/repository/collectible_repository.dart';
-import '../../../model/CollectibleItem.dart';
 import '../../../model/FocusRecord.dart';
+import '../../../model/collectible_item.dart';
 import '../../../model/sta_range.dart';
 
 class StaProvider extends ChangeNotifier {
@@ -175,8 +175,7 @@ class StaProvider extends ChangeNotifier {
 
     final ids = currentRecords
         .map((e) => e.rewardId)
-        .whereType<String>()
-        .toSet();
+        .whereType<int>();
 
     rewards.addAll(
       await _collectibleRepository.findByIds(ids),

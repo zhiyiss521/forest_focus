@@ -4,10 +4,12 @@ import 'package:forest_focus/theme/app_theme.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
 import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
+import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'core/notification_manager.dart';
+import 'core/repository/DBManager.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +27,10 @@ Future<void> main() async{
     ),
   );
   // await NotificationManager.instance.init();
+
+
+  await DBManager.instance.init();
+
   runApp(const MyApp());
 }
 
@@ -38,6 +44,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => CollectibleProvider()..load(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TagProvider()..load(),
         ),
       ],
       child: MaterialApp(

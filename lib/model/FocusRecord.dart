@@ -7,7 +7,7 @@ class FocusRecord {
   final int targetSeconds;
   int actualSeconds;
   bool completed;
-  final String? rewardId;
+  final int? rewardId;
   final DateTime createdAt;
 
   FocusRecord({
