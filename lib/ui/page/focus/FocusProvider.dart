@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/repository/FocusRecordRepository.dart';
-import '../../../core/repository/focus_session.dart';
 import '../../../model/FocusRecord.dart';
 import '../../../model/collectible_item.dart';
 import '../../../model/FocusState.dart';
+import '../../../model/focus_session.dart';
 
 class FocusProvider extends ChangeNotifier {
 
