@@ -18,16 +18,10 @@ class CollectibleProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  CollectibleItem? getById(int? id) {
-    if (id == null) return null;
-
-    for (final item in _items) {
-      if (item.id == id) {
-        return item;
-      }
-    }
-
-    return null;
+  CollectibleItem getById(int id) {
+    return _items.firstWhere(
+          (item) => item.id == id,
+    );
   }
 
   List<CollectibleItem> getByIds(Iterable<int> ids) {

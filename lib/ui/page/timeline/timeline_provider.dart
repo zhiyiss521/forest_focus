@@ -14,7 +14,7 @@ class TimelineProvider extends ChangeNotifier {
   Future<void> load() async {
     loading = true;
     notifyListeners();
-    records = await FocusRecordRepository().findAll();
+    records = await FocusRecordRepository.instance.findAll();
     loading = false;
     notifyListeners();
   }

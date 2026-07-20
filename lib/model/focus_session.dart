@@ -7,7 +7,8 @@ class FocusSession {
   final DateTime? startTime;
   final DateTime? scheduleEndTime;
   final int? currentRecordId;
-  final int selectedRewardId;
+  final int currentCollectibleItemId;
+  final int currentTagId;
 
   const FocusSession({
     this.state = FocusState.setting,
@@ -16,7 +17,8 @@ class FocusSession {
     this.startTime,
     this.scheduleEndTime,
     this.currentRecordId,
-    this.selectedRewardId = 2,
+    required this.currentCollectibleItemId,
+    required this.currentTagId,
   });
 
   FocusSession copyWith({
@@ -26,7 +28,8 @@ class FocusSession {
     DateTime? startTime,
     DateTime? scheduleEndTime,
     int? currentRecordId,
-    int? selectedRewardId,
+    int? currentCollectibleItemId,
+    int? currentTagId,
     bool clearStartTime = false,
     bool clearScheduleEndTime = false,
     bool clearCurrentRecordId = false,
@@ -35,16 +38,15 @@ class FocusSession {
       state: state ?? this.state,
       userSetDuration: userSetDuration ?? this.userSetDuration,
       pausedRemaining: pausedRemaining ?? this.pausedRemaining,
-      startTime:
-      clearStartTime ? null : (startTime ?? this.startTime),
+      startTime: clearStartTime ? null : (startTime ?? this.startTime),
       scheduleEndTime: clearScheduleEndTime
           ? null
           : (scheduleEndTime ?? this.scheduleEndTime),
       currentRecordId: clearCurrentRecordId
           ? null
           : (currentRecordId ?? this.currentRecordId),
-      selectedRewardId:
-      selectedRewardId ?? this.selectedRewardId,
+      currentCollectibleItemId: currentCollectibleItemId ?? this.currentCollectibleItemId,
+      currentTagId: currentTagId ?? this.currentTagId,
     );
   }
 
@@ -54,20 +56,14 @@ class FocusSession {
       'userSetDuration': userSetDuration.inSeconds,
       'pausedRemaining': pausedRemaining.inSeconds,
       'startTime': startTime?.millisecondsSinceEpoch,
-      'scheduleEndTime':
-      scheduleEndTime?.millisecondsSinceEpoch,
+      'scheduleEndTime': scheduleEndTime?.millisecondsSinceEpoch,
       'currentRecordId': currentRecordId,
-      'selectedRewardId': selectedRewardId,
+      'currentCollectibleItemId': currentCollectibleItemId,
+      'currentTagId': currentTagId,
     };
   }
 
-  factory FocusSession.fromJson(
-      Map<String, dynamic>? json,
-      ) {
-    if (json == null) {
-      return const FocusSession();
-    }
-
+  factory FocusSession.fromJson(Map<String, dynamic> json) {
     return FocusSession(
       state: FocusState.values.firstWhere(
             (e) => e.name == json['state'],
@@ -90,20 +86,9 @@ class FocusSession {
         json['scheduleEndTime'],
       ),
       currentRecordId: json['currentRecordId'],
-      selectedRewardId: json['selectedRewardId'] ?? 2,
+      currentCollectibleItemId: json['currentCollectibleItemId'],
+      currentTagId: json['currentTagId']
     );
   }
 
-  @override
-  String toString() {
-    return 'FocusSession('
-        'state: $state, '
-        'userSetDuration: $userSetDuration, '
-        'pausedRemaining: $pausedRemaining, '
-        'startTime: $startTime, '
-        'scheduleEndTime: $scheduleEndTime, '
-        'currentRecordId: $currentRecordId, '
-        'selectedRewardId: $selectedRewardId'
-        ')';
-  }
 }

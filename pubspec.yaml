@@ -21,6 +21,7 @@ dependencies:
   sqflite: ^2.4.2
   google_fonts: ^6.2.1
   fl_chart: ^1.0.0
+  flutter_smart_dialog: ^4.9.8
 #  flutter_local_notifications: ^19.4.0
 #  timezone: ^0.10.1
 

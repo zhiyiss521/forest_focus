@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/focus/FocusProvider.dart';
+import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
+import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:forest_focus/ui/widget/FocusTime.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +18,7 @@ class FocusSettingView extends StatelessWidget {
 
     final provider = context.watch<FocusProvider>();
     final rewardProvider = context.read<CollectibleProvider>();
+    final tagProvider = context.watch<TagProvider>();
 
     return Column(
       children: [
@@ -53,13 +56,15 @@ class FocusSettingView extends StatelessWidget {
                   );
                 },
                 child: Image.asset(
-                  rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
+                  rewardProvider.getById(provider.selectedRewardId).assetPath,
                   width: 150,
                 ),
               )
             ],
           ),
         ),
+
+        TagChip(tag: tagProvider.getById(provider.session.currentTagId)!),
 
         Text(
           provider.userSetDuration.mmss,

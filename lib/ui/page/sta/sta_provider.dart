@@ -7,7 +7,7 @@ import '../../../model/collectible_item.dart';
 import '../../../model/sta_range.dart';
 
 class StaProvider extends ChangeNotifier {
-  final _recordRepository = FocusRecordRepository();
+  final _recordRepository = FocusRecordRepository.instance;
 
   final _collectibleRepository = CollectibleRepository.instance;
 
