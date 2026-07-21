@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../model/focus_record.dart';
 import '../../model/sta_range.dart';
 import 'DBManager.dart';
-import '../../model/FocusRecord.dart';
 
 class FocusRecordRepository {
 

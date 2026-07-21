@@ -53,8 +53,8 @@ class DBManager {
         target_seconds INTEGER NOT NULL,
         actual_seconds INTEGER NOT NULL,
         completed INTEGER NOT NULL,
-        reward_id INTEGER,
-        tag_id INTEGER,
+        collectible_item_id INTEGER NOT NULL,
+        tag_id INTEGER NOT NULL,
         created_at INTEGER NOT NULL
       )
     ''');

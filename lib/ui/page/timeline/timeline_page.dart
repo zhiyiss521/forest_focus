@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/timeline/timeline_provider.dart';
 import 'package:forest_focus/util/extension.dart';
 import 'package:provider/provider.dart';
-
-import '../../../model/FocusRecord.dart';
+import '../../../model/focus_record.dart';
 import '../reward_picker/collectible_provider.dart';
 
 class TimelinePage extends StatelessWidget {
@@ -211,7 +210,7 @@ class JournalCell extends StatelessWidget {
 
   Widget _buildIcon(BuildContext context) {
     final provider = context.read<CollectibleProvider>();
-    final item = provider.getById(record.rewardId!);
+    final item = provider.getById(record.collectibleItemId!);
 
     return Container(
       width: 56,

@@ -6,10 +6,10 @@ import 'package:forest_focus/core/repository/collectible_repository.dart';
 import 'package:forest_focus/core/repository/tag_repository.dart';
 import 'package:forest_focus/util/extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/repository/FocusRecordRepository.dart';
-import '../../../model/FocusRecord.dart';
+import '../../../core/repository/focus_record_repository.dart';
 import '../../../model/collectible_item.dart';
 import '../../../model/FocusState.dart';
+import '../../../model/focus_record.dart';
 import '../../../model/focus_session.dart';
 import '../../../model/tag.dart';
 
@@ -212,7 +212,8 @@ extension FocusProviderAction on FocusProvider {
       targetSeconds: session.userSetDuration.inSeconds,
       actualSeconds: 0,
       completed: false,
-      rewardId: session.currentCollectibleItemId,
+      collectibleItemId: session.currentCollectibleItemId,
+      tagId: session.currentTagId,
       createdAt: now,
     );
 

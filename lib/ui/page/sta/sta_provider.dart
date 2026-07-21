@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/repository/FocusRecordRepository.dart';
 import '../../../core/repository/collectible_repository.dart';
-import '../../../model/FocusRecord.dart';
+import '../../../core/repository/focus_record_repository.dart';
 import '../../../model/collectible_item.dart';
+import '../../../model/focus_record.dart';
 import '../../../model/sta_range.dart';
 
 class StaProvider extends ChangeNotifier {
@@ -174,7 +174,7 @@ class StaProvider extends ChangeNotifier {
     rewards.clear();
 
     final ids = currentRecords
-        .map((e) => e.rewardId)
+        .map((e) => e.collectibleItemId)
         .whereType<int>();
 
     rewards.addAll(
