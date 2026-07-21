@@ -19,7 +19,7 @@ class CollectibleCategoryBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 52,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,

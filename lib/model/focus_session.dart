@@ -6,7 +6,7 @@ class FocusSession {
   final Duration pausedRemaining;
   final DateTime? startTime;
   final DateTime? scheduleEndTime;
-  final int? currentRecordId;
+  final int? recordId;
   final int currentCollectibleItemId;
   final int currentTagId;
 
@@ -16,7 +16,7 @@ class FocusSession {
     this.pausedRemaining = Duration.zero,
     this.startTime,
     this.scheduleEndTime,
-    this.currentRecordId,
+    this.recordId,
     required this.currentCollectibleItemId,
     required this.currentTagId,
   });
@@ -27,7 +27,7 @@ class FocusSession {
     Duration? pausedRemaining,
     DateTime? startTime,
     DateTime? scheduleEndTime,
-    int? currentRecordId,
+    int? recordId,
     int? currentCollectibleItemId,
     int? currentTagId,
     bool clearStartTime = false,
@@ -42,9 +42,9 @@ class FocusSession {
       scheduleEndTime: clearScheduleEndTime
           ? null
           : (scheduleEndTime ?? this.scheduleEndTime),
-      currentRecordId: clearCurrentRecordId
+      recordId: clearCurrentRecordId
           ? null
-          : (currentRecordId ?? this.currentRecordId),
+          : (recordId ?? this.recordId),
       currentCollectibleItemId: currentCollectibleItemId ?? this.currentCollectibleItemId,
       currentTagId: currentTagId ?? this.currentTagId,
     );
@@ -57,7 +57,7 @@ class FocusSession {
       'pausedRemaining': pausedRemaining.inSeconds,
       'startTime': startTime?.millisecondsSinceEpoch,
       'scheduleEndTime': scheduleEndTime?.millisecondsSinceEpoch,
-      'currentRecordId': currentRecordId,
+      'recordId': recordId,
       'currentCollectibleItemId': currentCollectibleItemId,
       'currentTagId': currentTagId,
     };
@@ -85,7 +85,7 @@ class FocusSession {
           : DateTime.fromMillisecondsSinceEpoch(
         json['scheduleEndTime'],
       ),
-      currentRecordId: json['currentRecordId'],
+      recordId: json['recordId'],
       currentCollectibleItemId: json['currentCollectibleItemId'],
       currentTagId: json['currentTagId']
     );

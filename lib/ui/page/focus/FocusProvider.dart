@@ -4,12 +4,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/core/repository/collectible_repository.dart';
 import 'package:forest_focus/core/repository/tag_repository.dart';
+import 'package:forest_focus/util/extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/repository/FocusRecordRepository.dart';
 import '../../../model/FocusRecord.dart';
 import '../../../model/collectible_item.dart';
 import '../../../model/FocusState.dart';
 import '../../../model/focus_session.dart';
+import '../../../model/tag.dart';
 
 class FocusProvider extends ChangeNotifier {
 
@@ -17,7 +19,7 @@ class FocusProvider extends ChangeNotifier {
 
   FocusProvider() {}
 
-  String totalMinute = "";
+  String totalMinute = "";// 今天已经专注了多长时间
   Timer? ticker;
   late FocusSession session;
 
@@ -68,60 +70,8 @@ class FocusProvider extends ChangeNotifier {
 
   Future<void> loadTotalMinute() async {
     final totalSeconds = await FocusRecordRepository.instance.getTotalFocusSeconds();
-
-    totalMinute = formatTotalFocusTime(totalSeconds);
-
+    totalMinute = totalSeconds.focusDuration;
     notifyListeners();
-  }
-
-  // MARK: Getter
-
-  Duration get remaining {
-    if (isPaused) {
-      return session.pausedRemaining;
-    }
-
-    if (session.scheduleEndTime == null) {
-      return Duration.zero;
-    }
-
-    final diff = session.scheduleEndTime!
-        .difference(DateTime.now());
-
-    return diff.isNegative
-        ? Duration.zero
-        : diff;
-  }
-
-  double get progress {
-    if (isSetting) {
-      return 0;
-    }
-
-    if (isFinished) {
-      return 1;
-    }
-
-    if (session.userSetDuration.inSeconds == 0) {
-      return 0;
-    }
-
-    final passed = session.userSetDuration.inSeconds - remaining.inSeconds;
-
-    return (passed / session.userSetDuration.inSeconds).clamp(0.0, 1.0);
-  }
-
-  String formatTotalFocusTime(
-      int totalSeconds,
-      ) {
-    final duration = Duration(
-      seconds: totalSeconds,
-    );
-
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes % 60;
-
-    return "${hours}小时${minutes}分钟";
   }
 
   // 恢复或初始化一套默认的数据
@@ -178,32 +128,67 @@ class FocusProvider extends ChangeNotifier {
       await finish();
     }
   }
-  // MARK: Session Getter
+}
+
+extension FocusProviderGetter on FocusProvider{
+
+  Duration get remaining {
+    if (isPaused) {
+      return session.pausedRemaining;
+    }
+
+    if (session.scheduleEndTime == null) {
+      return Duration.zero;
+    }
+
+    final diff = session.scheduleEndTime!
+        .difference(DateTime.now());
+
+    return diff.isNegative
+        ? Duration.zero
+        : diff;
+  }
+
+  double get progress {
+    if (isSetting) {
+      return 0;
+    }
+
+    if (isFinished) {
+      return 1;
+    }
+
+    if (session.userSetDuration.inSeconds == 0) {
+      return 0;
+    }
+
+    final passed = session.userSetDuration.inSeconds - remaining.inSeconds;
+
+    return (passed / session.userSetDuration.inSeconds).clamp(0.0, 1.0);
+  }
 
   Duration get userSetDuration => session.userSetDuration;
-
-  int? get currentRecordId => session.currentRecordId;
-
-  int get selectedRewardId => session.currentCollectibleItemId;
+  int get currentCollectibleItemId => session.currentCollectibleItemId;
+  int get currentTagId => session.currentTagId;
 
   // MARK: State
-
   FocusState get state => session.state;
-
   bool get isRunning => state == FocusState.running;
-
   bool get isPaused => state == FocusState.paused;
-
   bool get isFinished => state == FocusState.finished;
-
   bool get isSetting => state == FocusState.setting;
 }
 
-
 extension FocusProviderAction on FocusProvider {
 
-  Future<void> selectReward(CollectibleItem reward) async {
-    session = session.copyWith(currentCollectibleItemId: reward.id);
+  Future<void> changeCollectibleItem(int collectibleItemId) async {
+    session = session.copyWith(currentCollectibleItemId: collectibleItemId);
+    await saveSession();
+    notifyListeners();
+  }
+
+  Future<void> changeTag(int tagId) async {
+    session = session.copyWith(currentTagId: tagId);
     await saveSession();
     notifyListeners();
   }
@@ -233,7 +218,7 @@ extension FocusProviderAction on FocusProvider {
 
     final id = await FocusRecordRepository.instance.insert(record);
 
-    session = session.copyWith(currentRecordId: id);
+    session = session.copyWith(recordId: id);
 
     await saveSession();
 
@@ -264,9 +249,9 @@ extension FocusProviderAction on FocusProvider {
   }
 
   Future<void> cancel() async {
-    if (session.currentRecordId != null) {
+    if (session.recordId != null) {
       final record = await FocusRecordRepository.instance.findById(
-        session.currentRecordId!,
+        session.recordId!,
       );
 
       if (record != null) {
@@ -300,9 +285,9 @@ extension FocusProviderAction on FocusProvider {
       return;
     }
 
-    if (session.currentRecordId != null) {
+    if (session.recordId != null) {
       final record = await FocusRecordRepository.instance.findById(
-        session.currentRecordId!,
+        session.recordId!,
       );
 
       if (record != null) {

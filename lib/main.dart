@@ -32,6 +32,7 @@ Future<void> main() async{
   await collectibleProvider.load();
   final tagProvider = TagProvider();
   await tagProvider.load();
+
   final focusProvider = FocusProvider();
   await focusProvider.load();
 

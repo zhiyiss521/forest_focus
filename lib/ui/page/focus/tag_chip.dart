@@ -5,11 +5,13 @@ import '../../../model/tag.dart';
 class TagChip extends StatelessWidget {
   final Tag tag;
   final VoidCallback? onTap;
+  final bool isSelected;
 
   const TagChip({
     super.key,
     required this.tag,
     this.onTap,
+    this.isSelected = false
   });
 
   @override
@@ -17,23 +19,22 @@ class TagChip extends StatelessWidget {
     final child = Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 12,
-        vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Color(tag.color).withOpacity(0.15),
+        color: isSelected ? Color(tag.color).withOpacity(0.15) : Colors.transparent,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Color(tag.color).withOpacity(0.4),
-        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            tag.icon,
-            style: const TextStyle(fontSize: 18),
+          Icon(
+            Icons.circle,
+            size: 15,
+            color: Color(tag.color),
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: 10,),
           Text(
             tag.name,
             style: TextStyle(
