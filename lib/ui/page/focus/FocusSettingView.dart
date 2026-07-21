@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/focus/FocusProvider.dart';
+import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
+import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:forest_focus/ui/widget/FocusTime.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/constants/app_constants.dart';
 import '../../../util/extension.dart';
 import '../reward_picker/collectible_dialog.dart';
+import 'focus_setup_sheet.dart';
 
 class FocusSettingView extends StatelessWidget {
   const FocusSettingView();
@@ -16,6 +20,7 @@ class FocusSettingView extends StatelessWidget {
 
     final provider = context.watch<FocusProvider>();
     final rewardProvider = context.read<CollectibleProvider>();
+    final tagProvider = context.watch<TagProvider>();
 
     return Column(
       children: [
@@ -33,27 +38,18 @@ class FocusSettingView extends StatelessWidget {
             children: [
               FocusTimerWidget(
                 initialMinutes: provider.userSetDuration.inMinutes,
-                maxMinutes: 100,
+                minMinutes: AppConstants.minMinutes,
+                maxMinutes: AppConstants.maxMinutes,
+                step: AppConstants.step,
                 onChanged: provider.updateMinutes,
               ),
 
               GestureDetector(
                 onTap: () async {
-                  await showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (context) {
-                      return CollectibleDialog(
-                        selected: rewardProvider.getById(provider.selectedRewardId),
-                        onConfirm: (item){
-                          provider.selectReward(item);
-                        },
-                      );
-                    },
-                  );
+                  FocusSetupSheet.show(context);
                 },
                 child: Image.asset(
-                  rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
+                  rewardProvider.getById(provider.currentCollectibleItemId).assetPath,
                   width: 150,
                 ),
               )
@@ -61,6 +57,12 @@ class FocusSettingView extends StatelessWidget {
           ),
         ),
 
+        TagChip(
+          tag: tagProvider.getById(provider.session.currentTagId)!,
+          onTap: (){
+            FocusSetupSheet.show(context);
+          },
+        ),
         Text(
           provider.userSetDuration.mmss,
           style: const TextStyle(

@@ -3,14 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class FocusTimerWidget extends StatefulWidget {
+  /// 当前分钟数
   final int initialMinutes;
+
+  /// 最小分钟数
+  final int minMinutes;
+
+  /// 最大分钟数
   final int maxMinutes;
+
+  /// 步进值
+  final int step;
+
   final ValueChanged<int>? onChanged;
 
   const FocusTimerWidget({
     super.key,
     required this.initialMinutes,
     required this.maxMinutes,
+    this.minMinutes = 1,
+    this.step = 1,
     this.onChanged,
   });
 
@@ -24,26 +36,38 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
   @override
   void initState() {
     super.initState();
-    minutes = widget.initialMinutes;
+    minutes = _snap(widget.initialMinutes);
   }
 
   @override
-  void didUpdateWidget(
-      covariant FocusTimerWidget oldWidget,
-      ) {
+  void didUpdateWidget(covariant FocusTimerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.initialMinutes != widget.initialMinutes) {
-      minutes = widget.initialMinutes;
+    if (oldWidget.initialMinutes != widget.initialMinutes ||
+        oldWidget.minMinutes != widget.minMinutes ||
+        oldWidget.maxMinutes != widget.maxMinutes ||
+        oldWidget.step != widget.step) {
+      minutes = _snap(widget.initialMinutes);
     }
+  }
+
+  /// 吸附到最近的 step，并限制在 min ~ max 之间
+  int _snap(num value) {
+    final step = widget.step <= 0 ? 1 : widget.step;
+
+    final snapped = (((value.toDouble() - widget.minMinutes) / step).round() *
+        step +
+        widget.minMinutes);
+
+    return snapped.clamp(widget.minMinutes, widget.maxMinutes).toInt();
   }
 
   @override
   Widget build(BuildContext context) {
     return SfRadialGauge(
-      axes: <RadialAxis>[
+      axes: [
         RadialAxis(
-          minimum: 1,
+          minimum: widget.minMinutes.toDouble(),
           maximum: widget.maxMinutes.toDouble(),
           startAngle: 270,
           endAngle: 270,
@@ -54,7 +78,7 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
             thicknessUnit: GaugeSizeUnit.factor,
             color: Color(0xFFD9C2A0),
           ),
-          pointers: <GaugePointer>[
+          pointers: [
             RangePointer(
               value: minutes.toDouble(),
               width: 0.12,
@@ -71,11 +95,19 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
               borderWidth: 3,
               markerWidth: 24,
               markerHeight: 24,
+              onValueChanging: (args) {
+                args.value = _snap(args.value).toDouble();
+              },
               onValueChanged: (value) {
+                final newValue = _snap(value);
+
+                if (newValue == minutes) return;
+
                 setState(() {
-                  minutes = value.toInt();
+                  minutes = newValue;
                 });
-                widget.onChanged?.call(value.toInt());
+
+                widget.onChanged?.call(newValue);
               },
             ),
           ],

@@ -14,18 +14,13 @@ class FocusPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => FocusProvider(),
-      child:Consumer<FocusProvider>(
+    return Consumer<FocusProvider>(
         builder: (context, provider, child) {
           return Scaffold(
             extendBody: true,
             extendBodyBehindAppBar: true,
             drawer: const AppDrawer(),
-            appBar: provider.state == FocusState.setting
-                ? AppBar(
-              elevation: 0,
-            ) : null,
+            appBar: provider.state == FocusState.setting ? AppBar( elevation: 0,) : null,
             body: SafeArea(
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -50,7 +45,6 @@ class FocusPage extends StatelessWidget {
             ),
           );
         }
-      )
     );
   }
 }

@@ -14,7 +14,6 @@ class InventoryGrid extends StatelessWidget {
     this.crossAxisCount = 4,
     /// width / height
     this.childAspectRatio = 1.0,
-    this.padding = const EdgeInsets.all(AppSizes.padding),
     this.spacing = 0,
     this.physics,
     this.shrinkWrap = false,
@@ -35,9 +34,6 @@ class InventoryGrid extends StatelessWidget {
   /// 宽高比（width / height）
   final double childAspectRatio;
 
-  /// Padding
-  final EdgeInsetsGeometry padding;
-
   /// 横向、纵向间距
   final double spacing;
 
@@ -51,7 +47,6 @@ class InventoryGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       scrollDirection: scrollDirection,
-      padding: padding,
       physics: physics,
       shrinkWrap: shrinkWrap,
       itemCount: itemCount,

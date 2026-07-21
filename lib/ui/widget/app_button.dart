@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../theme/app_colors.dart';
 import '../../theme/app_size.dart';
 
@@ -11,15 +10,10 @@ enum AppButtonType {
 
 class AppButton extends StatelessWidget {
   final String text;
-
   final IconData? icon;
-
   final VoidCallback? onPressed;
-
   final AppButtonType type;
-
   final double? width;
-
   final double height;
 
   const AppButton({
@@ -36,10 +30,8 @@ class AppButton extends StatelessWidget {
     switch (type) {
       case AppButtonType.primary:
         return AppColors.leaf;
-
       case AppButtonType.secondary:
         return AppColors.paper;
-
       case AppButtonType.danger:
         return AppColors.danger;
     }

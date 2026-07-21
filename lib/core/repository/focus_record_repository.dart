@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-
+import '../../model/focus_record.dart';
 import '../../model/sta_range.dart';
-import '../../ui/page/sta/sta_provider.dart';
 import 'DBManager.dart';
-import '../../model/FocusRecord.dart';
 
 class FocusRecordRepository {
+
+  FocusRecordRepository._();
+  static final FocusRecordRepository instance = FocusRecordRepository._();
 
   Future<int> insert(FocusRecord record) async {
     final db = await DBManager.instance.database;

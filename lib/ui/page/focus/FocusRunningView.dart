@@ -26,7 +26,7 @@ class FocusRunningView extends StatelessWidget {
           scale: 1.15,
           duration: const Duration(milliseconds: 400),
           child: Image.asset(
-            rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
+            rewardProvider.getById(provider.currentCollectibleItemId)?.assetPath ?? "assets/plant_1.png",
             width: 200,
           ),
         ),
@@ -53,7 +53,7 @@ class FocusRunningView extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (_) => ForestDialog(
-                    image: rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
+                    image: rewardProvider.getById(provider.currentCollectibleItemId)?.assetPath ?? "assets/plant_1.png",
                     title: '小树苗还没长大呢',
                     message: '如果现在离开，本次专注将不会获得奖励。',
                     confirmText: '继续专注',

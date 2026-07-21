@@ -20,7 +20,7 @@ class FocusFinishedView extends StatelessWidget {
       children: [
 
         Image.asset(
-          rewardProvider.getById(provider.selectedRewardId)?.assetPath ?? "assets/plant_1.png",
+          rewardProvider.getById(provider.currentCollectibleItemId)?.assetPath ?? "assets/plant_1.png",
           width: 200,
         ),
 
