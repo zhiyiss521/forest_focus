@@ -42,7 +42,7 @@ class InventorySlot extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: selected
-                ? AppColors.selected.withOpacity(0.25)
+                ? AppColors.background.withOpacity(0.25)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppSizes.radius),
           ),

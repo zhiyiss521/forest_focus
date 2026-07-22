@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:forest_focus/theme/app_theme.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
 import 'package:forest_focus/ui/page/focus/focus_Provider.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
@@ -53,7 +52,6 @@ Future<void> main() async{
           builder: FlutterSmartDialog.init(),
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
-          theme: AppTheme.light,
           home: const FocusPage(),
         ),
       )

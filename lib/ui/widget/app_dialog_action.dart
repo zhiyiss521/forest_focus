@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_size.dart';
-import 'app_button.dart';
+import 'ff_button.dart';
 
 class AppDialogActions extends StatelessWidget {
   final VoidCallback? onCancel;
@@ -32,9 +32,9 @@ class AppDialogActions extends StatelessWidget {
         children: [
 
           Expanded(
-            child: AppButton(
+            child: FFButton(
               text: cancelText,
-              type: AppButtonType.secondary,
+              type: FFButtonType.secondary,
               onPressed: onCancel,
             ),
           ),
@@ -42,7 +42,7 @@ class AppDialogActions extends StatelessWidget {
           const SizedBox(width: AppSizes.gap * 2),
 
           Expanded(
-            child: AppButton(
+            child: FFButton(
               text: confirmText,
               onPressed: enabled ? onConfirm : null,
             ),

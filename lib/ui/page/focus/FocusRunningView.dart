@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../model/FocusState.dart';
 import '../../../util/extension.dart';
-import '../../widget/forest_dialog.dart';
+import '../../widget/ff_dialog.dart';
 import '../reward_picker/collectible_provider.dart';
 import 'focus_Provider.dart';
 
@@ -46,48 +47,36 @@ class FocusRunningView extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            OutlinedButton(
-              onPressed: () async {
-
-                showDialog(
-                  context: context,
-                  builder: (_) => ForestDialog(
-                    image: rewardProvider.getById(provider.currentCollectibleItemId)?.assetPath ?? "assets/plant_1.png",
-                    title: '小树苗还没长大呢',
-                    message: '如果现在离开，本次专注将不会获得奖励。',
-                    confirmText: '继续专注',
-                    cancelText: '结束专注',
-
-                    onConfirm: () {
-                      Navigator.of(context).pop();
-                    },
-
-                    onCancel: () async {
-                      Navigator.of(context).pop();
-                      await provider.cancel();
-                    },
-                  ),
+            FFButton(
+              type: FFButtonType.secondary,
+              text: "Cancel",
+              onPressed: (){
+                FFDialog.show(
+                  context,
+                  title: "确定要放弃吗?",
+                  message: "放弃不会得到奖励",
+                  cancelText: "取消",
+                  confirmText: "放弃",
+                  onConfirm: () async {
+                    Navigator.of(context).pop();
+                    await provider.cancel();
+                  },
+                  onCancel: (){
+                    Navigator.of(context).pop();
+                  }
                 );
-
               },
-              child: const Text("Cancel"),
+              width: 100,
             ),
 
             const SizedBox(width: 16),
 
-            ElevatedButton(
-              onPressed: provider.state ==
-                  FocusState.running
-                  ? provider.pause
-                  : provider.resume,
-              child: Text(
-                provider.state ==
-                    FocusState.running
-                    ? "Pause"
-                    : "Resume",
-              ),
-            ),
+            FFButton(
+              text: provider.state == FocusState.running ? "Pause" : "Resume",
+              onPressed: provider.state == FocusState.running ? provider.pause : provider.resume,
+              width: 100,
+            )
+
           ],
         ),
       ],

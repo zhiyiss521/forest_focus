@@ -12,14 +12,9 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       width: 200,
-      backgroundColor: AppColors.paper,
+      backgroundColor: AppColors.background,
       child: ListView(
         children: [
-
-          // DrawerHeader(
-          //   child: Text('Forest Focus'),
-          // ),
-
           ListTile(
             leading: Icon(Icons.bar_chart),
             title: Text('统计'),

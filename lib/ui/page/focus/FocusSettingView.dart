@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/ui/widget/ff_button.dart';
 import '../../../util/extension.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
@@ -88,9 +89,10 @@ class FocusSettingView extends StatelessWidget {
           ),
         ),
 
-        ElevatedButton(
+        FFButton(
           onPressed: provider.start,
-          child: const Text("Start"),
+          text: "Start",
+          width: 100,
         ),
       ],
     );

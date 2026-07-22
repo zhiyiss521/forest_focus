@@ -10,8 +10,9 @@ class AppSizes {
   static const padding = 16.0;
 
   static const titleHeight = 52.0;
-
-  static const buttonHeight = 48.0;
-
   static const slotSize = 120.0;
+
+  static const buttonHeight = 38.0;
+  static const buttonTextFontSize = 16.0;
+  static const buttonCornerRadius = 5.0;
 }

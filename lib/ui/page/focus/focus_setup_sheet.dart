@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
+import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_constants.dart';
@@ -361,32 +362,13 @@ class BottomSummary extends StatelessWidget {
 
           Spacer(),
 
-          Container(
-            height: 48,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                focusProvider.start();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF83C26F),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                "Start",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          FFButton(
+            text: "Start",
+            onPressed: (){
+              Navigator.pop(context);
+              focusProvider.start();
+            },
+            width: 100,
           ),
         ],
       ),
