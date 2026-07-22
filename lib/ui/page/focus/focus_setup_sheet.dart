@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:forest_focus/ui/page/focus/FocusProvider.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
@@ -12,6 +11,7 @@ import '../../../util/extension.dart';
 import '../../widget/inventory_grid.dart';
 import '../../widget/inventory_slot.dart';
 import '../reward_picker/collectible_category_bar.dart';
+import 'focus_Provider.dart';
 
 class FocusSetupSheet extends StatelessWidget {
   const FocusSetupSheet({super.key});
@@ -215,6 +215,10 @@ class DurationSection extends StatelessWidget {
           ((AppConstants.maxMinutes - AppConstants.minMinutes) ~/ AppConstants.step) + 1,
           (index) => AppConstants.minMinutes + index * AppConstants.step,
         );
+
+        if(!provider.isCountdown){
+          return Text("计时上线${AppConstants.maxMinutes}分钟");
+        }
 
         return ListView.separated(
           scrollDirection: Axis.horizontal,

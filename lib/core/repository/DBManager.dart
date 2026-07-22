@@ -48,6 +48,7 @@ class DBManager {
     await db.execute('''
       CREATE TABLE IF NOT EXISTS focus_record(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        is_countdown INTEGER NOT NULL,
         start_time INTEGER NOT NULL,
         end_time INTEGER NOT NULL,
         target_seconds INTEGER NOT NULL,

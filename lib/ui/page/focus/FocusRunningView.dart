@@ -6,7 +6,7 @@ import '../../../model/FocusState.dart';
 import '../../../util/extension.dart';
 import '../../widget/forest_dialog.dart';
 import '../reward_picker/collectible_provider.dart';
-import 'FocusProvider.dart';
+import 'focus_Provider.dart';
 
 class FocusRunningView extends StatelessWidget {
   const FocusRunningView();
@@ -26,7 +26,7 @@ class FocusRunningView extends StatelessWidget {
           scale: 1.15,
           duration: const Duration(milliseconds: 400),
           child: Image.asset(
-            rewardProvider.getById(provider.currentCollectibleItemId)?.assetPath ?? "assets/plant_1.png",
+            rewardProvider.getById(provider.currentCollectibleItemId).assetPath,
             width: 200,
           ),
         ),
@@ -34,7 +34,7 @@ class FocusRunningView extends StatelessWidget {
         const SizedBox(height: 24),
 
         Text(
-          provider.remaining.mmss,
+          provider.displayDuration.mmss,
           style: const TextStyle(
             fontSize: 72,
             fontWeight: FontWeight.bold,

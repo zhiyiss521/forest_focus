@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:forest_focus/ui/page/focus/FocusProvider.dart';
+import '../../../util/extension.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:forest_focus/ui/widget/FocusTime.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/constants/app_constants.dart';
-import '../../../util/extension.dart';
-import '../reward_picker/collectible_dialog.dart';
+import 'focus_Provider.dart';
 import 'focus_setup_sheet.dart';
 
 class FocusSettingView extends StatelessWidget {
@@ -22,6 +20,11 @@ class FocusSettingView extends StatelessWidget {
     final rewardProvider = context.read<CollectibleProvider>();
     final tagProvider = context.watch<TagProvider>();
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final focusWidgetW = screenWidth * 0.8;
+    final focusProgressRadiusFactor = AppConstants.kFocusProgressRadiusFactor;
+    final focusProgressThickness = AppConstants.kFocusProgressThickness;
+
     return Column(
       children: [
         Text(
@@ -30,19 +33,33 @@ class FocusSettingView extends StatelessWidget {
             fontSize: 32,
           ),
         ),
-        SizedBox(
-          width: 320,
-          height: 320,
+        Container(
+          width: focusWidgetW,
+          height: focusWidgetW,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              FocusTimerWidget(
+              Container(
+                width: focusWidgetW * focusProgressRadiusFactor ,
+                height: focusWidgetW * focusProgressRadiusFactor,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red,
+                  border: Border.all(
+                    color: Colors.black,
+                    width: focusWidgetW * focusProgressRadiusFactor * focusProgressThickness * 0.5,
+                  ),
+                ),
+              ),
+              provider.session.isCountdown ? FocusTimerWidget(
+                radiusFactor: focusProgressRadiusFactor,
+                thickness: focusProgressThickness,
                 initialMinutes: provider.userSetDuration.inMinutes,
                 minMinutes: AppConstants.minMinutes,
                 maxMinutes: AppConstants.maxMinutes,
                 step: AppConstants.step,
                 onChanged: provider.updateMinutes,
-              ),
+              ) : const SizedBox.shrink(),
 
               GestureDetector(
                 onTap: () async {
@@ -63,8 +80,9 @@ class FocusSettingView extends StatelessWidget {
             FocusSetupSheet.show(context);
           },
         ),
+
         Text(
-          provider.userSetDuration.mmss,
+          provider.isCountdown ? provider.userSetDuration.mmss : Duration.zero.mmss,
           style: const TextStyle(
             fontSize: 64,
           ),

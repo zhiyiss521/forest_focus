@@ -3,17 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class FocusTimerWidget extends StatefulWidget {
-  /// 当前分钟数
   final int initialMinutes;
-
-  /// 最小分钟数
   final int minMinutes;
-
-  /// 最大分钟数
   final int maxMinutes;
-
-  /// 步进值
   final int step;
+  final double thickness;
+  final double radiusFactor;
 
   final ValueChanged<int>? onChanged;
 
@@ -23,6 +18,8 @@ class FocusTimerWidget extends StatefulWidget {
     required this.maxMinutes,
     this.minMinutes = 1,
     this.step = 1,
+    this.thickness = 0.12,
+    this.radiusFactor = 0.8,
     this.onChanged,
   });
 
@@ -51,7 +48,6 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
     }
   }
 
-  /// 吸附到最近的 step，并限制在 min ~ max 之间
   int _snap(num value) {
     final step = widget.step <= 0 ? 1 : widget.step;
 
@@ -67,21 +63,22 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
     return SfRadialGauge(
       axes: [
         RadialAxis(
+          radiusFactor: widget.radiusFactor,
           minimum: widget.minMinutes.toDouble(),
           maximum: widget.maxMinutes.toDouble(),
           startAngle: 270,
           endAngle: 270,
           showTicks: false,
           showLabels: false,
-          axisLineStyle: const AxisLineStyle(
-            thickness: 0.12,
+          axisLineStyle: AxisLineStyle(
+            thickness: widget.thickness,
             thicknessUnit: GaugeSizeUnit.factor,
-            color: Color(0xFFD9C2A0),
+            color: Colors.transparent,
           ),
           pointers: [
             RangePointer(
               value: minutes.toDouble(),
-              width: 0.12,
+              width: widget.thickness,
               sizeUnit: GaugeSizeUnit.factor,
               color: const Color(0xFF83C26F),
               cornerStyle: CornerStyle.bothCurve,

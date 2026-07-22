@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:provider/provider.dart';
-
-import 'FocusProvider.dart';
+import 'focus_Provider.dart';
 
 class FocusFinishedView extends StatelessWidget {
   const FocusFinishedView();
@@ -20,7 +19,7 @@ class FocusFinishedView extends StatelessWidget {
       children: [
 
         Image.asset(
-          rewardProvider.getById(provider.currentCollectibleItemId)?.assetPath ?? "assets/plant_1.png",
+          rewardProvider.getById(provider.currentCollectibleItemId).assetPath,
           width: 200,
         ),
 

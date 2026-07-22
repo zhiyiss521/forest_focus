@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:forest_focus/theme/app_theme.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
-import 'package:forest_focus/ui/page/focus/FocusProvider.dart';
+import 'package:forest_focus/ui/page/focus/focus_Provider.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:provider/provider.dart';

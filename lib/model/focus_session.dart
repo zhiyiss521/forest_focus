@@ -9,10 +9,12 @@ class FocusSession {
   final int? recordId;
   final int currentCollectibleItemId;
   final int currentTagId;
+  final bool isCountdown;
 
   const FocusSession({
     this.state = FocusState.setting,
-    this.userSetDuration = const Duration(minutes: 10),
+    this.isCountdown = true,
+    required this.userSetDuration,
     this.pausedRemaining = Duration.zero,
     this.startTime,
     this.scheduleEndTime,
@@ -23,6 +25,7 @@ class FocusSession {
 
   FocusSession copyWith({
     FocusState? state,
+    bool? isCountdown,
     Duration? userSetDuration,
     Duration? pausedRemaining,
     DateTime? startTime,
@@ -36,15 +39,12 @@ class FocusSession {
   }) {
     return FocusSession(
       state: state ?? this.state,
+      isCountdown: isCountdown ?? this.isCountdown,
       userSetDuration: userSetDuration ?? this.userSetDuration,
       pausedRemaining: pausedRemaining ?? this.pausedRemaining,
       startTime: clearStartTime ? null : (startTime ?? this.startTime),
-      scheduleEndTime: clearScheduleEndTime
-          ? null
-          : (scheduleEndTime ?? this.scheduleEndTime),
-      recordId: clearCurrentRecordId
-          ? null
-          : (recordId ?? this.recordId),
+      scheduleEndTime: clearScheduleEndTime ? null : (scheduleEndTime ?? this.scheduleEndTime),
+      recordId: clearCurrentRecordId ? null : (recordId ?? this.recordId),
       currentCollectibleItemId: currentCollectibleItemId ?? this.currentCollectibleItemId,
       currentTagId: currentTagId ?? this.currentTagId,
     );
@@ -53,6 +53,7 @@ class FocusSession {
   Map<String, dynamic> toJson() {
     return {
       'state': state.name,
+      'isCountdown':isCountdown,
       'userSetDuration': userSetDuration.inSeconds,
       'pausedRemaining': pausedRemaining.inSeconds,
       'startTime': startTime?.millisecondsSinceEpoch,
@@ -69,25 +70,26 @@ class FocusSession {
             (e) => e.name == json['state'],
         orElse: () => FocusState.setting,
       ),
+      isCountdown: json['isCountdown'] as bool,
       userSetDuration: Duration(
-        seconds: json['userSetDuration'] ?? 600,
+        seconds: json['userSetDuration'] as int,
       ),
       pausedRemaining: Duration(
-        seconds: json['pausedRemaining'] ?? 0,
+        seconds: json['pausedRemaining'] as int,
       ),
       startTime: json['startTime'] == null
           ? null
           : DateTime.fromMillisecondsSinceEpoch(
-        json['startTime'],
+        json['startTime'] as int,
       ),
       scheduleEndTime: json['scheduleEndTime'] == null
           ? null
           : DateTime.fromMillisecondsSinceEpoch(
-        json['scheduleEndTime'],
+        json['scheduleEndTime'] as int,
       ),
-      recordId: json['recordId'],
-      currentCollectibleItemId: json['currentCollectibleItemId'],
-      currentTagId: json['currentTagId']
+      recordId: json['recordId'] as int?,
+      currentCollectibleItemId: json['currentCollectibleItemId'] as int,
+      currentTagId: json['currentTagId'] as int,
     );
   }
 

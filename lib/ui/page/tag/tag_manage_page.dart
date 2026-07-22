@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../model/tag.dart';
 import '../../widget/hud.dart';
-import '../focus/FocusProvider.dart';
+import '../focus/focus_Provider.dart';
 import 'tag_provider.dart';
 
 class TagManagePage extends StatelessWidget {

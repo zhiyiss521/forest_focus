@@ -1,5 +1,6 @@
 class FocusRecord {
   int? id;
+  final bool isCountdown;
   final DateTime startTime;
   DateTime endTime;
   final int targetSeconds;
@@ -11,6 +12,7 @@ class FocusRecord {
 
   FocusRecord({
     this.id,
+    this.isCountdown = true,
     required this.startTime,
     required this.endTime,
     required this.targetSeconds,
@@ -23,6 +25,7 @@ class FocusRecord {
 
   Map<String, dynamic> toMap() => {
     'id': id,
+    'is_countdown' :isCountdown ? 1: 0,
     'start_time': startTime.millisecondsSinceEpoch,
     'end_time': endTime.millisecondsSinceEpoch,
     'target_seconds': targetSeconds,
@@ -35,6 +38,7 @@ class FocusRecord {
 
   factory FocusRecord.fromMap(Map<String, dynamic> map) => FocusRecord(
     id: map['id'] as int?,
+    isCountdown: (map['is_countdown'] as int) == 1,
     startTime: DateTime.fromMillisecondsSinceEpoch(map['start_time'] as int),
     endTime: DateTime.fromMillisecondsSinceEpoch(map['end_time'] as int),
     targetSeconds: map['target_seconds'] as int,

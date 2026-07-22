@@ -4,9 +4,9 @@ import 'package:forest_focus/ui/page/focus/FocusSettingView.dart';
 import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
 import '../../drawer/AppDrawer.dart';
-import './FocusProvider.dart';
 import 'FocusFinishedView.dart';
 import 'FocusRunningView.dart';
+import 'focus_Provider.dart';
 
 
 class FocusPage extends StatelessWidget {
@@ -20,7 +20,28 @@ class FocusPage extends StatelessWidget {
             extendBody: true,
             extendBodyBehindAppBar: true,
             drawer: const AppDrawer(),
-            appBar: provider.state == FocusState.setting ? AppBar( elevation: 0,) : null,
+            appBar: provider.state == FocusState.setting ? AppBar(
+              elevation: 0,
+              centerTitle: true,
+              title: SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(
+                    value: true,
+                    label: Text('倒计时'),
+                    icon: Icon(Icons.timer),
+                  ),
+                  ButtonSegment(
+                    value: false,
+                    label: Text('正计时'),
+                    icon: Icon(Icons.hourglass_top),
+                  ),
+                ],
+                selected: {provider.session.isCountdown},
+                onSelectionChanged: (value) {
+                  provider.changeCountdownMode(value.first);
+                },
+              ),
+            ) : null,
             body: SafeArea(
               child: LayoutBuilder(
                 builder: (context, constraints) {
