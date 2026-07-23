@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import 'focus_Provider.dart';
 import 'focus_setup_sheet.dart';
+import 'focus_timer_image_w.dart';
 
 class FocusSettingView extends StatelessWidget {
   const FocusSettingView();
@@ -19,13 +20,7 @@ class FocusSettingView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final provider = context.watch<FocusProvider>();
-    final rewardProvider = context.read<CollectibleProvider>();
     final tagProvider = context.watch<TagProvider>();
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    final focusWidgetW = screenWidth * 0.8;
-    final focusProgressRadiusFactor = AppConstants.kFocusProgressRadiusFactor;
-    final focusProgressThickness = AppConstants.kFocusProgressThickness;
 
     return Column(
       children: [
@@ -35,46 +30,8 @@ class FocusSettingView extends StatelessWidget {
             fontSize: 32,
           ),
         ),
-        Container(
-          width: focusWidgetW,
-          height: focusWidgetW,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: focusWidgetW * focusProgressRadiusFactor ,
-                height: focusWidgetW * focusProgressRadiusFactor,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.backgroundSecondary,
-                  border: Border.all(
-                    color: AppColors.secondary,
-                    width: focusWidgetW * focusProgressRadiusFactor * focusProgressThickness * 0.5,
-                  ),
-                ),
-              ),
-              provider.session.isCountdown ? FocusTimerWidget(
-                radiusFactor: focusProgressRadiusFactor,
-                thickness: focusProgressThickness,
-                initialMinutes: provider.userSetDuration.inMinutes,
-                minMinutes: AppConstants.minMinutes,
-                maxMinutes: AppConstants.maxMinutes,
-                step: AppConstants.step,
-                onChanged: provider.updateMinutes,
-              ) : const SizedBox.shrink(),
 
-              GestureDetector(
-                onTap: () async {
-                  FocusSetupSheet.show(context);
-                },
-                child: Image.asset(
-                  rewardProvider.getById(provider.currentCollectibleItemId).assetPath,
-                  width: 150,
-                ),
-              )
-            ],
-          ),
-        ),
+        FocusTimerImageW(),
 
         TagChip(
           tag: tagProvider.getById(provider.session.currentTagId)!,
@@ -91,7 +48,7 @@ class FocusSettingView extends StatelessWidget {
         ),
 
         FFButton(
-          onPressed: provider.start,
+          onPressed: provider.clkStart,
           text: "Start",
           width: 100,
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:provider/provider.dart';
 import 'focus_Provider.dart';
+import 'focus_timer_image_w.dart';
 
 class FocusFinishedView extends StatelessWidget {
   const FocusFinishedView();
@@ -18,21 +19,8 @@ class FocusFinishedView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
 
-        Image.asset(
-          rewardProvider.getById(provider.currentCollectibleItemId).assetPath,
-          width: 200,
-        ),
+        FocusTimerImageW(),
 
-        const SizedBox(height: 24),
-
-        const Text(
-          "Congratulations 🎉",
-        ),
-
-        ElevatedButton(
-          onPressed: provider.cancel,
-          child: const Text("Again"),
-        ),
       ],
     );
   }

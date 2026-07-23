@@ -2,22 +2,24 @@ import 'FocusState.dart';
 
 class FocusSession {
   final FocusState state;
+  final bool isCountdown;
+
   final Duration userSetDuration;
-  final Duration pausedRemaining;
-  final DateTime? startTime;
-  final DateTime? scheduleEndTime;
+  final Duration passedDuration; // 暂停时已经过了多长时间
+
+  final DateTime? endTime;
+
   final int? recordId;
   final int currentCollectibleItemId;
   final int currentTagId;
-  final bool isCountdown;
+
 
   const FocusSession({
     this.state = FocusState.setting,
     this.isCountdown = true,
     required this.userSetDuration,
-    this.pausedRemaining = Duration.zero,
-    this.startTime,
-    this.scheduleEndTime,
+    this.passedDuration = Duration.zero,
+    this.endTime,
     this.recordId,
     required this.currentCollectibleItemId,
     required this.currentTagId,
@@ -27,23 +29,21 @@ class FocusSession {
     FocusState? state,
     bool? isCountdown,
     Duration? userSetDuration,
-    Duration? pausedRemaining,
-    DateTime? startTime,
-    DateTime? scheduleEndTime,
+    Duration? passedDuration,
+    DateTime? endTime,
     int? recordId,
     int? currentCollectibleItemId,
     int? currentTagId,
     bool clearStartTime = false,
-    bool clearScheduleEndTime = false,
+    bool clearEndTime = false,
     bool clearCurrentRecordId = false,
   }) {
     return FocusSession(
       state: state ?? this.state,
       isCountdown: isCountdown ?? this.isCountdown,
       userSetDuration: userSetDuration ?? this.userSetDuration,
-      pausedRemaining: pausedRemaining ?? this.pausedRemaining,
-      startTime: clearStartTime ? null : (startTime ?? this.startTime),
-      scheduleEndTime: clearScheduleEndTime ? null : (scheduleEndTime ?? this.scheduleEndTime),
+      passedDuration: passedDuration ?? this.passedDuration,
+      endTime: clearEndTime ? null : (endTime ?? this.endTime),
       recordId: clearCurrentRecordId ? null : (recordId ?? this.recordId),
       currentCollectibleItemId: currentCollectibleItemId ?? this.currentCollectibleItemId,
       currentTagId: currentTagId ?? this.currentTagId,
@@ -55,9 +55,8 @@ class FocusSession {
       'state': state.name,
       'isCountdown':isCountdown,
       'userSetDuration': userSetDuration.inSeconds,
-      'pausedRemaining': pausedRemaining.inSeconds,
-      'startTime': startTime?.millisecondsSinceEpoch,
-      'scheduleEndTime': scheduleEndTime?.millisecondsSinceEpoch,
+      'passedDuration': passedDuration.inSeconds,
+      'endTime': endTime?.millisecondsSinceEpoch,
       'recordId': recordId,
       'currentCollectibleItemId': currentCollectibleItemId,
       'currentTagId': currentTagId,
@@ -71,22 +70,9 @@ class FocusSession {
         orElse: () => FocusState.setting,
       ),
       isCountdown: json['isCountdown'] as bool,
-      userSetDuration: Duration(
-        seconds: json['userSetDuration'] as int,
-      ),
-      pausedRemaining: Duration(
-        seconds: json['pausedRemaining'] as int,
-      ),
-      startTime: json['startTime'] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(
-        json['startTime'] as int,
-      ),
-      scheduleEndTime: json['scheduleEndTime'] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(
-        json['scheduleEndTime'] as int,
-      ),
+      userSetDuration: Duration(seconds: json['userSetDuration'] as int,),
+      passedDuration: Duration(seconds: json['passedDuration'] as int,),
+      endTime: json['endTime'] == null ? null : DateTime.fromMillisecondsSinceEpoch(json['endTime'] as int,),
       recordId: json['recordId'] as int?,
       currentCollectibleItemId: json['currentCollectibleItemId'] as int,
       currentTagId: json['currentTagId'] as int,

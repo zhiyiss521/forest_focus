@@ -32,16 +32,12 @@ class InventorySlot extends StatelessWidget {
           height: size,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: selected
-                ? AppColors.background.withOpacity(0.25)
-                : Colors.transparent,
+            color: selected ? AppColors.backgroundSecondary : Colors.transparent,
             borderRadius: BorderRadius.circular(AppSizes.radius),
           ),
           child: Stack(
             children: [
-              Center(
-                child: image,
-              ),
+              Center(child: image,),
               if (badge != null)
                 Positioned(
                   top: 0,

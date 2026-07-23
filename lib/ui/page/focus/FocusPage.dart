@@ -6,9 +6,9 @@ import 'package:forest_focus/ui/page/focus/FocusSettingView.dart';
 import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
 import '../../drawer/AppDrawer.dart';
-import 'FocusFinishedView.dart';
 import 'FocusRunningView.dart';
 import 'focus_Provider.dart';
+import 'focus_finished_view.dart';
 
 
 class FocusPage extends StatelessWidget {

@@ -8,6 +8,7 @@ import '../../../util/extension.dart';
 import '../../widget/ff_dialog.dart';
 import '../reward_picker/collectible_provider.dart';
 import 'focus_Provider.dart';
+import 'focus_timer_image_w.dart';
 
 class FocusRunningView extends StatelessWidget {
   const FocusRunningView();
@@ -23,14 +24,7 @@ class FocusRunningView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
 
-        AnimatedScale(
-          scale: 1.15,
-          duration: const Duration(milliseconds: 400),
-          child: Image.asset(
-            rewardProvider.getById(provider.currentCollectibleItemId).assetPath,
-            width: 200,
-          ),
-        ),
+        FocusTimerImageW(),
 
         const SizedBox(height: 24),
 
@@ -59,7 +53,7 @@ class FocusRunningView extends StatelessWidget {
                   confirmText: "放弃",
                   onConfirm: () async {
                     Navigator.of(context).pop();
-                    await provider.cancel();
+                    await provider.clkCancel();
                   },
                   onCancel: (){
                     Navigator.of(context).pop();
@@ -73,7 +67,7 @@ class FocusRunningView extends StatelessWidget {
 
             FFButton(
               text: provider.state == FocusState.running ? "Pause" : "Resume",
-              onPressed: provider.state == FocusState.running ? provider.pause : provider.resume,
+              onPressed: provider.state == FocusState.running ? provider.clkPause : provider.clkResume,
               width: 100,
             )
 

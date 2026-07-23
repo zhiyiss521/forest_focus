@@ -7,34 +7,18 @@ import '../../../model/focus_record.dart';
 import '../../../model/sta_range.dart';
 
 class StaProvider extends ChangeNotifier {
-  final _recordRepository = FocusRecordRepository.instance;
 
+  final _recordRepository = FocusRecordRepository.instance;
   final _collectibleRepository = CollectibleRepository.instance;
 
   bool loading = true;
-
   StaRange range = StaRange.week;
-
   DateTime selectedDate = DateTime.now();
 
   List<FocusRecord> currentRecords = [];
-
   List<CollectibleItem> rewards = [];
 
   int totalSeconds = 0;
-
-  int completedCount = 0;
-
-  int failedCount = 0;
-
-  int averageSeconds = 0;
-
-  double completionRate = 0;
-
-  int currentStreak = 0;
-
-  int bestStreak = 0;
-
   List<int> chartData = [];
 
   Future<void> load() async {
@@ -53,23 +37,16 @@ class StaProvider extends ChangeNotifier {
       end: _endDate,
     );
 
-    totalSeconds = await _recordRepository.getTotalFocusSeconds(
-      start:_startDate,
-      end:_endDate
-    );
+    // totalSeconds = await _recordRepository.getTotalFocusSeconds(
+    //   start:_startDate,
+    //   end:_endDate
+    // );
 
-    completedCount = await _recordRepository.getCompletedCount();
 
-    failedCount = await _recordRepository.getFailedCount();
-
-    averageSeconds = await _recordRepository.getAverageFocusSeconds();
-
-    completionRate = await _recordRepository.getCompletionRate();
-
-    chartData = await _recordRepository.getChartData(
-      range,
-      selectedDate,
-    );
+    // chartData = await _recordRepository.getChartData(
+    //   range,
+    //   selectedDate,
+    // );
 
     await _loadRewards();
   }

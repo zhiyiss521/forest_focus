@@ -234,7 +234,7 @@ class DurationSection extends StatelessWidget {
               label: Text("$minutes min"),
               selected: selected,
               onSelected: (_) {
-                provider.updateMinutes(minutes);
+                provider.changeTargetMinutes(minutes);
               },
             );
           },
@@ -367,7 +367,7 @@ class BottomSummary extends StatelessWidget {
             text: "Start",
             onPressed: (){
               Navigator.pop(context);
-              focusProvider.start();
+              focusProvider.clkStart();
             },
             width: 100,
           ),

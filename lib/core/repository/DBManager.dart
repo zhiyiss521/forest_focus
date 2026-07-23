@@ -50,10 +50,9 @@ class DBManager {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         is_countdown INTEGER NOT NULL,
         start_time INTEGER NOT NULL,
-        end_time INTEGER NOT NULL,
-        target_seconds INTEGER NOT NULL,
+        end_time INTEGER,
+        target_seconds INTEGER,
         actual_seconds INTEGER NOT NULL,
-        completed INTEGER NOT NULL,
         collectible_item_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
         created_at INTEGER NOT NULL

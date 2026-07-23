@@ -7,6 +7,7 @@ import 'package:forest_focus/util/extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/repository/focus_record_repository.dart';
+import '../../../core/service/notification_service.dart';
 import '../../../model/FocusState.dart';
 import '../../../model/focus_record.dart';
 import '../../../model/focus_session.dart';
@@ -24,7 +25,7 @@ class FocusProvider extends ChangeNotifier {
 
   Future<void> load() async  {
     await loadSession();
-    await checkPageState();
+    await updateState();
     await loadTotalMinute();
 
     startTimer();
@@ -46,38 +47,71 @@ class FocusProvider extends ChangeNotifier {
           return;
         }
 
-        await checkPageState();
+        await updateState();
 
         notifyListeners();
       },
     );
   }
 
-  Future<void> checkPageState() async {
+  Future<void> updateState() async {
     if (!isRunning) return;
 
-    if (isCountdown) {
-      if (session.scheduleEndTime == null) return;
+    await NotificationService.instance.showRunningNotification(
+      title: '🌱 正在专注',
+      body: displayDuration.mmss,
+    );
 
-      if (DateTime.now().isAfter(session.scheduleEndTime!)) {
-        await finish();
-      }
-    } else {
-      if (session.startTime == null) return;
-
-      final passed = DateTime.now().difference(session.startTime!);
-      if (passed >= const Duration(minutes: AppConstants.maxMinutes)) {
-        await finish();
-      }
+    if (remaining <= Duration.zero) {
+      await enterFinishState();
     }
   }
+
+  // 这个是在轮训中由程序决定的状态变化
+  Future<void> enterFinishState() async {
+    if (isFinished) {
+      return;
+    }
+
+    if (session.recordId != null) {
+      final record = await FocusRecordRepository.instance.findById(session.recordId!);
+
+      if (record != null) {
+        record.endTime = DateTime.now();
+        record.actualSeconds = isCountdown
+            ? session.userSetDuration.inSeconds
+            : Duration(minutes: AppConstants.maxCountUpMinutes).inSeconds;
+        await FocusRecordRepository.instance.update(record);
+      }
+    }
+
+    session = session.copyWith(
+      state: FocusState.finished,
+      passedDuration: Duration.zero,
+      clearStartTime: true,
+      clearEndTime: true,
+      clearCurrentRecordId: true,
+    );
+
+    await clearSession();
+    await loadTotalMinute();
+
+    await NotificationService.instance.showRunningNotification(
+      title: '恭喜完成了专注',
+      body: "",
+    );
+    await NotificationService.instance.cancelCompletedNotification();
+
+    notifyListeners();
+  }
+
 }
 
 extension FocusProviderSession on FocusProvider{
 
   Future<void> loadTotalMinute() async {
-    final totalSeconds = await FocusRecordRepository.instance.getTotalFocusSeconds();
-    totalMinute = totalSeconds.focusDuration;
+    // final totalSeconds = await FocusRecordRepository.instance.getTotalFocusSeconds();
+    // totalMinute = totalSeconds.focusDuration;
     notifyListeners();
   }
 
@@ -121,41 +155,25 @@ extension FocusProviderSession on FocusProvider{
 
 extension FocusProviderGetter on FocusProvider{
 
-  // 还剩下多少时间
+  Duration get totalDuration => isCountdown
+      ? session.userSetDuration
+      : Duration(minutes: AppConstants.maxCountUpMinutes);
+
+  // 倒计时还剩下多少时间
   Duration get remaining {
-    if (!isCountdown) {
-      return Duration.zero;
-    }
     if (isPaused) {
-      return session.pausedRemaining;
+      return totalDuration - session.passedDuration;
     }
-    if (session.scheduleEndTime == null) {
-      return Duration.zero;
-    }
-    final diff = session.scheduleEndTime!.difference(DateTime.now());
+
+    if (session.endTime == null) return Duration.zero;
+
+    final diff = session.endTime!.difference(DateTime.now());
 
     return diff.isNegative ? Duration.zero : diff;
   }
 
-  // 已经过去多少时间
-  Duration get elapsed {
-    if (session.startTime == null) {
-      return Duration.zero;
-    }
-    if (isPaused) {
-      return session.pausedRemaining;
-    }
-    final duration = DateTime.now().difference(
-      session.startTime!,
-    );
-
-    return duration > Duration(minutes:AppConstants.maxMinutes)
-        ? Duration(minutes: AppConstants.maxMinutes)
-        : duration;
-  }
-
   Duration get displayDuration {
-    return isCountdown ? remaining : elapsed;
+    return isCountdown ? remaining : totalDuration - remaining;
   }
 
   double get progress {
@@ -192,7 +210,7 @@ extension FocusProviderGetter on FocusProvider{
 
 extension FocusProviderAction on FocusProvider {
 
-  Future<void> updateMinutes(int minutes) async {
+  Future<void> changeTargetMinutes(int minutes) async {
     session = session.copyWith(userSetDuration: Duration(minutes: minutes));
     await saveSession();
     notifyListeners();
@@ -216,24 +234,26 @@ extension FocusProviderAction on FocusProvider {
     notifyListeners();
   }
 
-  Future<void> start() async {
+  Future<void> clkStart() async {
     final now = DateTime.now();
+
+    final endTime = isCountdown ?
+      now.add(session.userSetDuration) :
+      now.add(const Duration(minutes: AppConstants.maxCountUpMinutes));
 
     session = session.copyWith(
       state: FocusState.running,
-      pausedRemaining: Duration.zero,
-      startTime: now,
-      scheduleEndTime: isCountdown ? now.add(session.userSetDuration) : null,
+      endTime:endTime,
+      passedDuration: Duration.zero,
       clearCurrentRecordId: true,
     );
 
     final record = FocusRecord(
       isCountdown: isCountdown,
       startTime: now,
-      endTime: isCountdown ? now.add(session.userSetDuration) : now,
-      targetSeconds: isCountdown ? session.userSetDuration.inSeconds : 0,
+      endTime: null,
+      targetSeconds: isCountdown ? session.userSetDuration.inSeconds : null,
       actualSeconds: 0,
-      completed: false,
       collectibleItemId: session.currentCollectibleItemId,
       tagId: session.currentTagId,
       createdAt: now,
@@ -244,90 +264,80 @@ extension FocusProviderAction on FocusProvider {
     session = session.copyWith(recordId: id);
 
     await saveSession();
+
+    await NotificationService.instance.showRunningNotification(
+      title: '🌱 正在专注',
+      body: displayDuration.mmss,
+    );
+
+    await NotificationService.instance.scheduleCompletedNotification(
+      dateTime: endTime,
+    );
+
     notifyListeners();
   }
 
-  Future<void> pause() async {
+  Future<void> clkPause() async {
     session = session.copyWith(
       state: FocusState.paused,
-      pausedRemaining: isCountdown ? remaining : elapsed,
+      passedDuration: totalDuration - remaining,
+      clearEndTime: true
     );
 
     await saveSession();
+    await NotificationService.instance.cancelRunningNotification();
+    await NotificationService.instance.cancelCompletedNotification();
     notifyListeners();
   }
 
-  Future<void> resume() async {
+  Future<void> clkResume() async {
     final now = DateTime.now();
+
+    // 还剩下多少时间
+    final remaining = totalDuration - session.passedDuration;
+
+    final scheduleEndTime = now.add(remaining);
 
     session = session.copyWith(
       state: FocusState.running,
-      startTime: isCountdown ? session.startTime : now.subtract(session.pausedRemaining),
-      scheduleEndTime: isCountdown ? now.add(session.pausedRemaining) : null,
-      pausedRemaining: Duration.zero,
+      endTime: scheduleEndTime,
+      passedDuration: Duration.zero,
     );
 
     await saveSession();
+    await NotificationService.instance.showRunningNotification(
+      title: '🌱 正在专注',
+      body: displayDuration.mmss,
+    );
+    await NotificationService.instance.scheduleCompletedNotification(
+      dateTime: scheduleEndTime,
+    );
     notifyListeners();
   }
 
-  Future<void> cancel() async {
+  Future<void> clkCancel() async {
     if (session.recordId != null) {
       final record = await FocusRecordRepository.instance.findById(session.recordId!);
 
       if (record != null) {
         record.endTime = DateTime.now();
-        record.actualSeconds = isCountdown
-            ? session.userSetDuration.inSeconds - remaining.inSeconds
-            : elapsed.inSeconds;
-        record.completed = false;
-
+        record.actualSeconds = (totalDuration - remaining).inSeconds;
         await FocusRecordRepository.instance.update(record);
       }
     }
 
     session = session.copyWith(
       state: FocusState.setting,
-      pausedRemaining: Duration.zero,
+      passedDuration: Duration.zero,
       clearStartTime: true,
-      clearScheduleEndTime: true,
+      clearEndTime: true,
       clearCurrentRecordId: true,
     );
 
     await clearSession();
+    await NotificationService.instance.cancelRunningNotification();
+    await NotificationService.instance.cancelCompletedNotification();
     notifyListeners();
   }
 
-  Future<void> finish() async {
-    if (isFinished) {
-      return;
-    }
-
-    if (session.recordId != null) {
-      final record = await FocusRecordRepository.instance.findById(session.recordId!);
-
-      if (record != null) {
-        record.endTime = DateTime.now();
-        record.actualSeconds = isCountdown
-            ? session.userSetDuration.inSeconds
-            : elapsed.inSeconds;
-        record.completed = true;
-
-        await FocusRecordRepository.instance.update(record);
-      }
-    }
-
-    session = session.copyWith(
-      state: FocusState.finished,
-      pausedRemaining: Duration.zero,
-      clearStartTime: true,
-      clearScheduleEndTime: true,
-      clearCurrentRecordId: true,
-    );
-
-    await clearSession();
-    await loadTotalMinute();
-
-    notifyListeners();
-  }
 }

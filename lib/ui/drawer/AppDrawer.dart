@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/ui/page/tag/tag_manage_page.dart';
+import '../../core/service/notification_service.dart';
 import '../page/sta/sta_page.dart';
 import '../page/timeline/timeline_page.dart';
 
@@ -60,6 +61,9 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
+            onTap: () async{
+
+            },
           ),
         ],
       ),
