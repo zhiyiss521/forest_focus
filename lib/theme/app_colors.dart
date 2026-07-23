@@ -4,6 +4,7 @@ class AppColors {
   AppColors._();
 
   static const background = Color(0xFFE8F3D6); // 草地浅绿
+  static const backgroundSecondary = Color(0xFFD4E9BB);
 
   static const primary = Color(0xFF7CB342);    // 森林绿，主按钮/核心操作
   static const secondary = Color(0xFFC89A63);  // 木色，辅助元素

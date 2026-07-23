@@ -72,7 +72,7 @@ class _CategoryChip extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: selected
-                ? AppColors.secondary.withValues(alpha: 0.18)
+                ? AppColors.secondary
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(999),
           ),
@@ -83,9 +83,7 @@ class _CategoryChip extends StatelessWidget {
                 fontSize: 14,
                 fontWeight:
                 selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.background
-                    : AppColors.background,
+                color: AppColors.textDark,
               ),
             ),
           ),

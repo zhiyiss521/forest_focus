@@ -7,12 +7,8 @@ class InventoryGrid extends StatelessWidget {
     super.key,
     required this.itemCount,
     required this.itemBuilder,
-    /// 滚动方向
     this.scrollDirection = Axis.vertical,
-    /// 竖向滚动：每行几个
-    /// 横向滚动：每列几个
     this.crossAxisCount = 4,
-    /// width / height
     this.childAspectRatio = 1.0,
     this.spacing = 0,
     this.physics,

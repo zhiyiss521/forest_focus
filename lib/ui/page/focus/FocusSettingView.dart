@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
 import '../../../util/extension.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
@@ -45,9 +46,9 @@ class FocusSettingView extends StatelessWidget {
                 height: focusWidgetW * focusProgressRadiusFactor,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.red,
+                  color: AppColors.backgroundSecondary,
                   border: Border.all(
-                    color: Colors.black,
+                    color: AppColors.secondary,
                     width: focusWidgetW * focusProgressRadiusFactor * focusProgressThickness * 0.5,
                   ),
                 ),

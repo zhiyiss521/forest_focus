@@ -13,19 +13,10 @@ class InventorySlot extends StatelessWidget {
     this.badge,
   });
 
-  /// 图片
   final Widget image;
-
-  /// 是否选中
   final bool selected;
-
-  /// 点击
   final VoidCallback? onTap;
-
-  /// 格子尺寸
   final double size;
-
-  /// 角标
   final Widget? badge;
 
   @override

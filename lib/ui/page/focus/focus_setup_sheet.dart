@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../model/collectible_item.dart';
 import '../../../model/tag.dart';
+import '../../../theme/app_colors.dart';
 import '../../../util/extension.dart';
 import '../../widget/inventory_grid.dart';
 import '../../widget/inventory_slot.dart';
@@ -36,7 +37,7 @@ class FocusSetupSheet extends StatelessWidget {
         maxHeight: size.height * 0.8,
       ),
       decoration: const BoxDecoration(
-        color: Color(0xFFF6F0E3),
+        color: AppColors.background,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(28),
         ),
@@ -298,7 +299,7 @@ class BottomSummary extends StatelessWidget {
                 height: 64,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0xFFDDECCB),
+                  color: AppColors.backgroundSecondary,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8),

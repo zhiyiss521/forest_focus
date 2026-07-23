@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/theme/app_colors.dart';
+import 'package:forest_focus/theme/app_size.dart';
 import 'package:forest_focus/ui/page/focus/FocusSettingView.dart';
 import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
@@ -17,23 +19,41 @@ class FocusPage extends StatelessWidget {
     return Consumer<FocusProvider>(
         builder: (context, provider, child) {
           return Scaffold(
+            backgroundColor: AppColors.background,
             extendBody: true,
             extendBodyBehindAppBar: true,
             drawer: const AppDrawer(),
             appBar: provider.state == FocusState.setting ? AppBar(
               elevation: 0,
               centerTitle: true,
+              backgroundColor: Colors.transparent,
               title: SegmentedButton<bool>(
+                showSelectedIcon: false,
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return AppColors.primary;
+                    }
+                    return AppColors.backgroundSecondary;
+                  }),
+                  foregroundColor: WidgetStateProperty.resolveWith((states) {
+                    return AppColors.textLight;
+                  }),
+                  side: WidgetStateProperty.all(BorderSide.none),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.buttonCornerRadius),
+                    ),
+                  ),
+                ),
                 segments: const [
                   ButtonSegment(
                     value: true,
-                    label: Text('倒计时'),
-                    icon: Icon(Icons.timer),
+                    icon: Icon(Icons.hourglass_top),
                   ),
                   ButtonSegment(
                     value: false,
-                    label: Text('正计时'),
-                    icon: Icon(Icons.hourglass_top),
+                    icon: Icon(Icons.timer),
                   ),
                 ],
                 selected: {provider.session.isCountdown},
