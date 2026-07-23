@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -37,13 +38,11 @@ class NotificationService {
   }
 
   Future<void> initAndroid() async {
-    final android = plugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-
+    final android = plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     if (android == null) return;
 
     await android.requestNotificationsPermission();
+    await android.requestExactAlarmsPermission();
 
     const channel = AndroidNotificationChannel(
       kFocusRunningChannelId,
@@ -108,6 +107,10 @@ class NotificationService {
 
 
   Future<void> scheduleCompletedNotification({required DateTime dateTime,}) async {
+    final android = plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    final canExact = await android?.canScheduleExactNotifications() ?? false;
+    final mode = canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle;
+
     const androidDetails = AndroidNotificationDetails(
       kFocusCompletedChannelId,
       kFocusCompletedChannelName,
@@ -120,15 +123,20 @@ class NotificationService {
       android: androidDetails,
     );
 
-    await plugin.zonedSchedule(
-      kFocusCompletedNotificationId,
-      '🎉 专注完成',
-      '你的专注已经结束!',
-      tz.TZDateTime.from(dateTime, tz.local),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      payload: 'focus_completed',
-    );
+    try {
+      await plugin.zonedSchedule(
+        kFocusCompletedNotificationId,
+        '🎉 专注完成',
+        '你的专注已经结束!',
+        tz.TZDateTime.from(dateTime, tz.local),
+        details,
+        androidScheduleMode: mode,
+        payload: 'focus_completed',
+      );
+    }catch(e){
+      debugPrint('schedule notification failed: $e');
+    }
+
   }
 
   Future<void> cancelCompletedNotification() async {

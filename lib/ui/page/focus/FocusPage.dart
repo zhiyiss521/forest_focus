@@ -6,9 +6,7 @@ import 'package:forest_focus/ui/page/focus/FocusSettingView.dart';
 import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
 import '../../drawer/AppDrawer.dart';
-import 'FocusRunningView.dart';
 import 'focus_Provider.dart';
-import 'focus_finished_view.dart';
 
 
 class FocusPage extends StatelessWidget {
@@ -73,11 +71,7 @@ class FocusPage extends StatelessWidget {
                       ),
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 400),
-                        child: switch (provider.state) {
-                          FocusState.setting => const FocusSettingView(),
-                          FocusState.running || FocusState.paused => const FocusRunningView(),
-                          FocusState.finished => const FocusFinishedView(),
-                        },
+                        child: const FocusSettingView(),
                       ),
                     ),
                   );

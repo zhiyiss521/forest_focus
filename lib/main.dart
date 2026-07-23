@@ -24,6 +24,7 @@ Future<void> main() async{
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
+
   // 通知
   await NotificationService.instance.init();
 

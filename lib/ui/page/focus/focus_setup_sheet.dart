@@ -219,7 +219,7 @@ class DurationSection extends StatelessWidget {
         );
 
         if(!provider.isCountdown){
-          return Text("计时上线${AppConstants.maxMinutes}分钟");
+          return Text("超过${AppConstants.minMinutes}给于奖励，正计时上限${AppConstants.maxCountUpMinutes}分钟，超过不再计时");
         }
 
         return ListView.separated(
