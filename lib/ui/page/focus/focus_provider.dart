@@ -43,6 +43,8 @@ class FocusProvider extends ChangeNotifier {
 
     ticker = Timer.periodic(
       const Duration(seconds: 1), (_) async {
+        print("当前的状态:${session.state}");
+
         if (!isRunning) {
           return;
         }
@@ -87,13 +89,14 @@ class FocusProvider extends ChangeNotifier {
 
     session = session.copyWith(
       state: FocusState.finished,
-      passedDuration: Duration.zero,
+      pausePassedDuration: Duration.zero,
       clearStartTime: true,
       clearEndTime: true,
       clearCurrentRecordId: true,
     );
 
-    await clearSession();
+    await saveSession();
+
     await loadTotalMinute();
 
     await NotificationService.instance.showRunningNotification(
@@ -144,13 +147,6 @@ extension FocusProviderSession on FocusProvider{
     );
   }
 
-  Future<void> clearSession() async {
-    final sp = await SharedPreferences.getInstance();
-
-    await sp.remove(
-      FocusProvider.sessionKey,
-    );
-  }
 }
 
 extension FocusProviderGetter on FocusProvider{
@@ -162,7 +158,7 @@ extension FocusProviderGetter on FocusProvider{
   // 倒计时还剩下多少时间
   Duration get remaining {
     if (isPaused) {
-      return totalDuration - session.passedDuration;
+      return totalDuration - session.pausePassedDuration;
     }
 
     if (session.endTime == null) return Duration.zero;
@@ -172,8 +168,16 @@ extension FocusProviderGetter on FocusProvider{
     return diff.isNegative ? Duration.zero : diff;
   }
 
+  Duration get passedDuration {
+    return totalDuration - remaining;
+  }
+
   Duration get displayDuration {
-    return isCountdown ? remaining : totalDuration - remaining;
+    if(isSetting){
+      return isCountdown ? session.userSetDuration : Duration.zero;
+    }else{
+      return isCountdown ? remaining : totalDuration - remaining;
+    }
   }
 
   double get progress {
@@ -244,7 +248,7 @@ extension FocusProviderAction on FocusProvider {
     session = session.copyWith(
       state: FocusState.running,
       endTime:endTime,
-      passedDuration: Duration.zero,
+      pausePassedDuration: Duration.zero,
       clearCurrentRecordId: true,
     );
 
@@ -280,7 +284,7 @@ extension FocusProviderAction on FocusProvider {
   Future<void> clkPause() async {
     session = session.copyWith(
       state: FocusState.paused,
-      passedDuration: totalDuration - remaining,
+      pausePassedDuration: totalDuration - remaining,
       clearEndTime: true
     );
 
@@ -294,14 +298,14 @@ extension FocusProviderAction on FocusProvider {
     final now = DateTime.now();
 
     // 还剩下多少时间
-    final remaining = totalDuration - session.passedDuration;
+    final remaining = totalDuration - session.pausePassedDuration;
 
     final scheduleEndTime = now.add(remaining);
 
     session = session.copyWith(
       state: FocusState.running,
       endTime: scheduleEndTime,
-      passedDuration: Duration.zero,
+      pausePassedDuration: Duration.zero,
     );
 
     await saveSession();
@@ -315,6 +319,7 @@ extension FocusProviderAction on FocusProvider {
     notifyListeners();
   }
 
+  // 点击取消
   Future<void> clkCancel() async {
     if (session.recordId != null) {
       final record = await FocusRecordRepository.instance.findById(session.recordId!);
@@ -328,15 +333,17 @@ extension FocusProviderAction on FocusProvider {
 
     session = session.copyWith(
       state: FocusState.setting,
-      passedDuration: Duration.zero,
+      pausePassedDuration: Duration.zero,
       clearStartTime: true,
       clearEndTime: true,
       clearCurrentRecordId: true,
     );
 
-    await clearSession();
+    await saveSession();
+
     await NotificationService.instance.cancelRunningNotification();
     await NotificationService.instance.cancelCompletedNotification();
+
     notifyListeners();
   }
 

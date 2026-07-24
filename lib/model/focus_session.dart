@@ -5,7 +5,7 @@ class FocusSession {
   final bool isCountdown;
 
   final Duration userSetDuration;
-  final Duration passedDuration; // 暂停时已经过了多长时间
+  final Duration pausePassedDuration; // 暂停时已经过了多长时间
 
   final DateTime? endTime;
 
@@ -18,7 +18,7 @@ class FocusSession {
     this.state = FocusState.setting,
     this.isCountdown = true,
     required this.userSetDuration,
-    this.passedDuration = Duration.zero,
+    this.pausePassedDuration = Duration.zero,
     this.endTime,
     this.recordId,
     required this.currentCollectibleItemId,
@@ -29,7 +29,7 @@ class FocusSession {
     FocusState? state,
     bool? isCountdown,
     Duration? userSetDuration,
-    Duration? passedDuration,
+    Duration? pausePassedDuration,
     DateTime? endTime,
     int? recordId,
     int? currentCollectibleItemId,
@@ -42,7 +42,7 @@ class FocusSession {
       state: state ?? this.state,
       isCountdown: isCountdown ?? this.isCountdown,
       userSetDuration: userSetDuration ?? this.userSetDuration,
-      passedDuration: passedDuration ?? this.passedDuration,
+      pausePassedDuration: pausePassedDuration ?? this.pausePassedDuration,
       endTime: clearEndTime ? null : (endTime ?? this.endTime),
       recordId: clearCurrentRecordId ? null : (recordId ?? this.recordId),
       currentCollectibleItemId: currentCollectibleItemId ?? this.currentCollectibleItemId,
@@ -55,7 +55,7 @@ class FocusSession {
       'state': state.name,
       'isCountdown':isCountdown,
       'userSetDuration': userSetDuration.inSeconds,
-      'passedDuration': passedDuration.inSeconds,
+      'pausePassedDuration': pausePassedDuration.inSeconds,
       'endTime': endTime?.millisecondsSinceEpoch,
       'recordId': recordId,
       'currentCollectibleItemId': currentCollectibleItemId,
@@ -71,7 +71,7 @@ class FocusSession {
       ),
       isCountdown: json['isCountdown'] as bool,
       userSetDuration: Duration(seconds: json['userSetDuration'] as int,),
-      passedDuration: Duration(seconds: json['passedDuration'] as int,),
+      pausePassedDuration: Duration(seconds: json['pausePassedDuration'] as int,),
       endTime: json['endTime'] == null ? null : DateTime.fromMillisecondsSinceEpoch(json['endTime'] as int,),
       recordId: json['recordId'] as int?,
       currentCollectibleItemId: json['currentCollectibleItemId'] as int,

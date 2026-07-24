@@ -34,19 +34,38 @@ class FocusSettingView extends StatelessWidget {
 
         FocusTimerImageW(),
 
-        TagChip(
-          tag: tagProvider.getById(provider.session.currentTagId)!,
-          onTap: (){
-            FocusSetupSheet.show(context);
-          },
-        ),
-
-        Text(
-          provider.isCountdown ? provider.userSetDuration.mmss : Duration.zero.mmss,
-          style: const TextStyle(
-            fontSize: 64,
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.backgroundSecondary,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TagChip(
+                tag: tagProvider.getById(provider.session.currentTagId)!,
+                onTap: (){
+                  FocusSetupSheet.show(context);
+                },
+              ),
+              if (!provider.isSetting)
+                const Icon(
+                  Icons.edit,
+                  size: 18,
+                  color: AppColors.textLight,
+                ),
+            ],
           ),
         ),
+
+        if (!provider.isFinished)
+          Text(
+            provider.displayDuration.mmss,
+            style: const TextStyle(
+              fontSize: 64,
+            ),
+          ),
 
         if(provider.isSetting)
           FFButton(
@@ -56,7 +75,7 @@ class FocusSettingView extends StatelessWidget {
           ),
 
 
-        if(provider.isRunning)
+        if(provider.isRunning || provider.isPaused)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
