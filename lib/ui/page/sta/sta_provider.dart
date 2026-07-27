@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../core/repository/collectible_repository.dart';
 import '../../../core/repository/focus_record_repository.dart';
 import '../../../model/collectible_item.dart';
@@ -7,250 +6,352 @@ import '../../../model/focus_record.dart';
 import '../../../model/sta_range.dart';
 
 class StaProvider extends ChangeNotifier {
-
   final _recordRepository = FocusRecordRepository.instance;
   final _collectibleRepository = CollectibleRepository.instance;
 
   bool loading = true;
-  StaRange range = StaRange.week;
-  DateTime selectedDate = DateTime.now();
 
-  List<FocusRecord> currentRecords = [];
+  StaRange currentRange = StaRange.week;
+  DateTime currentDate = DateTime.now();
+
+  List<FocusRecord> records = [];
   List<CollectibleItem> rewards = [];
 
   int totalSeconds = 0;
+
   List<int> chartData = [];
+  List<String> chartLabels = [];
 
   Future<void> load() async {
     loading = true;
     notifyListeners();
-
-    await reloadData();
-
+    await loadData();
     loading = false;
     notifyListeners();
   }
 
-  Future<void> reloadData() async {
-    currentRecords = await _recordRepository.findByDateRange(
-      start: _startDate,
-      end: _endDate,
+  Future<void> loadData() async {
+    records = await _recordRepository.findByDateRange(
+      start: startDate,
+      end: endDate,
     );
 
-    // totalSeconds = await _recordRepository.getTotalFocusSeconds(
-    //   start:_startDate,
-    //   end:_endDate
-    // );
-
-
-    // chartData = await _recordRepository.getChartData(
-    //   range,
-    //   selectedDate,
-    // );
-
+    _buildStatistics();
     await _loadRewards();
   }
 
-  Future<void> changeRange( StaRange value,) async {
-    if (range == value) {
-      return;
-    }
+  void _buildStatistics() {
+    totalSeconds = records.fold(
+      0, (sum, item) => sum + item.actualSeconds,
+    );
 
-    range = value;
-
-    loading = true;
-    notifyListeners();
-
-    await reloadData();
-
-    loading = false;
-    notifyListeners();
+    chartData = _buildChartData();
+    chartLabels = _buildChartLabels();
   }
 
-  Future<void> previous() async {
-    switch (range) {
-      case StaRange.day:
-        selectedDate = selectedDate.subtract(
-          const Duration(days: 1),
-        );
-        break;
-
-      case StaRange.week:
-        selectedDate = selectedDate.subtract(
-          const Duration(days: 7),
-        );
-        break;
-
-      case StaRange.month:
-        selectedDate = DateTime(
-          selectedDate.year,
-          selectedDate.month - 1,
-          1,
-        );
-        break;
-
-      case StaRange.year:
-        selectedDate = DateTime(
-          selectedDate.year - 1,
-          1,
-          1,
-        );
-        break;
-    }
-
+  Future<void> _refresh() async {
     loading = true;
     notifyListeners();
 
-    await reloadData();
-
-    loading = false;
-    notifyListeners();
-  }
-
-  Future<void> next() async {
-    switch (range) {
-      case StaRange.day:
-        selectedDate = selectedDate.add(
-          const Duration(days: 1),
-        );
-        break;
-
-      case StaRange.week:
-        selectedDate = selectedDate.add(
-          const Duration(days: 7),
-        );
-        break;
-
-      case StaRange.month:
-        selectedDate = DateTime(
-          selectedDate.year,
-          selectedDate.month + 1,
-          1,
-        );
-        break;
-
-      case StaRange.year:
-        selectedDate = DateTime(
-          selectedDate.year + 1,
-          1,
-          1,
-        );
-        break;
-    }
-
-    loading = true;
-    notifyListeners();
-
-    await reloadData();
+    await loadData();
 
     loading = false;
     notifyListeners();
   }
 
   Future<void> _loadRewards() async {
-    rewards.clear();
-
-    final ids = currentRecords
+    final ids = records
         .map((e) => e.collectibleItemId)
-        .whereType<int>();
+        .whereType<int>()
+        .toSet();
 
-    rewards.addAll(
-      await _collectibleRepository.findByIds(ids),
+    rewards = await _collectibleRepository.findByIds(ids);
+  }
+
+  List<int> _buildChartData() {
+    switch (currentRange) {
+      case StaRange.day:
+        return List.generate(
+          24,
+              (index) {
+            return _secondsOf(
+              records.where(
+                    (e) => e.startTime.hour == index,
+              ),
+            );
+          },
+        );
+
+      case StaRange.week:
+        return List.generate(
+          7,
+              (index) {
+            return _secondsOf(
+              records.where(
+                    (e) => e.startTime.weekday == index + 1,
+              ),
+            );
+          },
+        );
+
+      case StaRange.month:
+        final days = DateTime(
+          currentDate.year,
+          currentDate.month + 1,
+          0,
+        ).day;
+
+        return List.generate(
+          days,
+              (index) {
+            return _secondsOf(
+              records.where(
+                    (e) =>
+                e.startTime.day == index + 1,
+              ),
+            );
+          },
+        );
+
+      case StaRange.year:
+        return List.generate(
+          12,
+              (index) {
+            return _secondsOf(
+              records.where(
+                    (e) =>
+                e.startTime.month == index + 1,
+              ),
+            );
+          },
+        );
+    }
+  }
+
+  int _secondsOf(Iterable<FocusRecord> list) {
+    return list.fold(
+      0,
+          (sum, item) => sum + item.actualSeconds,
     );
   }
 
-  DateTime get _startDate {
-    switch (range) {
+  List<String> _buildChartLabels() {
+    switch (currentRange) {
+      case StaRange.day:
+        return List.generate(
+          24,
+              (i) => "${i.toString().padLeft(2, '0')}:00",
+        );
+
+      case StaRange.week:
+        return const [
+          "M",
+          "T",
+          "W",
+          "T",
+          "F",
+          "S",
+          "S",
+        ];
+
+      case StaRange.month:
+        final days = DateTime(
+          currentDate.year,
+          currentDate.month + 1,
+          0,
+        ).day;
+
+        return List.generate(
+          days,
+              (i) => "${i + 1}",
+        );
+
+      case StaRange.year:
+        return const [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+    }
+  }
+
+  String _two(int value) {
+    return value.toString().padLeft(2, '0');
+  }
+}
+
+extension Func on StaProvider{
+  Future<void> changeRange(StaRange value) async {
+    if (currentRange == value) {
+      return;
+    }
+
+    currentRange = value;
+
+    await _refresh();
+  }
+
+  Future<void> previous() async {
+    switch (currentRange) {
+      case StaRange.day:
+        currentDate = currentDate.subtract(
+          const Duration(days: 1),
+        );
+        break;
+
+      case StaRange.week:
+        currentDate = currentDate.subtract(
+          const Duration(days: 7),
+        );
+        break;
+
+      case StaRange.month:
+        currentDate = DateTime(
+          currentDate.year,
+          currentDate.month - 1,
+          1,
+        );
+        break;
+
+      case StaRange.year:
+        currentDate = DateTime(
+          currentDate.year - 1,
+          1,
+          1,
+        );
+        break;
+    }
+
+    await _refresh();
+  }
+
+  Future<void> next() async {
+    switch (currentRange) {
+      case StaRange.day:
+        currentDate = currentDate.add(
+          const Duration(days: 1),
+        );
+        break;
+
+      case StaRange.week:
+        currentDate = currentDate.add(
+          const Duration(days: 7),
+        );
+        break;
+
+      case StaRange.month:
+        currentDate = DateTime(
+          currentDate.year,
+          currentDate.month + 1,
+          1,
+        );
+        break;
+
+      case StaRange.year:
+        currentDate = DateTime(
+          currentDate.year + 1,
+          1,
+          1,
+        );
+        break;
+    }
+
+    await _refresh();
+  }
+}
+
+extension Get on StaProvider{
+
+  DateTime get startDate {
+    switch (currentRange) {
       case StaRange.day:
         return DateTime(
-          selectedDate.year,
-          selectedDate.month,
-          selectedDate.day,
+          currentDate.year,
+          currentDate.month,
+          currentDate.day,
         );
 
       case StaRange.week:
         final day = DateTime(
-          selectedDate.year,
-          selectedDate.month,
-          selectedDate.day,
+          currentDate.year,
+          currentDate.month,
+          currentDate.day,
         );
+
         return day.subtract(
           Duration(days: day.weekday - 1),
         );
 
       case StaRange.month:
         return DateTime(
-          selectedDate.year,
-          selectedDate.month,
+          currentDate.year,
+          currentDate.month,
           1,
         );
 
       case StaRange.year:
         return DateTime(
-          selectedDate.year,
+          currentDate.year,
           1,
           1,
         );
     }
   }
 
-  DateTime get _endDate {
-    switch (range) {
+  DateTime get endDate {
+    switch (currentRange) {
       case StaRange.day:
-        return _startDate.add(const Duration(days: 1));
+        return startDate.add(
+          const Duration(days: 1),
+        );
 
       case StaRange.week:
-        return _startDate.add(const Duration(days: 7));
+        return startDate.add(
+          const Duration(days: 7),
+        );
 
       case StaRange.month:
         return DateTime(
-          selectedDate.year,
-          selectedDate.month + 1,
+          currentDate.year,
+          currentDate.month + 1,
           1,
         );
 
       case StaRange.year:
         return DateTime(
-          selectedDate.year + 1,
+          currentDate.year + 1,
           1,
           1,
         );
-    }
-  }
-
-  String get rangeTitle {
-    switch (range) {
-      case StaRange.day:
-        return "Day";
-      case StaRange.week:
-        return "Week";
-      case StaRange.month:
-        return "Month";
-      case StaRange.year:
-        return "Year";
     }
   }
 
   String get dateTitle {
-    switch (range) {
+    switch (currentRange) {
       case StaRange.day:
-        return "${selectedDate.year}-${_two(selectedDate.month)}-${_two(selectedDate.day)}";
+        return "${currentDate.year}-${_two(currentDate.month)}-${_two(currentDate.day)}";
 
       case StaRange.week:
-        final start = _startDate;
-        final end = _endDate.subtract(const Duration(days: 1));
+        final end = endDate.subtract(
+          const Duration(days: 1),
+        );
 
-        return "${_two(start.month)}/${_two(start.day)} - ${_two(end.month)}/${_two(end.day)}";
+        return "${_two(startDate.month)}/${_two(startDate.day)} - ${_two(end.month)}/${_two(end.day)}";
 
       case StaRange.month:
-        return "${selectedDate.year}-${_two(selectedDate.month)}";
+        return "${currentDate.year}-${_two(currentDate.month)}";
 
       case StaRange.year:
-        return "${selectedDate.year}";
+        return "${currentDate.year}";
     }
-  }
-
-  String _two(int value) {
-    return value.toString().padLeft(2, '0');
   }
 }

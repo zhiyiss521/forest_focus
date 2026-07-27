@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/sta/reward_card.dart';
-import 'package:forest_focus/ui/page/sta/sta_date_header.dart';
-import 'package:forest_focus/ui/page/sta/sta_range_header.dart';
 import 'package:provider/provider.dart';
+import '../../../model/sta_range.dart';
+import '../../widget/ff_date_navigator.dart';
+import '../../widget/ff_segment_button.dart';
 import 'focus_chart_card.dart';
 import 'sta_provider.dart';
 
@@ -37,16 +38,43 @@ class _StaView extends StatelessWidget {
         onRefresh: provider.load,
         child: ListView(
           padding: const EdgeInsets.all(16),
-          children: const [
+          children: [
+            FFSegmentButton<StaRange>(
+              items: const [
+                FFSegmentItem(
+                  title: "Day",
+                  value: StaRange.day,
+                ),
+                FFSegmentItem(
+                  title: "Week",
+                  value: StaRange.week,
+                ),
+                FFSegmentItem(
+                  title: "Month",
+                  value: StaRange.month,
+                ),
+                FFSegmentItem(
+                  title: "Year",
+                  value: StaRange.year,
+                ),
+              ],
+              selected: provider.currentRange,
+              onChanged: provider.changeRange,
+            ),
 
-            StaRangeHeader(),
-
-
-            StaDateHeader(),
+            FFDateNavigator(
+              title: provider.dateTitle,
+              onPrevious: provider.previous,
+              onNext: provider.next,
+            ),
 
             RewardCard(),
 
-            FocusChartCard(),
+            FocusChartCard(
+              totalSeconds: provider.totalSeconds,
+              chartData: provider.chartData,
+              labels: provider.chartLabels,
+            )
           ],
         ),
       ),

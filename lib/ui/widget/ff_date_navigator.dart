@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:forest_focus/ui/page/sta/sta_provider.dart';
-import 'package:provider/provider.dart';
 
-class StaDateHeader extends StatelessWidget {
-  const StaDateHeader({super.key});
+class FFDateNavigator extends StatelessWidget {
+  final String title;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+  final double height;
+
+  const FFDateNavigator({
+    super.key,
+    required this.title,
+    required this.onPrevious,
+    required this.onNext,
+    this.height = 52,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final dateTitle = context.select<StaProvider, String>(
-          (p) => p.dateTitle,
-    );
-
     return Container(
-      height: 52,
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
-      ),
+      height: height,
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   borderRadius: BorderRadius.circular(16),
+      // ),
       child: Row(
         children: [
           _ArrowButton(
             icon: Icons.chevron_left,
-            onTap: () {
-              context.read<StaProvider>().previous();
-            },
+            onTap: onPrevious,
           ),
-
           Expanded(
             child: Center(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
                 child: Text(
-                  dateTitle,
-                  key: ValueKey(dateTitle),
+                  title,
+                  key: ValueKey(title),
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -44,12 +43,9 @@ class StaDateHeader extends StatelessWidget {
               ),
             ),
           ),
-
           _ArrowButton(
             icon: Icons.chevron_right,
-            onTap: () {
-              context.read<StaProvider>().next();
-            },
+            onTap: onNext,
           ),
         ],
       ),
@@ -77,6 +73,7 @@ class _ArrowButton extends StatelessWidget {
         child: Icon(
           icon,
           size: 24,
+          color: Colors.black54,
         ),
       ),
     );
