@@ -9,6 +9,7 @@ class FocusTimerWidget extends StatefulWidget {
   final int step;
   final double thickness;
   final double radiusFactor;
+  final Color progressColor;
 
   final ValueChanged<int>? onChanged;
 
@@ -21,6 +22,7 @@ class FocusTimerWidget extends StatefulWidget {
     this.thickness = 0.12,
     this.radiusFactor = 0.8,
     this.onChanged,
+    required this.progressColor
   });
 
   @override
@@ -80,7 +82,7 @@ class _FocusTimerWidgetState extends State<FocusTimerWidget> {
               value: minutes.toDouble(),
               width: widget.thickness,
               sizeUnit: GaugeSizeUnit.factor,
-              color: const Color(0xFF83C26F),
+              color: widget.progressColor,
               cornerStyle: CornerStyle.bothCurve,
             ),
             MarkerPointer(

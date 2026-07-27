@@ -52,7 +52,7 @@ class _FFButtonState extends State<FFButton> {
     return Opacity(
       opacity: widget.onPressed == null ? .45 : 1,
       child: SizedBox(
-        width: widget.width,
+        width: widget.width ?? double.infinity,
         height: widget.height + offset,
         child: GestureDetector(
           onTapDown: (_) => setState(() => _pressed = true),

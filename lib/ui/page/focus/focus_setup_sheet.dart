@@ -3,6 +3,7 @@ import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
+import 'package:forest_focus/ui/widget/tag_select.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_constants.dart';
@@ -31,6 +32,8 @@ class FocusSetupSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final focusProvider = context.watch<FocusProvider>();
+    final tagProvider = context.watch<TagProvider>();
 
     return Container(
       constraints: BoxConstraints(
@@ -102,9 +105,13 @@ class FocusSetupSheet extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  const SizedBox(
+                  SizedBox(
                     height: 32,
-                    child: TagSection(),
+                    child: TagSelect(
+                      tags:tagProvider.items,
+                      selectedTagId: focusProvider.currentTagId,
+                      onChanged: focusProvider.changeTag
+                    ),
                   ),
 
                   const SizedBox(height: 10),
@@ -244,35 +251,35 @@ class DurationSection extends StatelessWidget {
   }
 }
 
-class TagSection extends StatelessWidget {
-  const TagSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer2<TagProvider, FocusProvider>(
-      builder: (_, tagProvider, focusProvider, __) {
-        final tags = tagProvider.items;
-
-        return ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: tags.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 8),
-          itemBuilder: (_, index) {
-            final tag = tags[index];
-            final selected = tag.id == focusProvider.currentTagId;
-            return TagChip(
-              tag: tag,
-              isSelected: selected,
-              onTap: (){
-                focusProvider.changeTag(tag.id!);
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-}
+// class TagSection extends StatelessWidget {
+//   const TagSection({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Consumer2<TagProvider, FocusProvider>(
+//       builder: (_, tagProvider, focusProvider, __) {
+//         final tags = tagProvider.items;
+//
+//         return ListView.separated(
+//           scrollDirection: Axis.horizontal,
+//           itemCount: tags.length,
+//           separatorBuilder: (_, __) => const SizedBox(width: 8),
+//           itemBuilder: (_, index) {
+//             final tag = tags[index];
+//             final selected = tag.id == focusProvider.currentTagId;
+//             return TagChip(
+//               tag: tag,
+//               isSelected: selected,
+//               onTap: (){
+//                 focusProvider.changeTag(tag.id!);
+//               },
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
 
 class BottomSummary extends StatelessWidget {
   const BottomSummary({

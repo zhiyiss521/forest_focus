@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_colors.dart';
+import 'notification/nofification_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -48,14 +49,14 @@ class SettingsPage extends StatelessWidget {
             _buildItem(
               icon: Icons.notifications_outlined,
               title: "Notification",
-              value: "Allowed",
-              onTap: () {},
-            ),
-            _buildItem(
-              icon: Icons.schedule_outlined,
-              title: "Exact Alarm",
-              value: "Allowed",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const NotificationPage(),
+                  ),
+                );
+              },
             ),
           ]),
 
@@ -73,11 +74,6 @@ class SettingsPage extends StatelessWidget {
               title: "Import Data",
               onTap: () {},
             ),
-            _buildItem(
-              icon: Icons.restart_alt,
-              title: "Reset Statistics",
-              onTap: () {},
-            ),
           ]),
 
           const SizedBox(height: 24),
@@ -85,27 +81,11 @@ class SettingsPage extends StatelessWidget {
           _buildSectionTitle("About"),
           _buildSection([
             _buildItem(
-              icon: Icons.system_update_alt,
-              title: "Check for Updates",
-              onTap: () {},
-            ),
-            _buildItem(
-              icon: Icons.privacy_tip_outlined,
-              title: "Privacy Policy",
-              onTap: () {},
-            ),
-            _buildItem(
-              icon: Icons.description_outlined,
-              title: "User Agreement",
-              onTap: () {},
-            ),
-            _buildItem(
               icon: Icons.info_outline,
               title: "Version",
               value: "1.0.0",
             ),
           ]),
-
           const SizedBox(height: 30),
         ],
       ),
@@ -120,7 +100,6 @@ class SettingsPage extends StatelessWidget {
         style: const TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
-          color: AppColors.textDark,
         ),
       ),
     );
@@ -154,7 +133,6 @@ class SettingsPage extends StatelessWidget {
             Icon(
               icon,
               size: 22,
-              color: AppColors.textDark,
             ),
 
             const SizedBox(width: 14),
@@ -164,7 +142,6 @@ class SettingsPage extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: AppColors.textDark,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -175,7 +152,6 @@ class SettingsPage extends StatelessWidget {
                 value,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: AppColors.textLight,
                 ),
               ),
 
@@ -184,7 +160,6 @@ class SettingsPage extends StatelessWidget {
               const Icon(
                 Icons.chevron_right,
                 size: 20,
-                color: AppColors.textLight,
               ),
             ],
           ],

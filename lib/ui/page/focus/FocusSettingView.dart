@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/repository/focus_record_repository.dart';
 import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
+import 'package:forest_focus/ui/widget/focus_record_edit_sheet.dart';
 import '../../../util/extension.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
@@ -45,8 +47,19 @@ class FocusSettingView extends StatelessWidget {
             children: [
               TagChip(
                 tag: tagProvider.getById(provider.session.currentTagId)!,
-                onTap: (){
-                  FocusSetupSheet.show(context);
+                onTap: () async{
+                  if(provider.isSetting){
+                    FocusSetupSheet.show(context);
+                  }else{
+                    final record = await FocusRecordRepository.instance.findById(provider.session.recordId!);
+                    FocusRecordEditSheet.show(
+                      context,
+                      record!,
+                      onSave: (record) async{
+                        await provider.updateCurrentRecord(record);
+                      }
+                    );
+                  }
                 },
               ),
               if (!provider.isSetting)
@@ -58,6 +71,8 @@ class FocusSettingView extends StatelessWidget {
             ],
           ),
         ),
+
+        const SizedBox(height: 20,),
 
         if (!provider.isFinished)
           Text(
@@ -84,18 +99,18 @@ class FocusSettingView extends StatelessWidget {
                 text: "Cancel",
                 onPressed: (){
                   FFDialog.show(
-                      context,
-                      title: "确定要放弃吗?",
-                      message: "放弃不会得到奖励",
-                      cancelText: "取消",
-                      confirmText: "放弃",
-                      onConfirm: () async {
-                        Navigator.of(context).pop();
-                        await provider.clkCancel();
-                      },
-                      onCancel: (){
-                        Navigator.of(context).pop();
-                      }
+                    context,
+                    title: "确定要放弃吗?",
+                    message: "放弃不会得到奖励",
+                    cancelText: "取消",
+                    confirmText: "放弃",
+                    onConfirm: () async {
+                      Navigator.of(context).pop();
+                      await provider.clkCancel();
+                    },
+                    onCancel: (){
+                      Navigator.of(context).pop();
+                    }
                   );
                 },
                 width: 100,
@@ -116,7 +131,7 @@ class FocusSettingView extends StatelessWidget {
         if(provider.isFinished)
           FFButton(
             onPressed:(){
-
+              provider.clkBack();
             },
             text: "休息一下",
             width: 150,

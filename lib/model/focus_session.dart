@@ -1,15 +1,15 @@
 import 'FocusState.dart';
 
 class FocusSession {
+  // 运行的状态
+  final int? recordId;
   final FocusState state;
-  final bool isCountdown;
-
-  final Duration userSetDuration;
-  final Duration pausePassedDuration; // 暂停时已经过了多长时间
-
+  final Duration pausePassedDuration;
   final DateTime? endTime;
 
-  final int? recordId;
+  // 需要保存的用户设置
+  final Duration userSetDuration;
+  final bool isCountdown;
   final int currentCollectibleItemId;
   final int currentTagId;
 
@@ -28,13 +28,12 @@ class FocusSession {
   FocusSession copyWith({
     FocusState? state,
     bool? isCountdown,
-    Duration? userSetDuration,
-    Duration? pausePassedDuration,
-    DateTime? endTime,
     int? recordId,
     int? currentCollectibleItemId,
     int? currentTagId,
-    bool clearStartTime = false,
+    Duration? userSetDuration,
+    Duration? pausePassedDuration,
+    DateTime? endTime,
     bool clearEndTime = false,
     bool clearCurrentRecordId = false,
   }) {

@@ -5,6 +5,7 @@ import 'package:forest_focus/core/service/notification_service.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
 import 'package:forest_focus/ui/page/focus/focus_Provider.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
+import 'package:forest_focus/ui/page/set/notification/notification_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:provider/provider.dart';
 import 'core/repository/DBManager.dart';
@@ -37,6 +38,9 @@ Future<void> main() async{
   final focusProvider = FocusProvider();
   await focusProvider.load();
 
+  final notificaionProvider = NotificationProvider();
+  await notificaionProvider.load();
+
   runApp(
       MultiProvider(
         providers: [
@@ -49,12 +53,20 @@ Future<void> main() async{
           ChangeNotifierProvider(
             create: (_) => focusProvider,
           ),
+          ChangeNotifierProvider(
+            create: (_) => notificaionProvider,
+          ),
         ],
         child: MaterialApp(
           builder: FlutterSmartDialog.init(),
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           home: const FocusPage(),
+          theme: ThemeData(
+            textTheme: const TextTheme(
+
+            )
+          ),
         ),
       )
   );

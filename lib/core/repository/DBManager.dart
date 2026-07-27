@@ -55,6 +55,7 @@ class DBManager {
         actual_seconds INTEGER NOT NULL,
         collectible_item_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
+        note TEXT,
         created_at INTEGER NOT NULL
       )
     ''');

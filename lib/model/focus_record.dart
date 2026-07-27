@@ -8,8 +8,9 @@ class FocusRecord {
   final int? targetSeconds;
   int actualSeconds;
   final int collectibleItemId;
-  final int tagId;
+  int tagId;
   final DateTime createdAt;
+  String? note;
 
   FocusRecord({
     this.id,
@@ -21,6 +22,7 @@ class FocusRecord {
     required this.collectibleItemId,
     required this.tagId,
     required this.createdAt,
+    this.note,
   });
 
   Map<String, dynamic> toMap() => {
@@ -33,6 +35,7 @@ class FocusRecord {
     'collectible_item_id': collectibleItemId,
     'tag_id': tagId,
     'created_at': createdAt.millisecondsSinceEpoch,
+    'note': note,
   };
 
   factory FocusRecord.fromMap(Map<String, dynamic> map) => FocusRecord(
@@ -45,6 +48,7 @@ class FocusRecord {
     collectibleItemId: map['collectible_item_id'] as int,
     tagId: map['tag_id'] as int,
     createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+    note: map['note'] as String?,
   );
 
 

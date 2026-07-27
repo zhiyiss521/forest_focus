@@ -48,6 +48,7 @@ class FocusTimerImageW extends StatelessWidget {
             maxMinutes: AppConstants.maxMinutes,
             step: AppConstants.step,
             onChanged: provider.changeTargetMinutes,
+            progressColor: AppColors.primary,
           ) : const SizedBox.shrink(),
 
           GestureDetector(

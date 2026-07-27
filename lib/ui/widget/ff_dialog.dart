@@ -6,7 +6,7 @@ import 'ff_button.dart';
 
 class FFDialog extends StatelessWidget {
   final String title;
-  final String message;
+  final String? message;
   final String confirmText;
   final String? cancelText;
   final VoidCallback onConfirm;
@@ -15,7 +15,7 @@ class FFDialog extends StatelessWidget {
   const FFDialog({
     super.key,
     required this.title,
-    required this.message,
+    this.message,
     required this.confirmText,
     required this.onConfirm,
     this.cancelText,
@@ -25,7 +25,7 @@ class FFDialog extends StatelessWidget {
   static Future<T?> show<T>(
       BuildContext context, {
         required String title,
-        required String message,
+        String? message,
         required String confirmText,
         String? cancelText,
         required VoidCallback onConfirm,
@@ -79,17 +79,18 @@ class FFDialog extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  Text(
-                    message,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      height: 1.4,
+                  if(message != null)...[
+                    Text(
+                      message!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        height: 1.4,
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 24),
-
+                    const SizedBox(height: 24),
+                  ],
                   Row(
                     children: [
                       if (cancelText != null) ...[
