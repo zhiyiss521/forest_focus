@@ -43,8 +43,6 @@ class FocusProvider extends ChangeNotifier {
 
     ticker = Timer.periodic(
       const Duration(seconds: 1), (_) async {
-        print("当前的状态:${session.state}");
-
         if (!isRunning) {
           return;
         }

@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import '../../../core/repository/collectible_repository.dart';
 import '../../../core/repository/focus_record_repository.dart';
+import '../../../core/repository/tag_repository.dart';
 import '../../../model/collectible_item.dart';
 import '../../../model/focus_record.dart';
 import '../../../model/sta_range.dart';
+import '../../../model/tag.dart';
 
 class StaProvider extends ChangeNotifier {
   final _recordRepository = FocusRecordRepository.instance;
   final _collectibleRepository = CollectibleRepository.instance;
+  final _tagRepository = TagRepository.instance;
 
   bool loading = true;
 
   StaRange currentRange = StaRange.week;
   DateTime currentDate = DateTime.now();
+
+  List<Tag> currentTags = [];
 
   List<FocusRecord> records = [];
   List<CollectibleItem> rewards = [];
@@ -25,7 +30,10 @@ class StaProvider extends ChangeNotifier {
   Future<void> load() async {
     loading = true;
     notifyListeners();
+
+    await _loadTags();
     await loadData();
+
     loading = false;
     notifyListeners();
   }
@@ -34,15 +42,28 @@ class StaProvider extends ChangeNotifier {
     records = await _recordRepository.findByDateRange(
       start: startDate,
       end: endDate,
+      tagIds: currentTags.isEmpty
+          ? null
+          : currentTags
+          .map((e) => e.id)
+          .whereType<int>()
+          .toList(),
     );
 
     _buildStatistics();
+
     await _loadRewards();
+  }
+
+
+  Future<void> _loadTags() async {
+    currentTags = await _tagRepository.findAll();
   }
 
   void _buildStatistics() {
     totalSeconds = records.fold(
-      0, (sum, item) => sum + item.actualSeconds,
+      0,
+          (sum, item) => sum + item.actualSeconds,
     );
 
     chartData = _buildChartData();
@@ -72,8 +93,7 @@ class StaProvider extends ChangeNotifier {
     switch (currentRange) {
       case StaRange.day:
         return List.generate(
-          24,
-              (index) {
+          24, (index) {
             return _secondsOf(
               records.where(
                     (e) => e.startTime.hour == index,
@@ -84,13 +104,8 @@ class StaProvider extends ChangeNotifier {
 
       case StaRange.week:
         return List.generate(
-          7,
-              (index) {
-            return _secondsOf(
-              records.where(
-                    (e) => e.startTime.weekday == index + 1,
-              ),
-            );
+          7, (index) {
+            return _secondsOf(records.where((e) => e.startTime.weekday == index + 1,),);
           },
         );
 
@@ -106,8 +121,7 @@ class StaProvider extends ChangeNotifier {
               (index) {
             return _secondsOf(
               records.where(
-                    (e) =>
-                e.startTime.day == index + 1,
+                    (e) => e.startTime.day == index + 1,
               ),
             );
           },
@@ -119,8 +133,7 @@ class StaProvider extends ChangeNotifier {
               (index) {
             return _secondsOf(
               records.where(
-                    (e) =>
-                e.startTime.month == index + 1,
+                    (e) => e.startTime.month == index + 1,
               ),
             );
           },
@@ -129,10 +142,7 @@ class StaProvider extends ChangeNotifier {
   }
 
   int _secondsOf(Iterable<FocusRecord> list) {
-    return list.fold(
-      0,
-          (sum, item) => sum + item.actualSeconds,
-    );
+    return list.fold(0, (sum, item) => sum + item.actualSeconds,);
   }
 
   List<String> _buildChartLabels() {
@@ -190,6 +200,18 @@ class StaProvider extends ChangeNotifier {
 }
 
 extension Func on StaProvider{
+  Future<void> changeTags(List<Tag> tags) async {
+    currentTags = tags;
+
+    await _refresh();
+  }
+
+  Future<void> clearTags() async {
+    currentTags.clear();
+
+    await _refresh();
+  }
+
   Future<void> changeRange(StaRange value) async {
     if (currentRange == value) {
       return;
@@ -270,6 +292,18 @@ extension Func on StaProvider{
 }
 
 extension Get on StaProvider{
+
+  String get tagTitle {
+    if (currentTags.isEmpty) {
+      return "All Tags";
+    }
+
+    if (currentTags.length == 1) {
+      return currentTags.first.name;
+    }
+
+    return "${currentTags.length} Tags";
+  }
 
   DateTime get startDate {
     switch (currentRange) {

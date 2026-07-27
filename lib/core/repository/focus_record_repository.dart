@@ -37,15 +37,42 @@ class FocusRecordRepository {
     return result.map(FocusRecord.fromMap).toList();
   }
 
-  Future<List<FocusRecord>> findByDateRange({required DateTime start, required DateTime end}) async {
+  Future<List<FocusRecord>> findByDateRange({
+    required DateTime start,
+    required DateTime end,
+    List<int>? tagIds,
+  }) async {
     final db = await DBManager.instance.database;
+
+    String where =
+        'start_time >= ? AND start_time < ?';
+
+    final args = [
+      start.millisecondsSinceEpoch,
+      end.millisecondsSinceEpoch,
+    ];
+
+    if (tagIds != null && tagIds.isNotEmpty) {
+      final placeholders = List.filled(
+        tagIds.length,
+        '?',
+      ).join(',');
+
+      where += ' AND tag_id IN ($placeholders)';
+
+      args.addAll(tagIds);
+    }
+
     final result = await db.query(
       'focus_record',
-      where: 'start_time >= ? AND start_time < ?',
-      whereArgs: [start.millisecondsSinceEpoch, end.millisecondsSinceEpoch],
+      where: where,
+      whereArgs: args,
       orderBy: 'start_time DESC',
     );
-    return result.map(FocusRecord.fromMap).toList();
+
+    return result
+        .map(FocusRecord.fromMap)
+        .toList();
   }
 
 
