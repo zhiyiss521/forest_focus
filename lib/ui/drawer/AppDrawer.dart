@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/tag/tag_manage_page.dart';
-import '../../core/service/notification_service.dart';
 import '../page/set/settings_page.dart';
 import '../page/sta/sta_page.dart';
 import '../page/timeline/timeline_page.dart';
@@ -45,7 +44,12 @@ class AppDrawer extends StatelessWidget {
 
           ListTile(
             leading: Icon(Icons.park),
-            title: Text('tag'),
+            title: Text(
+              'tag',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary
+              ),
+            ),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(

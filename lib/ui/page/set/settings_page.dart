@@ -64,23 +64,7 @@ class SettingsPage extends StatelessWidget {
           ],context),
 
           const SizedBox(height: 24),
-
-          _buildSectionTitle("Data"),
-          _buildSection([
-            _buildItem(
-              icon: Icons.file_upload_outlined,
-              title: "Export Data",
-              onTap: () {},
-            ),
-            _buildItem(
-              icon: Icons.file_download_outlined,
-              title: "Import Data",
-              onTap: () {},
-            ),
-          ],context),
-
-          const SizedBox(height: 24),
-
+          
           _buildSectionTitle("About"),
           _buildSection([
             _buildItem(
