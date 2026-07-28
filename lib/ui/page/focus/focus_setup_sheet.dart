@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:forest_focus/ui/widget/tag_select.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/constants/app_constants.dart';
 import '../../../model/collectible_item.dart';
 import '../../../model/tag.dart';
-import '../../../theme/app_colors.dart';
+import '../../../theme/ff_theme_provider.dart';
 import '../../../util/extension.dart';
 import '../../widget/inventory_grid.dart';
 import '../../widget/inventory_slot.dart';
@@ -39,8 +37,8 @@ class FocusSetupSheet extends StatelessWidget {
       constraints: BoxConstraints(
         maxHeight: size.height * 0.8,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.background,
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(28),
         ),
@@ -55,7 +53,7 @@ class FocusSetupSheet extends StatelessWidget {
                 width: 100,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: Colors.black12,
+                  color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
@@ -69,7 +67,6 @@ class FocusSetupSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Reward
                   Text(
                     "Reward",
                     style: Theme.of(context).textTheme.titleMedium,
@@ -251,36 +248,6 @@ class DurationSection extends StatelessWidget {
   }
 }
 
-// class TagSection extends StatelessWidget {
-//   const TagSection({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Consumer2<TagProvider, FocusProvider>(
-//       builder: (_, tagProvider, focusProvider, __) {
-//         final tags = tagProvider.items;
-//
-//         return ListView.separated(
-//           scrollDirection: Axis.horizontal,
-//           itemCount: tags.length,
-//           separatorBuilder: (_, __) => const SizedBox(width: 8),
-//           itemBuilder: (_, index) {
-//             final tag = tags[index];
-//             final selected = tag.id == focusProvider.currentTagId;
-//             return TagChip(
-//               tag: tag,
-//               isSelected: selected,
-//               onTap: (){
-//                 focusProvider.changeTag(tag.id!);
-//               },
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-// }
-
 class BottomSummary extends StatelessWidget {
   const BottomSummary({
     super.key,
@@ -304,9 +271,9 @@ class BottomSummary extends StatelessWidget {
               Container(
                 width: 64,
                 height: 64,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.backgroundSecondary,
+                  color: Theme.of(context).colorScheme.secondary
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
@@ -327,7 +294,6 @@ class BottomSummary extends StatelessWidget {
                       const Icon(
                         Icons.timer_outlined,
                         size: 15,
-                        color: Colors.black54,
                       ),
 
                       const SizedBox(width: 4),
@@ -336,7 +302,6 @@ class BottomSummary extends StatelessWidget {
                         "${focusProvider.userSetDuration.mm}min",
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.black54,
                         ),
                       )
                     ],
@@ -358,7 +323,6 @@ class BottomSummary extends StatelessWidget {
                         tag.name,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.black54,
                         ),
                       ),
                     ],

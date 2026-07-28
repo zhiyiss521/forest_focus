@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/constants/app_constants.dart';
-import '../../../theme/app_colors.dart';
 import '../../widget/FocusTime.dart';
 import '../reward_picker/collectible_provider.dart';
-import '../tag/tag_provider.dart';
 import 'focus_Provider.dart';
 import 'focus_setup_sheet.dart';
 
@@ -33,9 +31,9 @@ class FocusTimerImageW extends StatelessWidget {
             height: focusWidgetW * focusProgressRadiusFactor,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.backgroundSecondary,
+              color: Theme.of(context).colorScheme.surface,
               border: Border.all(
-                color: AppColors.secondary,
+                color:Theme.of(context).colorScheme.secondary,
                 width: focusWidgetW * focusProgressRadiusFactor * focusProgressThickness * 0.5,
               ),
             ),
@@ -48,7 +46,7 @@ class FocusTimerImageW extends StatelessWidget {
             maxMinutes: AppConstants.maxMinutes,
             step: AppConstants.step,
             onChanged: provider.changeTargetMinutes,
-            progressColor: AppColors.primary,
+            progressColor: Theme.of(context).colorScheme.primary,
           ) : const SizedBox.shrink(),
 
           GestureDetector(

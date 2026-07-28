@@ -1,0 +1,15 @@
+{
+  "id": "dark",
+  "name": "Dark Forest",
+  "colors": {
+    "background": "#121212",
+    "card": "#1E1E1E",
+    "text": "#F5F5F5",
+    "textSecondary": "#9E9E9E",
+    "primary": "#66BB6A",
+    "onPrimary": "#FFFFFF",
+    "secondary": "#37474F",
+    "surface": "#252525",
+    "danger": "#EF5350"
+  }
+}

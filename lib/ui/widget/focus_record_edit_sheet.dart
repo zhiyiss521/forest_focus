@@ -3,7 +3,6 @@ import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:forest_focus/ui/widget/tag_select.dart';
 import 'package:provider/provider.dart';
 import '../../../model/focus_record.dart';
-import '../../../core/repository/focus_record_repository.dart';
 import '../page/reward_picker/collectible_provider.dart';
 import '../page/tag/tag_provider.dart';
 
@@ -72,8 +71,8 @@ class _FocusEditSheetState extends State<FocusRecordEditSheet> {
         top: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
-      decoration: const BoxDecoration(
-        color: Color(0xFFF6F0E3),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(28),
         ),
@@ -87,7 +86,7 @@ class _FocusEditSheetState extends State<FocusRecordEditSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -99,8 +98,8 @@ class _FocusEditSheetState extends State<FocusRecordEditSheet> {
               height: 56,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: const Color(0xffF6F1E5),
-                borderRadius: BorderRadius.circular(12),
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(28),
               ),
               child: Image.asset(
                 collectible.assetPath,
@@ -115,7 +114,7 @@ class _FocusEditSheetState extends State<FocusRecordEditSheet> {
             decoration: InputDecoration(
               hintText: '记录一下现在的想法',
               filled: true,
-              fillColor: Colors.white,
+              fillColor: Theme.of(context).cardColor,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,

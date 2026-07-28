@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/theme/app_size.dart';
 
 import 'ff_button.dart';
@@ -49,7 +48,6 @@ class FFDialog extends StatelessWidget {
     const offset = 6.0;
 
     return Dialog(
-      backgroundColor: Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.only(bottom: offset),
         child: Stack(
@@ -60,11 +58,10 @@ class FFDialog extends StatelessWidget {
               left: 0,
               right: 0,
               bottom: -offset,
-              child: _paper(AppColors.background),
+              child: _paper(),
             ),
 
             _paper(
-              const Color(0xFFF8F1E7),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -124,11 +121,10 @@ class FFDialog extends StatelessWidget {
     );
   }
 
-  Widget _paper(Color color, {Widget? child,}) {
+  Widget _paper({Widget? child,}) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: color,
         borderRadius: BorderRadius.circular(
           AppSizes.buttonCornerRadius,
         ),

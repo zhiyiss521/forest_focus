@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../theme/app_colors.dart';
+import 'package:forest_focus/theme/ff_theme_provider.dart';
+import 'package:provider/provider.dart';
 import '../../theme/app_size.dart';
 
 class InventorySlot extends StatelessWidget {
@@ -21,6 +21,8 @@ class InventorySlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.watch<FFThemeProvider>().current!.colors;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -32,7 +34,7 @@ class InventorySlot extends StatelessWidget {
           height: size,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: selected ? AppColors.backgroundSecondary : Colors.transparent,
+            color: selected ? Theme.of(context).colorScheme.secondary: Colors.transparent,
             borderRadius: BorderRadius.circular(AppSizes.radius),
           ),
           child: Stack(

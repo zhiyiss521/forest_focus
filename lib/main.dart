@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:forest_focus/core/service/notification_service.dart';
+import 'package:forest_focus/theme/ff_theme_provider.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
 import 'package:forest_focus/ui/page/focus/focus_Provider.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
@@ -9,6 +9,7 @@ import 'package:forest_focus/ui/page/set/notification/notification_provider.dart
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:provider/provider.dart';
 import 'core/repository/DBManager.dart';
+import 'core/service/notification_service.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,54 +21,77 @@ Future<void> main() async{
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      // systemNavigationBarColor: Colors.transparent,
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
 
-  // 通知
   await NotificationService.instance.init();
-
   await DBManager.instance.init();
-  final collectibleProvider = CollectibleProvider();
-  await collectibleProvider.load();
-  final tagProvider = TagProvider();
-  await tagProvider.load();
-
-  final focusProvider = FocusProvider();
-  await focusProvider.load();
-
-  final notificaionProvider = NotificationProvider();
-  await notificaionProvider.load();
+  final collectible = CollectibleProvider();
+  await collectible.load();
+  final tag = TagProvider();
+  await tag.load();
+  final focus = FocusProvider();
+  await focus.load();
+  final notification = NotificationProvider();
+  await notification.load();
+  final theme = FFThemeProvider();
+  await theme.load();
 
   runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => collectibleProvider,
-          ),
-          ChangeNotifierProvider(
-            create: (_) => tagProvider,
-          ),
-          ChangeNotifierProvider(
-            create: (_) => focusProvider,
-          ),
-          ChangeNotifierProvider(
-            create: (_) => notificaionProvider,
-          ),
-        ],
-        child: MaterialApp(
-          builder: FlutterSmartDialog.init(),
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          home: const FocusPage(),
-          theme: ThemeData(
-            textTheme: const TextTheme(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: theme),
+        ChangeNotifierProvider.value(value: collectible),
+        ChangeNotifierProvider.value(value: tag),
+        ChangeNotifierProvider.value(value: focus),
+        ChangeNotifierProvider.value(value: notification),
+      ],
+      child: App()
+    ),
+  );
+}
 
-            )
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    final colors = context.watch<FFThemeProvider>().current!.colors;
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      builder: FlutterSmartDialog.init(),
+      theme: ThemeData(
+        scaffoldBackgroundColor: colors.backgroundColor,
+        cardColor: colors.cardColor,
+        colorScheme: ColorScheme.light(
+          primary: colors.primaryColor,
+          secondary: colors.secondaryColor,
+          error: colors.dangerColor,
+          surface: colors.surfaceColor,
+          onPrimary: colors.onPrimaryColor
+        ),
+        textTheme: ThemeData.light().textTheme.apply(
+          bodyColor: colors.textColor,
+          displayColor: colors.textColor, // 大标题颜色，
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: colors.backgroundColor,
+          foregroundColor: colors.textColor,
+          elevation: 0, // 阴影？
+          centerTitle: true,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          hintStyle: TextStyle(
+            color: colors.textSecondaryColor,
           ),
         ),
-      )
-  );
+      ),
+      home: const FocusPage(),
+    );
+  }
 }

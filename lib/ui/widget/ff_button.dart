@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../theme/app_colors.dart';
 import '../../theme/app_size.dart';
+import '../../theme/ff_color_config.dart';
+import '../../theme/ff_theme_provider.dart';
 
 enum FFButtonType {
   primary,
@@ -32,22 +34,24 @@ class FFButton extends StatefulWidget {
 class _FFButtonState extends State<FFButton> {
   bool _pressed = false;
 
-  Color get _background => switch (widget.type) {
-    FFButtonType.primary => AppColors.primary,
-    FFButtonType.secondary => AppColors.secondary,
-    FFButtonType.danger => AppColors.danger,
-  };
+  Color _background(BuildContext context) {
+    return switch (widget.type) {
+      FFButtonType.primary => Theme.of(context).colorScheme.primary,
+      FFButtonType.secondary => Theme.of(context).colorScheme.secondary,
+      FFButtonType.danger => Theme.of(context).colorScheme.error,
+    };
+  }
 
-  Color get _base {
-    final hsl = HSLColor.fromColor(_background);
-    return hsl
-        .withLightness((hsl.lightness - 0.12).clamp(0.0, 1.0))
-        .toColor();
+  Color _base(Color color) {
+    final hsl = HSLColor.fromColor(color);
+    return hsl.withLightness((hsl.lightness - 0.12).clamp(0.0, 1.0),).toColor();
   }
 
   @override
   Widget build(BuildContext context) {
     const offset = 4.0;
+    final background = _background(context);
+    final base = _base(background);
 
     return Opacity(
       opacity: widget.onPressed == null ? .45 : 1,
@@ -65,7 +69,7 @@ class _FFButtonState extends State<FFButton> {
                 top: offset,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: _base,
+                    color: base,
                     borderRadius: BorderRadius.circular(
                       AppSizes.buttonCornerRadius,
                     ),
@@ -81,7 +85,7 @@ class _FFButtonState extends State<FFButton> {
                 child: Container(
                   height: widget.height,
                   decoration: BoxDecoration(
-                    color: _background,
+                    color: background,
                     borderRadius: BorderRadius.circular(
                       AppSizes.buttonCornerRadius,
                     ),
@@ -90,7 +94,7 @@ class _FFButtonState extends State<FFButton> {
                   child: Text(
                     widget.text,
                     style: TextStyle(
-                      color: AppColors.textLight,
+                      color: Theme.of(context).cardColor,
                       fontSize: AppSizes.buttonTextFontSize,
                       fontWeight: FontWeight.w600,
                     ),

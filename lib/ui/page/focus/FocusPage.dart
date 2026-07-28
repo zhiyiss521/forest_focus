@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:forest_focus/theme/app_colors.dart';
-import 'package:forest_focus/theme/app_size.dart';
 import 'package:forest_focus/ui/page/focus/FocusSettingView.dart';
+import 'package:forest_focus/ui/widget/ff_segment_button.dart';
 import 'package:provider/provider.dart';
 import '../../../model/FocusState.dart';
 import '../../drawer/AppDrawer.dart';
@@ -14,10 +13,10 @@ class FocusPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<FocusProvider>(
         builder: (context, provider, child) {
           return Scaffold(
-            backgroundColor: AppColors.background,
             extendBody: true,
             extendBodyBehindAppBar: true,
             drawer: const AppDrawer(),
@@ -25,39 +24,22 @@ class FocusPage extends StatelessWidget {
               elevation: 0,
               centerTitle: true,
               backgroundColor: Colors.transparent,
-              title: SegmentedButton<bool>(
-                showSelectedIcon: false,
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.selected)) {
-                      return AppColors.primary;
-                    }
-                    return AppColors.backgroundSecondary;
-                  }),
-                  foregroundColor: WidgetStateProperty.resolveWith((states) {
-                    return AppColors.textLight;
-                  }),
-                  side: WidgetStateProperty.all(BorderSide.none),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSizes.buttonCornerRadius),
-                    ),
-                  ),
+              title: SizedBox(
+                width: 120,
+                child: FFSegmentButton<bool>(
+                    items: [
+                      FFSegmentItem(
+                        title: "倒",
+                        value: true,
+                      ),
+                      FFSegmentItem(
+                        title: "正",
+                        value: false,
+                      ),
+                    ],
+                    selected: provider.isCountdown,
+                    onChanged: provider.changeCountdownMode
                 ),
-                segments: const [
-                  ButtonSegment(
-                    value: true,
-                    icon: Icon(Icons.hourglass_top),
-                  ),
-                  ButtonSegment(
-                    value: false,
-                    icon: Icon(Icons.timer),
-                  ),
-                ],
-                selected: {provider.session.isCountdown},
-                onSelectionChanged: (value) {
-                  provider.changeCountdownMode(value.first);
-                },
               ),
             ) : null,
             body: SafeArea(

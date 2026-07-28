@@ -25,6 +25,7 @@ dependencies:
   flutter_local_notifications: ^19.4.0
   timezone: ^0.10.1
   app_settings: ^5.1.1 # 跳转系统设置页的
+  flutter_native_splash: ^2.4.0
 
 
 dev_dependencies:
@@ -48,8 +49,19 @@ flutter:
     - assets/images/shrub/
     - assets/images/tree/
     - assets/ui/
+    - assets/theme/
 
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/logo.png"
+
+
+flutter_native_splash:
+  color: "#003057"
+  image: "assets/logo.png"
+
+
+  android_12:
+    color: "#003057"
+    image: "assets/logo.png"

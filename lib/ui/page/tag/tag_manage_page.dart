@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/theme/ff_theme_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_edit_page.dart';
 import 'package:provider/provider.dart';
 import '../../../model/tag.dart';
 import '../../widget/ff_button.dart';
 import '../../widget/ff_dialog.dart';
-import '../../widget/hud.dart';
-import '../../../theme/app_colors.dart';
 import 'tag_provider.dart';
 import '../focus/focus_Provider.dart';
 
@@ -18,7 +17,6 @@ class TagManagePage extends StatelessWidget {
     final focusProvider = context.watch<FocusProvider>();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text("标签"),
         centerTitle: true,
@@ -33,7 +31,7 @@ class TagManagePage extends StatelessWidget {
         itemBuilder: (_, index) {
           final tag = provider.items[index];
 
-          return _TagCard(
+          return TagCell(
             tag: tag,
             isCurrent: tag.id == focusProvider.session.currentTagId,
             onTap: () {
@@ -49,7 +47,6 @@ class TagManagePage extends StatelessWidget {
         },
       ),
       bottomSheet: Container(
-        color: AppColors.background,
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
         child: FFButton(
           width: double.infinity,
@@ -84,14 +81,14 @@ class TagManagePage extends StatelessWidget {
 }
 
 
-class _TagCard extends StatelessWidget {
+class TagCell extends StatelessWidget {
 
   final Tag tag;
   final bool isCurrent;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  const _TagCard({
+  const TagCell({
     required this.tag,
     required this.isCurrent,
     required this.onTap,
@@ -110,7 +107,7 @@ class _TagCard extends StatelessWidget {
           vertical:16,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -168,7 +165,6 @@ class _TagCard extends StatelessWidget {
     );
   }
 }
-
 
 class _EmptyView extends StatelessWidget {
 

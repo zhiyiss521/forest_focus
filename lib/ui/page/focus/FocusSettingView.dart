@@ -1,16 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/core/repository/focus_record_repository.dart';
-import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:forest_focus/ui/widget/focus_record_edit_sheet.dart';
 import '../../../util/extension.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
-import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
-import 'package:forest_focus/ui/widget/FocusTime.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../widget/ff_dialog.dart';
 import 'focus_Provider.dart';
 import 'focus_setup_sheet.dart';
@@ -24,6 +20,7 @@ class FocusSettingView extends StatelessWidget {
 
     final provider = context.watch<FocusProvider>();
     final tagProvider = context.watch<TagProvider>();
+    final tag = tagProvider.getById(provider.session.currentTagId)!;
 
     return Column(
       children: [
@@ -38,7 +35,7 @@ class FocusSettingView extends StatelessWidget {
 
         Container(
           decoration: BoxDecoration(
-            color: AppColors.backgroundSecondary,
+            color: Color(tag.color).withOpacity(0.3),
             borderRadius: BorderRadius.circular(20),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -46,7 +43,7 @@ class FocusSettingView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               TagChip(
-                tag: tagProvider.getById(provider.session.currentTagId)!,
+                tag: tag,
                 onTap: () async{
                   if(provider.isSetting){
                     FocusSetupSheet.show(context);
@@ -63,10 +60,10 @@ class FocusSettingView extends StatelessWidget {
                 },
               ),
               if (!provider.isSetting)
-                const Icon(
+                Icon(
                   Icons.edit,
                   size: 18,
-                  color: AppColors.textLight,
+                  color: Theme.of(context).cardColor,
                 ),
             ],
           ),

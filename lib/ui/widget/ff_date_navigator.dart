@@ -18,10 +18,6 @@ class FFDateNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height,
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   borderRadius: BorderRadius.circular(16),
-      // ),
       child: Row(
         children: [
           _ArrowButton(

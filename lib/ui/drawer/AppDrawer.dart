@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:forest_focus/theme/app_colors.dart';
 import 'package:forest_focus/ui/page/tag/tag_manage_page.dart';
 import '../../core/service/notification_service.dart';
 import '../page/set/settings_page.dart';
@@ -14,7 +13,6 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       width: 200,
-      backgroundColor: AppColors.background,
       child: ListView(
         children: [
           ListTile(

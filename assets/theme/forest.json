@@ -1,0 +1,15 @@
+{
+  "id": "forest",
+  "name": "Forest",
+  "colors": {
+    "background": "#F8F1E7",
+    "card": "#FFFFFF",
+    "text": "#2F2A24",
+    "textSecondary": "#8D8275",
+    "primary": "#4CAF93",
+    "onPrimary": "#FFFFFF",
+    "secondary": "#D7E8D0",
+    "surface": "#F1E8D8",
+    "danger": "#E57373"
+  }
+}

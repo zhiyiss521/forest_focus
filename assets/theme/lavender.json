@@ -1,0 +1,15 @@
+{
+  "id": "lavender",
+  "name": "Lavender",
+  "colors": {
+    "background": "#F5F0FF",
+    "card": "#FFFFFF",
+    "text": "#352F44",
+    "textSecondary": "#817A8A",
+    "primary": "#9575CD",
+    "onPrimary": "#FFFFFF",
+    "secondary": "#E1D7F5",
+    "surface": "#EEE6FA",
+    "danger": "#E57373"
+  }
+}

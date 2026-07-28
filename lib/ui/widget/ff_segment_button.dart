@@ -36,7 +36,7 @@ class FFSegmentButton<T> extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: active
-                      ? const Color(0xFFE8B84A)
+                      ? Theme.of(context).colorScheme.primary
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(height / 2),
                 ),

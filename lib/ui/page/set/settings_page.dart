@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../../theme/app_colors.dart';
+import 'package:forest_focus/theme/ff_theme_provider.dart';
+import 'package:forest_focus/ui/page/set/theme_picker_sheet.dart';
+import 'package:provider/provider.dart';
 import 'notification/nofification_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -8,8 +9,9 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<FFThemeProvider>().current!;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text("Settings"),
         centerTitle: true,
@@ -19,14 +21,15 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-
           _buildSectionTitle("Appearance"),
           _buildSection([
             _buildItem(
               icon: Icons.palette_outlined,
               title: "Theme",
-              value: "System",
-              onTap: () {},
+              value: theme.name,
+              onTap: () {
+                ThemePickerSheet.show(context);
+              },
             ),
             _buildItem(
               icon: Icons.language,
@@ -40,7 +43,7 @@ class SettingsPage extends StatelessWidget {
               value: "On",
               onTap: () {},
             ),
-          ]),
+          ],context),
 
           const SizedBox(height: 24),
 
@@ -58,7 +61,7 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-          ]),
+          ],context),
 
           const SizedBox(height: 24),
 
@@ -74,7 +77,7 @@ class SettingsPage extends StatelessWidget {
               title: "Import Data",
               onTap: () {},
             ),
-          ]),
+          ],context),
 
           const SizedBox(height: 24),
 
@@ -85,7 +88,7 @@ class SettingsPage extends StatelessWidget {
               title: "Version",
               value: "1.0.0",
             ),
-          ]),
+          ],context),
           const SizedBox(height: 30),
         ],
       ),
@@ -105,11 +108,11 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(List<Widget> children) {
+  Widget _buildSection(List<Widget> children,BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(20),
+        color: Theme.of(context).cardColor
       ),
       child: Column(children: children),
     );

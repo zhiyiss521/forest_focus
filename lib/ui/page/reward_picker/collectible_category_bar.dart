@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/theme/ff_theme_provider.dart';
+import 'package:provider/provider.dart';
 import '../../../model/collectible_item.dart';
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_size.dart';
 
 class CollectibleCategoryBar extends StatelessWidget {
@@ -58,6 +59,8 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.watch<FFThemeProvider>().current!.colors;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -72,7 +75,7 @@ class _CategoryChip extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: selected
-                ? AppColors.secondary
+                ? colors.secondaryColor
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(999),
           ),
@@ -83,7 +86,6 @@ class _CategoryChip extends StatelessWidget {
                 fontSize: 14,
                 fontWeight:
                 selected ? FontWeight.w700 : FontWeight.w500,
-                color: AppColors.textDark,
               ),
             ),
           ),
