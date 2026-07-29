@@ -179,7 +179,7 @@ abstract class AppLocalizations {
   /// No description provided for @time_line.
   ///
   /// In en, this message translates to:
-  /// **'Time Line'**
+  /// **'Timeline'**
   String get time_line;
 
   /// No description provided for @tag.
@@ -217,6 +217,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Year'**
   String get year;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @note_placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Write down your thoughts'**
+  String get note_placeholder;
+
+  /// No description provided for @alert_cancel_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to give up?'**
+  String get alert_cancel_title;
+
+  /// No description provided for @alert_cancel_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You will not receive a reward if you give up.'**
+  String get alert_cancel_desc;
+
+  /// No description provided for @give_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Give Up'**
+  String get give_up;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get duration;
+
+  /// No description provided for @minute.
+  ///
+  /// In en, this message translates to:
+  /// **'Minute'**
+  String get minute;
+
+  /// No description provided for @flower.
+  ///
+  /// In en, this message translates to:
+  /// **'Flower'**
+  String get flower;
+
+  /// No description provided for @shrub.
+  ///
+  /// In en, this message translates to:
+  /// **'Shrub'**
+  String get shrub;
+
+  /// No description provided for @grass.
+  ///
+  /// In en, this message translates to:
+  /// **'Grass'**
+  String get grass;
+
+  /// No description provided for @mushroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Mushroom'**
+  String get mushroom;
+
+  /// No description provided for @tree.
+  ///
+  /// In en, this message translates to:
+  /// **'Tree'**
+  String get tree;
+
+  /// No description provided for @house.
+  ///
+  /// In en, this message translates to:
+  /// **'House'**
+  String get house;
+
+  /// No description provided for @resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get resume;
 }
 
 class _AppLocalizationsDelegate

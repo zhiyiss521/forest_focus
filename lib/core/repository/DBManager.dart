@@ -66,7 +66,7 @@ class DBManager {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS focus_tag(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
+      name TEXT NOT NULL UNIQUE,
       color INTEGER NOT NULL,
       icon TEXT NOT NULL
     )
@@ -104,34 +104,19 @@ class DBManager {
 
     const tags = [
       {
-        'name': '学习',
+        'name': 'study',
         'color': 0xFF4CAF50,
         'icon': '📚',
       },
       {
-        'name': '工作',
-        'color': 0xFF2196F3,
-        'icon': '💼',
-      },
-      {
-        'name': '阅读',
+        'name': 'read',
         'color': 0xFFFF9800,
         'icon': '📖',
       },
       {
-        'name': '运动',
+        'name': "run",
         'color': 0xFFF44336,
         'icon': '🏃',
-      },
-      {
-        'name': '写作',
-        'color': 0xFF9C27B0,
-        'icon': '✍️',
-      },
-      {
-        'name': '编程',
-        'color': 0xFF607D8B,
-        'icon': '💻',
       },
     ];
 

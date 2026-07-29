@@ -48,7 +48,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statistics => 'Statistics';
 
   @override
-  String get time_line => 'Time Line';
+  String get time_line => 'Timeline';
 
   @override
   String get tag => 'Tag';
@@ -67,4 +67,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get year => 'Year';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get note_placeholder => 'Write down your thoughts';
+
+  @override
+  String get alert_cancel_title => 'Are you sure you want to give up?';
+
+  @override
+  String get alert_cancel_desc =>
+      'You will not receive a reward if you give up.';
+
+  @override
+  String get give_up => 'Give Up';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get duration => 'Duration';
+
+  @override
+  String get minute => 'Minute';
+
+  @override
+  String get flower => 'Flower';
+
+  @override
+  String get shrub => 'Shrub';
+
+  @override
+  String get grass => 'Grass';
+
+  @override
+  String get mushroom => 'Mushroom';
+
+  @override
+  String get tree => 'Tree';
+
+  @override
+  String get house => 'House';
+
+  @override
+  String get resume => 'Resume';
 }

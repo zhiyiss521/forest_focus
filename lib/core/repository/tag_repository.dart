@@ -16,6 +16,11 @@ class TagRepository {
     return result.map(Tag.fromMap).toList();
   }
 
+  Future<bool> isEmpty() async {
+    final count = await this.count();
+    return count == 0;
+  }
+
   Future<Tag?> findById(int? id) async {
     if (id == null) return null;
 

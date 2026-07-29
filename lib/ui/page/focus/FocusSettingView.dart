@@ -94,14 +94,14 @@ class FocusSettingView extends StatelessWidget {
             children: [
               FFButton(
                 type: FFButtonType.secondary,
-                text: "Cancel",
+                text: AppLocalizations.of(context)!.cancel,
                 onPressed: (){
                   FFDialog.show(
                     context,
-                    title: "确定要放弃吗?",
-                    message: "放弃不会得到奖励",
-                    cancelText: "取消",
-                    confirmText: "放弃",
+                    title: AppLocalizations.of(context)!.alert_cancel_title,
+                    message: AppLocalizations.of(context)!.alert_cancel_desc,
+                    cancelText: AppLocalizations.of(context)!.cancel,
+                    confirmText: AppLocalizations.of(context)!.give_up,
                     onConfirm: () async {
                       Navigator.of(context).pop();
                       await provider.clkCancel();
@@ -117,7 +117,7 @@ class FocusSettingView extends StatelessWidget {
               const SizedBox(width: 16),
 
               FFButton(
-                text: provider.isRunning ? "Pause" : "Resume",
+                text: provider.isRunning ? AppLocalizations.of(context)!.pause : AppLocalizations.of(context)!.resume,
                 onPressed: provider.isRunning ? provider.clkPause : provider.clkResume,
                 width: 100,
               )

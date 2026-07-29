@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/l10n/app_localizations.dart';
+import 'package:forest_focus/l10n/app_localizations_en.dart';
 import 'package:forest_focus/theme/ff_theme_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../model/collectible_item.dart';
@@ -36,7 +38,7 @@ class CollectibleCategoryBar extends StatelessWidget {
           final selected = type == selectedType;
 
           return _CategoryChip(
-            title: type?.displayName ?? "全部",
+            title: type?.displayName ?? AppLocalizations.of(context)!.all,
             selected: selected,
             onTap: () => onSelected(type),
           );

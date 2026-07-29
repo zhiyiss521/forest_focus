@@ -67,4 +67,52 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get year => '年';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get save => '保存';
+
+  @override
+  String get note_placeholder => '记录一下现在的想法';
+
+  @override
+  String get alert_cancel_title => '确认要放弃吗？';
+
+  @override
+  String get alert_cancel_desc => '放弃不会得到奖励？';
+
+  @override
+  String get give_up => '放弃';
+
+  @override
+  String get all => '全部';
+
+  @override
+  String get duration => '时间';
+
+  @override
+  String get minute => '分钟';
+
+  @override
+  String get flower => '花';
+
+  @override
+  String get shrub => '灌木';
+
+  @override
+  String get grass => '草';
+
+  @override
+  String get mushroom => '蘑菇';
+
+  @override
+  String get tree => '树';
+
+  @override
+  String get house => '房子';
+
+  @override
+  String get resume => '恢复';
 }
