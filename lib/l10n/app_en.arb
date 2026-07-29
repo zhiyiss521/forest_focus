@@ -1,0 +1,22 @@
+{
+  "appName": "Focus",
+  "start": "Start",
+  "pause": "Pause",
+  "finish": "Finish",
+  "theme": "Theme",
+  "language": "Language",
+  "appearance": "Appearance",
+  "sound": "Sound",
+  "notification": "Notification",
+  "about": "About",
+  "version": "Version",
+  "settings": "Settings",
+  "statistics": "Statistics",
+  "time_line": "Time Line",
+  "tag": "Tag",
+  "new_tag": "Create New Tag",
+  "day": "Day",
+  "week": "Week",
+  "month": "Month",
+  "year": "Year"
+}

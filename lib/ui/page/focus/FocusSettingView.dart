@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:forest_focus/core/repository/focus_record_repository.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:forest_focus/ui/widget/focus_record_edit_sheet.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../util/extension.dart';
 import 'package:forest_focus/ui/page/focus/tag_chip.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
@@ -82,7 +83,7 @@ class FocusSettingView extends StatelessWidget {
         if(provider.isSetting)
           FFButton(
             onPressed: provider.clkStart,
-            text: "Start",
+            text: AppLocalizations.of(context)!.start,
             width: 100,
           ),
 

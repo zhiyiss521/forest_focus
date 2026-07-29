@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/l10n/app_localizations.dart';
 import 'package:forest_focus/theme/ff_theme_provider.dart';
-import 'package:forest_focus/ui/page/set/theme_picker_sheet.dart';
 import 'package:provider/provider.dart';
+import '../../../theme/ff_theme.dart';
+import '../../widget/ff_picker_sheet.dart';
+import 'local_provider.dart';
 import 'notification/nofification_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -9,11 +12,12 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.watch<FFThemeProvider>().current!;
+    final themeProvider = context.watch<FFThemeProvider>();
+    final localProvider = context.watch<LocaleProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Settings"),
+        title: Text(AppLocalizations.of(context)!.settings),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -21,25 +25,53 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          _buildSectionTitle("Appearance"),
+          _buildSectionTitle(AppLocalizations.of(context)!.appearance),
           _buildSection([
             _buildItem(
               icon: Icons.palette_outlined,
-              title: "Theme",
-              value: theme.name,
+              title: AppLocalizations.of(context)!.theme,
+              value: themeProvider.current!.name,
               onTap: () {
-                ThemePickerSheet.show(context);
+                FFPickerSheet.show<FFTheme>(
+                  context,
+                  title:AppLocalizations.of(context)!.theme,
+                  items: themeProvider.themes,
+                  itemLabel: (theme) {
+                    return theme.name;
+                  },
+                  isSelected: (theme) {
+                    return themeProvider.current?.id == theme.id;
+                  },
+                  onSelected: (theme) {
+                    themeProvider.changeTheme(theme);
+                  },
+                );
               },
             ),
             _buildItem(
               icon: Icons.language,
-              title: "Language",
-              value: "English",
-              onTap: () {},
+              title: AppLocalizations.of(context)!.language,
+              value: localProvider.currentLocalName,
+              onTap: () {
+                FFPickerSheet.show<Locale>(
+                  context,
+                  title: AppLocalizations.of(context)!.language,
+                  items: LocaleProvider.locales,
+                  itemLabel:(local){
+                    return LocaleProvider.localeName(local);
+                  },
+                  isSelected: (locale) {
+                    return localProvider.locale.languageCode == locale.languageCode;
+                  },
+                  onSelected: (locale) {
+                    localProvider.changeLocale(locale);
+                  },
+                );
+              },
             ),
             _buildItem(
               icon: Icons.volume_up_outlined,
-              title: "Sound",
+              title: AppLocalizations.of(context)!.sound,
               value: "On",
               onTap: () {},
             ),
@@ -47,11 +79,11 @@ class SettingsPage extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          _buildSectionTitle("Notifications"),
+          _buildSectionTitle(AppLocalizations.of(context)!.notification),
           _buildSection([
             _buildItem(
               icon: Icons.notifications_outlined,
-              title: "Notification",
+              title: AppLocalizations.of(context)!.notification,
               onTap: () {
                 Navigator.push(
                   context,
@@ -64,12 +96,12 @@ class SettingsPage extends StatelessWidget {
           ],context),
 
           const SizedBox(height: 24),
-          
-          _buildSectionTitle("About"),
+
+          _buildSectionTitle(AppLocalizations.of(context)!.about),
           _buildSection([
             _buildItem(
               icon: Icons.info_outline,
-              title: "Version",
+              title: AppLocalizations.of(context)!.version,
               value: "1.0.0",
             ),
           ],context),

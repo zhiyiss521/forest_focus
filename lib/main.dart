@@ -5,11 +5,13 @@ import 'package:forest_focus/theme/ff_theme_provider.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
 import 'package:forest_focus/ui/page/focus/focus_Provider.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
+import 'package:forest_focus/ui/page/set/local_provider.dart';
 import 'package:forest_focus/ui/page/set/notification/notification_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:provider/provider.dart';
 import 'core/repository/DBManager.dart';
 import 'core/service/notification_service.dart';
+import 'l10n/app_localizations.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,8 @@ Future<void> main() async{
   await notification.load();
   final theme = FFThemeProvider();
   await theme.load();
+  final local = LocaleProvider();
+  await local.load();
 
   runApp(
     MultiProvider(
@@ -47,6 +51,7 @@ Future<void> main() async{
         ChangeNotifierProvider.value(value: tag),
         ChangeNotifierProvider.value(value: focus),
         ChangeNotifierProvider.value(value: notification),
+        ChangeNotifierProvider.value(value: local)
       ],
       child: App()
     ),
@@ -61,10 +66,15 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final colors = context.watch<FFThemeProvider>().current!.colors;
+    final localProvider = context.watch<LocaleProvider>();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       builder: FlutterSmartDialog.init(),
+      locale: localProvider.locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: LocaleProvider.locales,
+      home: const FocusPage(),
       theme: ThemeData(
         scaffoldBackgroundColor: colors.backgroundColor,
         cardColor: colors.cardColor,
@@ -91,7 +101,6 @@ class App extends StatelessWidget {
           ),
         ),
       ),
-      home: const FocusPage(),
     );
   }
 }

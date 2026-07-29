@@ -26,6 +26,9 @@ dependencies:
   timezone: ^0.10.1
   app_settings: ^5.1.1 # 跳转系统设置页的
   flutter_native_splash: ^2.4.0
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 
 dev_dependencies:
@@ -38,6 +41,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - assets/
