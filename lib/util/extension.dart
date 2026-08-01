@@ -1,3 +1,5 @@
+import '../l10n/app_localizations.dart';
+
 extension DurationExtension on Duration {
 
   String get mmss {

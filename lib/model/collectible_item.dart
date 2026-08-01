@@ -1,27 +1,27 @@
 enum CollectibleType {
   flower(
     code: 'flower',
-    displayName: '花',
+    displayName: "flower",
   ),
   shrub(
     code: 'shrub',
-    displayName: '灌木',
+    displayName: 'shrub',
   ),
   grass(
     code: 'grass',
-    displayName: '草',
+    displayName: 'grass',
   ),
   mushroom(
     code: 'mushroom',
-    displayName: '蘑菇',
+    displayName: 'mushroom',
   ),
   tree(
     code: 'tree',
-    displayName: '树',
+    displayName: 'tree',
   ),
   house(
     code: 'house',
-    displayName: '房子',
+    displayName: 'house',
   );
 
   final String code;

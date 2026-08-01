@@ -11,6 +11,10 @@ class FFColorConfig {
   final String surface; // 进图条中间的背景色
   final String danger; // error按钮的颜色
 
+
+
+
+
   const FFColorConfig({
     required this.background,
     required this.card,

@@ -47,9 +47,6 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.park),
             title: Text(
               AppLocalizations.of(context)!.tag,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary
-              ),
             ),
             onTap: () {
               Navigator.pop(context);
