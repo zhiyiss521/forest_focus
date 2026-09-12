@@ -3,21 +3,27 @@ import 'package:forest_focus/theme/app_size.dart';
 
 import 'ff_button.dart';
 
-class FFDialog extends StatelessWidget {
+class FFInputDialog extends StatefulWidget {
   final String title;
   final String? message;
+  final String hintText;
   final String confirmText;
   final String? cancelText;
-  final Future<void> Function() onConfirm;
+  final String? initialValue;
+  final TextInputType? keyboardType;
+  final Future<void> Function(String value) onConfirm;
   final VoidCallback? onCancel;
 
-  const FFDialog({
+  const FFInputDialog({
     super.key,
     required this.title,
     this.message,
+    required this.hintText,
     required this.confirmText,
-    required this.onConfirm,
     this.cancelText,
+    this.initialValue,
+    this.keyboardType,
+    required this.onConfirm,
     this.onCancel,
   });
 
@@ -25,22 +31,78 @@ class FFDialog extends StatelessWidget {
       BuildContext context, {
         required String title,
         String? message,
+        required String hintText,
         required String confirmText,
         String? cancelText,
-        required Future<void> Function() onConfirm,
+        String? initialValue,
+        TextInputType? keyboardType,
+        required Future<void> Function(String value) onConfirm,
         VoidCallback? onCancel,
       }) {
     return showDialog<T>(
       context: context,
-      builder: (_) => FFDialog(
+      builder: (_) => FFInputDialog(
         title: title,
         message: message,
+        hintText: hintText,
         confirmText: confirmText,
         cancelText: cancelText,
+        initialValue: initialValue,
+        keyboardType: keyboardType,
         onConfirm: onConfirm,
         onCancel: onCancel,
       ),
     );
+  }
+
+  @override
+  State<FFInputDialog> createState() => _FFInputDialogState();
+}
+
+class _FFInputDialogState extends State<FFInputDialog> {
+  late final TextEditingController _controller;
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = TextEditingController(
+      text: widget.initialValue,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _confirm() async {
+    final value = _controller.text.trim();
+
+    if (value.isEmpty) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await widget.onConfirm(value);
+
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -60,56 +122,73 @@ class FFDialog extends StatelessWidget {
               bottom: -offset,
               child: _paper(),
             ),
+
             _paper(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    title,
+                    widget.title,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  if (message != null) ...[
+
+                  if (widget.message != null) ...[
+                    const SizedBox(height: 12),
                     Text(
-                      message!,
+                      widget.message!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 15,
                         height: 1.4,
                       ),
                     ),
-                    const SizedBox(height: 24),
                   ],
+
+                  const SizedBox(height: 24),
+
+                  TextField(
+                    controller: _controller,
+                    autofocus: true,
+                    keyboardType: widget.keyboardType,
+                    enabled: !_isLoading,
+                    decoration: InputDecoration(
+                      hintText: widget.hintText,
+                    ),
+                    onSubmitted: (_) {
+                      if (!_isLoading) {
+                        _confirm();
+                      }
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
+
                   Row(
                     children: [
-                      if (cancelText != null) ...[
+                      if (widget.cancelText != null) ...[
                         Expanded(
                           child: FFButton(
                             type: FFButtonType.secondary,
                             height: 44,
-                            text: cancelText!,
-                            onPressed:
-                            onCancel ??
+                            text: widget.cancelText!,
+                            onPressed: _isLoading
+                                ? null
+                                : widget.onCancel ??
                                     () => Navigator.of(context).pop(),
                           ),
                         ),
                         const SizedBox(width: 12),
                       ],
+
                       Expanded(
                         child: FFButton(
                           height: 44,
-                          text: confirmText,
-                          onPressed: () async {
-                            await onConfirm();
-
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-                          },
+                          text: widget.confirmText,
+                          onPressed: _isLoading ? null : _confirm,
                         ),
                       ),
                     ],

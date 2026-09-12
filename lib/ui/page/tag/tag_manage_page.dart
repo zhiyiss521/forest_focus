@@ -69,7 +69,7 @@ class TagManagePage extends StatelessWidget {
       message: "确定删除「${tag.name}」吗？",
       confirmText: "删除",
       cancelText: "取消",
-      onConfirm: () {
+      onConfirm: () async{
         Navigator.pop(context,true);
       },
     );

@@ -29,7 +29,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-
+  dio: ^5.9.0
+  logger: ^2.7.0
+  stomp_dart_client: ^3.0.1
 
 dev_dependencies:
   flutter_test:

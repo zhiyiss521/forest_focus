@@ -1,7 +1,7 @@
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
-class HUD {
-  HUD._();
+class FFHUD {
+  FFHUD._();
 
   /// Toast
   static void showToast(String message) {

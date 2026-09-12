@@ -83,11 +83,11 @@ class TagProvider extends ChangeNotifier {
   Future<void> delete(int id) async {
     final total = await TagRepository.instance.count();
     if (total <= 1) {
-      HUD.showError("至少保留一个标签");
+      FFHUD.showError("至少保留一个标签");
       return;
     }
     if (await TagRepository.instance.hasFocusRecord(id)) {
-      HUD.showError("当前有记录已经使用了此标签");
+      FFHUD.showError("当前有记录已经使用了此标签");
       return;
     }
 
