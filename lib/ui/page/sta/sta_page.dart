@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/sta_range.dart';
 import 'package:forest_focus/ui/page/sta/reward_card.dart';
 import 'package:provider/provider.dart';
-import '../../../model/sta_range.dart';
-import '../../../model/tag.dart';
 import '../../widget/ff_date_navigator.dart';
 import '../../widget/ff_segment_button.dart';
 import '../../widget/ff_tag_select_dialog.dart';

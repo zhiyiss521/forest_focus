@@ -1,9 +1,5 @@
 import 'package:flutter/foundation.dart';
-
-import '../../../common/friend_provider.dart';
-import '../../../core/service/websocket_service.dart';
-import '../../../network/api_service.dart';
-
+import '../../../core/provider/friend_provider.dart';
 
 class FriendPageProvider extends ChangeNotifier {
   final FriendProvider friendProvider;

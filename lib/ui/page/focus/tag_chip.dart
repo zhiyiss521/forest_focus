@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../model/tag.dart';
+import 'package:forest_focus/core/model/tag.dart';
 
 class TagChip extends StatelessWidget {
   final Tag tag;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/tag.dart';
 
 import '../../../core/repository/tag_repository.dart';
-import '../../../model/tag.dart';
 import '../../widget/hud.dart';
 
 class TagProvider extends ChangeNotifier {

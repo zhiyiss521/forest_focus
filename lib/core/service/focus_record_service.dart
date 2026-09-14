@@ -1,4 +1,5 @@
-import '../../model/focus_record.dart';
+import 'package:forest_focus/core/model/focus_record.dart';
+
 import '../repository/focus_record_repository.dart';
 
 class FocusRecordService {

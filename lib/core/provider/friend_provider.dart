@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:forest_focus/core/model/firend.dart';
+import 'package:forest_focus/core/model/friend_request.dart';
+import 'package:forest_focus/core/network/api_service.dart';
+import 'package:forest_focus/core/util/forest_log.dart';
 import 'package:forest_focus/ui/widget/hud.dart';
 
-import '../../../network/api_service.dart';
-import '../core/service/websocket_service.dart';
-import '../model/firend.dart';
-import '../model/friend_request.dart';
-import '../util/forest_log.dart';
+import '../service/websocket_service.dart';
 
 class FriendProvider extends ChangeNotifier {
 

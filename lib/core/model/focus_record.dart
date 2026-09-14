@@ -1,4 +1,4 @@
-import '../core/constants/app_constants.dart';
+import 'package:forest_focus/core/constants/app_constants.dart';
 
 class FocusRecord {
   int? id;

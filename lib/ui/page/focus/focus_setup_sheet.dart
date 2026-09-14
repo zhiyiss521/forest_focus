@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/collectible_item.dart';
+import 'package:forest_focus/core/model/tag.dart';
+import 'package:forest_focus/core/util/extension.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:forest_focus/ui/widget/tag_select.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../model/collectible_item.dart';
-import '../../../model/tag.dart';
 import '../../../theme/ff_theme_provider.dart';
-import '../../../util/extension.dart';
 import '../../widget/inventory_grid.dart';
 import '../../widget/inventory_slot.dart';
 import '../reward_picker/collectible_category_bar.dart';

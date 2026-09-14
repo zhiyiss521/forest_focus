@@ -1,4 +1,4 @@
-import '../../model/tag.dart';
+import '../model/tag.dart';
 import 'DBManager.dart';
 
 class TagRepository {

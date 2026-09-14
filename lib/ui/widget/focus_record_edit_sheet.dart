@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/focus_record.dart';
 import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:forest_focus/ui/widget/tag_select.dart';
 import 'package:provider/provider.dart';
-import '../../../model/focus_record.dart';
 import '../page/reward_picker/collectible_provider.dart';
 import '../page/tag/tag_provider.dart';
 

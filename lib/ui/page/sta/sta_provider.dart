@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/collectible_item.dart';
+import 'package:forest_focus/core/model/focus_record.dart';
+import 'package:forest_focus/core/model/sta_range.dart';
+import 'package:forest_focus/core/model/tag.dart';
 import '../../../core/repository/collectible_repository.dart';
 import '../../../core/repository/focus_record_repository.dart';
 import '../../../core/repository/tag_repository.dart';
-import '../../../model/collectible_item.dart';
-import '../../../model/focus_record.dart';
-import '../../../model/sta_range.dart';
-import '../../../model/tag.dart';
 
 class StaProvider extends ChangeNotifier {
   final _recordRepository = FocusRecordRepository.instance;

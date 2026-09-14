@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/FocusState.dart';
+import 'package:forest_focus/core/model/focus_record.dart';
+import 'package:forest_focus/core/model/focus_session.dart';
 import 'package:forest_focus/core/repository/collectible_repository.dart';
 import 'package:forest_focus/core/repository/tag_repository.dart';
-import 'package:forest_focus/util/extension.dart';
+import 'package:forest_focus/core/util/extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/repository/focus_record_repository.dart';
 import '../../../core/service/notification_service.dart';
-import '../../../model/FocusState.dart';
-import '../../../model/focus_record.dart';
-import '../../../model/focus_session.dart';
 
 class FocusProvider extends ChangeNotifier {
 

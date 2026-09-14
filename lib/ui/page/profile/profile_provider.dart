@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../../../common/auth_provider.dart';
-import '../../../network/api_service.dart';
+import 'package:forest_focus/core/network/api_service.dart';
+import '../../../core/provider/auth_provider.dart';
 
 class ProfileProvider extends ChangeNotifier {
   final AuthProvider authProvider;

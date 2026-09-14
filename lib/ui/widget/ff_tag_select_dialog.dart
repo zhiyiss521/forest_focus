@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/tag.dart';
 import '../../theme/app_size.dart';
-import '../../model/tag.dart';
 import 'ff_button.dart';
 
 class FFTagSelectDialog extends StatefulWidget {

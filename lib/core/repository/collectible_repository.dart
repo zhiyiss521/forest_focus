@@ -1,4 +1,4 @@
-import '../../model/collectible_item.dart';
+import '../model/collectible_item.dart';
 import 'DBManager.dart';
 
 class CollectibleRepository {

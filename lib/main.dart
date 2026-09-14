@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:forest_focus/common/friend_provider.dart';
+import 'package:forest_focus/core/provider/friend_provider.dart';
 import 'package:forest_focus/core/repository/tag_repository.dart';
 import 'package:forest_focus/router/ForestRouter.dart';
 import 'package:forest_focus/theme/ff_theme_provider.dart';
@@ -13,11 +13,10 @@ import 'package:forest_focus/ui/page/set/local_provider.dart';
 import 'package:forest_focus/ui/page/set/notification/notification_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_provider.dart';
 import 'package:provider/provider.dart';
-import 'common/auth_provider.dart';
+import 'core/provider/auth_provider.dart';
 import 'core/repository/DBManager.dart';
 import 'core/service/notification_service.dart';
 import 'l10n/app_localizations.dart';
-import 'model/tag.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/firend.dart';
 import 'package:forest_focus/router/ForestRouter.dart';
 import 'package:forest_focus/ui/page/friendRequest/friend_request_page.dart';
 import 'package:provider/provider.dart';
-
-import '../../../common/friend_provider.dart';
-import '../../../model/firend.dart';
+import '../../../core/provider/friend_provider.dart';
 import 'friend_page_provider.dart';
 
 class FriendPage extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/tag.dart';
 import 'package:forest_focus/theme/ff_theme_provider.dart';
 import 'package:forest_focus/ui/page/tag/tag_edit_page.dart';
 import 'package:provider/provider.dart';
-import '../../../model/tag.dart';
 import '../../widget/ff_button.dart';
 import '../../widget/ff_dialog.dart';
 import 'tag_provider.dart';

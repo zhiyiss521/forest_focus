@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/tag.dart';
 import 'package:provider/provider.dart';
-
-import '../../../model/tag.dart';
 import '../../widget/ff_button.dart';
 import 'tag_provider.dart';
 

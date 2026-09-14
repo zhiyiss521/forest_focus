@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/FocusState.dart';
 import 'package:forest_focus/ui/page/focus/FocusSettingView.dart';
 import 'package:forest_focus/ui/widget/ff_segment_button.dart';
 import 'package:provider/provider.dart';
-import '../../../model/FocusState.dart';
 import '../../drawer/AppDrawer.dart';
 import 'focus_Provider.dart';
 

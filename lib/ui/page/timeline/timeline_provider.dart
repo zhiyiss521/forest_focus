@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
-
+import 'package:forest_focus/core/model/focus_record.dart';
 import '../../../core/repository/focus_record_repository.dart';
-import '../../../model/focus_record.dart';
 
 class TimelineProvider extends ChangeNotifier {
 

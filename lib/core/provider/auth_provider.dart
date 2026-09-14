@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:forest_focus/util/forest_log.dart';
+import 'package:forest_focus/core/model/user.dart';
+import 'package:forest_focus/core/util/forest_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../core/service/websocket_service.dart';
-import '../model/user.dart';
+import '../service/websocket_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   static const String _userKey = 'user';

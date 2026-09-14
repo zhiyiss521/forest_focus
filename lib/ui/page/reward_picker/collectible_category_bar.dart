@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/collectible_item.dart';
 import 'package:forest_focus/l10n/app_localizations.dart';
 import 'package:forest_focus/l10n/app_localizations_en.dart';
 import 'package:forest_focus/theme/ff_theme_provider.dart';
 import 'package:provider/provider.dart';
-import '../../../model/collectible_item.dart';
 import '../../../theme/app_size.dart';
 
 class CollectibleCategoryBar extends StatelessWidget {

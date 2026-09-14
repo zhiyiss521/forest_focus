@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/friend_request.dart';
 import 'package:provider/provider.dart';
-
-import '../../../common/friend_provider.dart';
-import '../../../model/friend_request.dart';
+import '../../../core/provider/friend_provider.dart';
 import '../../widget/ff_input_dialog.dart';
 import 'friend_request_page_provider.dart';
 

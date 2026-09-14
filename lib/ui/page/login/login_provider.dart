@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/user.dart';
+import 'package:forest_focus/core/network/api_service.dart';
 import 'package:forest_focus/ui/page/focus/FocusPage.dart';
 import 'package:forest_focus/ui/page/register/register_page.dart';
 import 'package:provider/provider.dart';
-import '../../../common/auth_provider.dart';
-import '../../../model/user.dart';
-import '../../../network/api_service.dart';
+import '../../../core/provider/auth_provider.dart';
 import '../../../router/ForestRouter.dart';
 import '../../widget/hud.dart';
 

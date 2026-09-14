@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import '../../model/tag.dart';
+
+import '../../core/model/tag.dart';
 import '../page/focus/tag_chip.dart';
 
 class TagSelect extends StatelessWidget {

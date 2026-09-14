@@ -6,7 +6,7 @@ import 'package:forest_focus/ui/page/friend/firend_page.dart';
 import 'package:forest_focus/ui/page/profile/profile_page.dart';
 import 'package:forest_focus/ui/page/tag/tag_manage_page.dart';
 import 'package:provider/provider.dart';
-import '../../common/auth_provider.dart';
+import '../../core/provider/auth_provider.dart';
 import '../page/set/settings_page.dart';
 import '../page/sta/sta_page.dart';
 import '../page/timeline/timeline_page.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/collectible_item.dart' show CollectibleItem;
 import '../../../core/repository/collectible_repository.dart';
-import '../../../model/collectible_item.dart';
 
 // 这里会一次性读取出来，相当于全局变量了
 class CollectibleProvider extends ChangeNotifier {

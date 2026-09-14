@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
-import '../../common/auth_provider.dart';
+import '../provider/auth_provider.dart';
 
 class WebSocketService {
 

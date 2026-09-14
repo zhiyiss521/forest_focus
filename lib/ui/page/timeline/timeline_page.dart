@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forest_focus/core/model/focus_record.dart';
+import 'package:forest_focus/core/util/extension.dart';
 import 'package:forest_focus/ui/page/timeline/timeline_provider.dart';
-import 'package:forest_focus/util/extension.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/repository/focus_record_repository.dart';
-import '../../../model/focus_record.dart';
 import '../../widget/ff_dialog.dart';
 import '../../widget/focus_record_edit_sheet.dart';
 import '../reward_picker/collectible_provider.dart';

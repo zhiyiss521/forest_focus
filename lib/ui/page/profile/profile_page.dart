@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/profile/profile_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/auth_provider.dart';
+import '../../../core/provider/auth_provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
