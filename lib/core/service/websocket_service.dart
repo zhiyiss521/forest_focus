@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 import '../../common/auth_provider.dart';
@@ -11,6 +13,16 @@ class WebSocketService {
 
   bool _connected = false;
   bool get isConnected => _connected;
+
+  final List<Function(String type, dynamic data)> _listeners = [];
+
+  void addMessageListener(Function(String type, dynamic data) listener) {
+    _listeners.add(listener);
+  }
+
+  void removeMessageListener(Function(String type, dynamic data) listener) {
+    _listeners.remove(listener);
+  }
 
   void connect(AuthProvider authProvider) {
 
@@ -125,32 +137,6 @@ class WebSocketService {
     _client!.activate();
   }
 
-  void _subscribeUserMessages() {
-    
-    if (_client == null) {
-      return;
-    }
-
-    _client!.subscribe( // 订阅用户消息
-      destination: '/user/queue/messages',
-      callback: (StompFrame frame) {
-        print(
-          '========== 收到 WebSocket 消息 ==========',
-        );
-        print(
-          'headers = ${frame.headers}',
-        );
-        print(
-          'body = ${frame.body}',
-        );
-      },
-    );
-
-    print(
-      '========== 已订阅 /user/queue/messages ==========',
-    );
-  }
-
   void disconnect() {
 
     if (_client == null) {
@@ -169,6 +155,46 @@ class WebSocketService {
 
     print(
       '========== WebSocket 已断开 ==========',
+    );
+  }
+
+  void _subscribeUserMessages() {
+
+    if (_client == null) {
+      return;
+    }
+
+    _client!.subscribe( // 订阅用户消息
+      destination: '/user/queue/messages',
+      callback: (StompFrame frame) {
+        print(
+          '========== 收到 WebSocket 消息 ==========',
+        );
+        print(
+          'headers = ${frame.headers}',
+        );
+        print(
+          'body = ${frame.body}',
+        );
+
+        if (frame.body == null || frame.body!.isEmpty) {
+          return;
+        }
+
+        final body = jsonDecode(frame.body!);
+        final type = body['type'];
+        final data = body['data'];
+        print('WebSocket type = $type');
+        print('WebSocket data = $data');
+
+        for (final listener in _listeners) {
+          listener(type, data);
+        }
+      },
+    );
+
+    print(
+      '========== 已订阅 /user/queue/messages ==========',
     );
   }
 }

@@ -2,10 +2,28 @@ import 'package:flutter/foundation.dart';
 import 'package:forest_focus/ui/widget/hud.dart';
 
 import '../../../network/api_service.dart';
+import '../core/service/websocket_service.dart';
 import '../model/firend.dart';
 import '../model/friend_request.dart';
+import '../util/forest_log.dart';
 
 class FriendProvider extends ChangeNotifier {
+
+  FriendProvider() {
+    WebSocketService.instance.addMessageListener(
+      handleWebSocketMessage,
+    );
+  }
+
+  @override
+  void dispose() {
+    WebSocketService.instance.removeMessageListener(
+      handleWebSocketMessage,
+    );
+    super.dispose();
+  }
+
+
   List<Friend> _friends = [];
 
   List<FriendRequest> _friendRequests = [];
@@ -19,12 +37,14 @@ class FriendProvider extends ChangeNotifier {
   Future<void> loadFriends() async {
     try{
       final result = await ApiService.getFriends();
+      FFLog.d(result);
       _friends = (result as List)
           .map(
             (item) => Friend.fromJson(
           Map<String, dynamic>.from(item),
         ),
       ).toList();
+      FFLog.d(_friends);
     }catch (e){
 
     }
@@ -88,5 +108,30 @@ class FriendProvider extends ChangeNotifier {
     _friendRequests = [];
 
     notifyListeners();
+  }
+
+  int? getFriendIndexByUserId(int userId) {
+    var index = _friends.indexWhere( (friend) => friend.id == userId,);
+    if(index != -1){
+      return index;
+    }else{
+      return null;
+    }
+  }
+
+  void handleWebSocketMessage(String type, dynamic data) {
+    final userId = data as int;
+    switch (type) {
+      case 'FRIEND_ONLINE':
+        updateOnlineStatus(userId, true);
+        var friendIndex = getFriendIndexByUserId(userId);
+        if(friendIndex != null){
+          FFHUD.showToast("您的好友${friends[friendIndex].nickname}上线了");
+        }
+        break;
+      case 'FRIEND_OFFLINE':
+        updateOnlineStatus(userId, false);
+        break;
+    }
   }
 }

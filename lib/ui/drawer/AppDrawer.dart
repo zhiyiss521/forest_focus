@@ -31,9 +31,7 @@ class AppDrawer extends StatelessWidget {
             ),
             accountName: Text(user?.nickname?.isNotEmpty == true ? user!.nickname! : '未设置',
             ),
-            accountEmail: Text(
-              user?.email ?? '',
-            ),
+            accountEmail: Text( "${user?.email} id:${user?.id}"),
             onDetailsPressed: () {
               ForestRouter.push(const ProfilePage());
             },

@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
 
-class ForestLog {
+class FFLog {
   static final Logger _logger = Logger(
     printer: PrettyPrinter(
       methodCount: 0,

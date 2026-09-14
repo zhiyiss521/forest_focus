@@ -30,7 +30,7 @@ class AuthProvider extends ChangeNotifier {
         final data = jsonDecode(json);
 
         _user = User.fromJson( Map<String, dynamic>.from(data),);
-        ForestLog.d(_user);
+        FFLog.d(_user);
       } catch (_) {
         _user = null;
         await prefs.remove(_userKey);

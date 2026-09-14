@@ -130,7 +130,7 @@ class _ProfilePageContent extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.email_outlined),
                   title: const Text('邮箱'),
-                  subtitle: Text(user.email),
+                  subtitle: Text("${user.email}id:${user.id}"),
                 ),
               ],
             ),

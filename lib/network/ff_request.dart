@@ -166,7 +166,7 @@ class FFRequest {
     switch (e.type) {
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        ForestLog.d('HTTP status: $statusCode');
+        FFLog.d('HTTP status: $statusCode');
         if (statusCode == 401) {
           FFHUD.showToast('请重新登录');
 
@@ -248,13 +248,13 @@ class FFRequest {
       );
     }
 
-    ForestLog.d(
+    FFLog.d(
       buffer.toString(),
     );
   }
 
   static void _logResponse(Response response) {
-    ForestLog.d(
+    FFLog.d(
       '${response.requestOptions.method} '
           '${response.requestOptions.uri}\n'
           '[status]: ${response.statusCode}\n'
@@ -263,7 +263,7 @@ class FFRequest {
   }
 
   static void _logError(DioException error) {
-    ForestLog.d(
+    FFLog.d(
       'Network Error: '
           '${error.type} '
           '${error.message}',

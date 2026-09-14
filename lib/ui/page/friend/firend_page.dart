@@ -147,7 +147,7 @@ class _FriendPageContent extends StatelessWidget {
 
       title: Text(
         friend.nickname?.isNotEmpty == true
-            ? friend.nickname!
+            ? "${friend.nickname!} id: ${friend.id}"
             : '未设置昵称',
       ),
 
