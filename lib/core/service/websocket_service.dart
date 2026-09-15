@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:forest_focus/core/constants/app_constants.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 import '../provider/auth_provider.dart';
@@ -59,7 +60,7 @@ class WebSocketService {
       config: StompConfig(
 
         // Spring Boot WebSocket Endpoint
-        url: 'ws://192.168.205.55:8080/ws',
+        url: AppConstants.kBaseWSUrl,
 
         // STOMP CONNECT 请求头
         stompConnectHeaders: {

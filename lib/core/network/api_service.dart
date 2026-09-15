@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+
 import 'ff_request.dart';
 
 class ApiService {
@@ -33,6 +37,20 @@ class ApiService {
     );
   }
 
+  static Future<dynamic> uploadAvatar(File file) async {
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+      ),
+    });
+
+    return FFRequest.post(
+      '/api/users/avatar',
+      data: formData,
+    );
+  }
+
   // #################################### friend ########################################################################
   static Future<dynamic> getFriends() {
     return FFRequest.get(
@@ -60,5 +78,7 @@ class ApiService {
       '/api/friends/requests/$requestId/accept',
     );
   }
+
+
 
 }

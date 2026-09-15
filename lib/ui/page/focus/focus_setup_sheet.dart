@@ -8,7 +8,6 @@ import 'package:forest_focus/ui/widget/ff_button.dart';
 import 'package:forest_focus/ui/widget/tag_select.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../theme/ff_theme_provider.dart';
 import '../../widget/inventory_grid.dart';
 import '../../widget/inventory_slot.dart';
 import '../reward_picker/collectible_category_bar.dart';

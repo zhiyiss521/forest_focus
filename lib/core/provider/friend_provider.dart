@@ -126,7 +126,8 @@ class FriendProvider extends ChangeNotifier {
         updateOnlineStatus(userId, true);
         var friendIndex = getFriendIndexByUserId(userId);
         if(friendIndex != null){
-          FFHUD.showToast("您的好友${friends[friendIndex].nickname}上线了");
+          var friend = friends[friendIndex];
+          FFHUD.showFriendOnline(nickname: friend.nickname ?? friend.email,avatarUrl: friend.avatarUrl);
         }
         break;
       case 'FRIEND_OFFLINE':

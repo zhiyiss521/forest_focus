@@ -1,3 +1,6 @@
+import 'package:forest_focus/core/constants/app_constants.dart';
+import 'package:forest_focus/core/util/forest_log.dart';
+
 class User {
   final int id;
   final String email;
@@ -73,5 +76,20 @@ class User {
         'createdAt: $createdAt, '
         'updatedAt: $updatedAt'
         ')';
+  }
+
+  String? get avatarUrl {
+    if (avatar == null || avatar!.isEmpty) {
+      return null;
+    }
+
+    if (avatar!.startsWith('http://') ||
+        avatar!.startsWith('https://')) {
+      return avatar;
+    }
+
+    final ret = '${AppConstants.kBaseUrl}$avatar';
+    FFLog.d("avatarUrl:$ret");
+    return ret;
   }
 }

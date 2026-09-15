@@ -6,6 +6,7 @@ class FocusSession {
   final FocusState state;
   final Duration pausePassedDuration;
   final DateTime? endTime;
+  final bool isMultiPlayer;
 
   // 需要保存的用户设置
   final Duration userSetDuration;
@@ -23,11 +24,13 @@ class FocusSession {
     this.recordId,
     required this.currentCollectibleItemId,
     required this.currentTagId,
+    this.isMultiPlayer = false
   });
 
   FocusSession copyWith({
     FocusState? state,
     bool? isCountdown,
+    bool? isMultiPlayer,
     int? recordId,
     int? currentCollectibleItemId,
     int? currentTagId,
@@ -40,6 +43,7 @@ class FocusSession {
     return FocusSession(
       state: state ?? this.state,
       isCountdown: isCountdown ?? this.isCountdown,
+      isMultiPlayer: isMultiPlayer ?? this.isMultiPlayer,
       userSetDuration: userSetDuration ?? this.userSetDuration,
       pausePassedDuration: pausePassedDuration ?? this.pausePassedDuration,
       endTime: clearEndTime ? null : (endTime ?? this.endTime),
@@ -53,6 +57,7 @@ class FocusSession {
     return {
       'state': state.name,
       'isCountdown':isCountdown,
+      'isMultiPlayer':isMultiPlayer,
       'userSetDuration': userSetDuration.inSeconds,
       'pausePassedDuration': pausePassedDuration.inSeconds,
       'endTime': endTime?.millisecondsSinceEpoch,
@@ -69,6 +74,7 @@ class FocusSession {
         orElse: () => FocusState.setting,
       ),
       isCountdown: json['isCountdown'] as bool,
+      isMultiPlayer: json['isMultiPlayer'] as bool,
       userSetDuration: Duration(seconds: json['userSetDuration'] as int,),
       pausePassedDuration: Duration(seconds: json['pausePassedDuration'] as int,),
       endTime: json['endTime'] == null ? null : DateTime.fromMillisecondsSinceEpoch(json['endTime'] as int,),

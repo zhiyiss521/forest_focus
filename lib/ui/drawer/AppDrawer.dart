@@ -23,18 +23,51 @@ class AppDrawer extends StatelessWidget {
       width: 200,
       child: ListView(
         children: [
-          UserAccountsDrawerHeader(
-            decoration: const BoxDecoration(),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: user?.avatar != null ? NetworkImage(user!.avatar!) : null,
-              child: user?.avatar == null ? const Icon(Icons.person, size: 32) : null,
-            ),
-            accountName: Text(user?.nickname?.isNotEmpty == true ? user!.nickname! : '未设置',
-            ),
-            accountEmail: Text( "${user?.email} id:${user?.id}"),
-            onDetailsPressed: () {
+          InkWell(
+            onTap: () {
               ForestRouter.push(const ProfilePage());
             },
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 32,
+                    backgroundImage: user?.avatarUrl != null
+                        ? NetworkImage(user!.avatarUrl!)
+                        : null,
+                    child: user?.avatarUrl == null
+                        ? const Icon(Icons.person, size: 32)
+                        : null,
+                  ),
+                  const SizedBox(width: 16),
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user?.nickname?.isNotEmpty == true
+                              ? user!.nickname!
+                              : '未设置',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${user?.email} id:${user?.id}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
 
           ListTile(

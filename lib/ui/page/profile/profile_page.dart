@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:forest_focus/ui/page/profile/profile_provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/provider/auth_provider.dart';
+import '../../widget/ff_input_dialog.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -50,23 +53,28 @@ class _ProfilePageContent extends StatelessWidget {
 
           Center(
             child: GestureDetector(
-              onTap: () {
-                _showAvatarDialog(context);
+              onTap: profileProvider.isLoading ? null : () async {
+                final picker = ImagePicker();
+                final image = await picker.pickImage(source: ImageSource.gallery,);
+                if (image == null) {
+                  return;
+                }
+                profileProvider.setAvatarFile(
+                  File(image.path),
+                );
+                await profileProvider.uploadAvatar();
               },
               child: Stack(
                 children: [
                   CircleAvatar(
                     radius: 52,
-                    backgroundImage:
-                    user.avatar != null && user.avatar!.isNotEmpty
-                        ? NetworkImage(user.avatar!)
-                        : null,
-                    child: user.avatar == null || user.avatar!.isEmpty
-                        ? const Icon(
+                    backgroundImage: profileProvider.avatarFile != null ? FileImage(profileProvider.avatarFile!) :
+                    user.avatarUrl != null && user.avatarUrl!.isNotEmpty ? NetworkImage(user.avatarUrl!) : null,
+                    child: profileProvider.avatarFile == null && (user.avatarUrl == null || user.avatarUrl!.isEmpty) ?
+                    const Icon(
                       Icons.person,
                       size: 52,
-                    )
-                        : null,
+                    ) : null,
                   ),
                   Positioned(
                     right: 0,
@@ -118,10 +126,18 @@ class _ProfilePageContent extends StatelessWidget {
                         : '未设置',
                   ),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: profileProvider.isLoading
-                      ? null
-                      : () {
-                    _showNicknameDialog(context);
+                  onTap: profileProvider.isLoading ? null : () {
+                    FFInputDialog.show(
+                      context,
+                      title: '修改昵称',
+                      hintText: '请输入昵称',
+                      confirmText: '确认',
+                      cancelText: '取消',
+                      keyboardType: TextInputType.emailAddress,
+                      onConfirm: (ret) async {
+                        await profileProvider.updateNickname(ret);
+                      },
+                    );
                   },
                 ),
 
@@ -161,99 +177,4 @@ class _ProfilePageContent extends StatelessWidget {
     );
   }
 
-  void _showNicknameDialog(BuildContext context) {
-    final provider = context.read<ProfileProvider>();
-
-    final controller = TextEditingController(
-      text: provider.nickname,
-    );
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('修改昵称'),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            maxLength: 20,
-            decoration: const InputDecoration(
-              hintText: '请输入昵称',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-                controller.dispose();
-              },
-              child: const Text('取消'),
-            ),
-            TextButton(
-              onPressed: () async {
-                final nickname = controller.text.trim();
-
-                if (nickname.isEmpty) {
-                  return;
-                }
-
-                Navigator.pop(dialogContext);
-                controller.dispose();
-
-                await provider.updateNickname(nickname);
-              },
-              child: const Text('保存'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showAvatarDialog(BuildContext context) {
-    final provider = context.read<ProfileProvider>();
-
-    final controller = TextEditingController(
-      text: provider.avatar,
-    );
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('修改头像'),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              hintText: '请输入头像 URL',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-                controller.dispose();
-              },
-              child: const Text('取消'),
-            ),
-            TextButton(
-              onPressed: () async {
-                final avatar = controller.text.trim();
-
-                if (avatar.isEmpty) {
-                  return;
-                }
-
-                Navigator.pop(dialogContext);
-                controller.dispose();
-
-                await provider.updateAvatar(avatar);
-              },
-              child: const Text('保存'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

@@ -111,12 +111,12 @@ class _FriendPageContent extends StatelessWidget {
           CircleAvatar(
             radius: 24,
             backgroundImage:
-            friend.avatar != null &&
-                friend.avatar!.isNotEmpty
-                ? NetworkImage(friend.avatar!)
+            friend.avatarUrl != null &&
+                friend.avatarUrl!.isNotEmpty
+                ? NetworkImage(friend.avatarUrl!)
                 : null,
-            child: friend.avatar == null ||
-                friend.avatar!.isEmpty
+            child: friend.avatarUrl == null ||
+                friend.avatarUrl!.isEmpty
                 ? const Icon(Icons.person)
                 : null,
           ),

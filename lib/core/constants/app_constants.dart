@@ -9,4 +9,8 @@ class AppConstants {
 
   static const double kFocusProgressRadiusFactor = 0.8;
   static const double kFocusProgressThickness = 0.12;
+
+  static const String kBaseUrl = "http://192.168.205.55:8080";
+  static const String kBaseWSUrl = "ws://192.168.205.55:8080/ws";
+
 }

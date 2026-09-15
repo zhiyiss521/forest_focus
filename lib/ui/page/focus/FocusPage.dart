@@ -6,6 +6,7 @@ import 'package:forest_focus/ui/widget/ff_segment_button.dart';
 import 'package:provider/provider.dart';
 import '../../drawer/AppDrawer.dart';
 import 'focus_Provider.dart';
+import 'focus_countdown_set_dialog.dart';
 
 
 class FocusPage extends StatelessWidget {
@@ -27,18 +28,28 @@ class FocusPage extends StatelessWidget {
               title: SizedBox(
                 width: 120,
                 child: FFSegmentButton<bool>(
-                    items: [
-                      FFSegmentItem(
-                        title: "倒",
-                        value: true,
-                      ),
-                      FFSegmentItem(
-                        title: "正",
-                        value: false,
-                      ),
-                    ],
-                    selected: provider.isCountdown,
-                    onChanged: provider.changeCountdownMode
+                  items: [
+                    FFSegmentItem(
+                      title: "倒",
+                      value: true,
+                    ),
+                    FFSegmentItem(
+                      title: "正",
+                      value: false,
+                    ),
+                  ],
+                  selected: provider.isCountdown,
+                  onChanged: (bool ret) async {
+                    FocusCountdownSetDialog.show(
+                      context,
+                      isCountdown: provider.isCountdown,
+                      isMultiPlayer: provider.isMultiPlayer,
+                      onChanged: (isCountdown, isMultiPlayer) async{
+                        await provider.changeCountdownMode(isCountdown);
+                        await provider.changeMultiPlayerMode(isMultiPlayer);
+                      },
+                    );
+                  }
                 ),
               ),
             ) : null,

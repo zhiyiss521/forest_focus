@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:forest_focus/core/network/api_service.dart';
 import '../../../core/provider/auth_provider.dart';
@@ -14,6 +16,36 @@ class ProfileProvider extends ChangeNotifier {
   String get nickname => authProvider.user?.nickname ?? '';
 
   String get avatar => authProvider.user?.avatar ?? '';
+
+  File? _avatarFile;
+
+  File? get avatarFile => _avatarFile;
+
+  void setAvatarFile(File file) {
+    _avatarFile = file;
+    notifyListeners();
+  }
+
+  Future<void> uploadAvatar() async {
+    if (_avatarFile == null) {
+      return;
+    }
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final avatarUrl = await ApiService.uploadAvatar(_avatarFile!);
+
+      await authProvider.updateUser(
+        avatar: avatarUrl,
+      );
+      _avatarFile = null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
   Future<void> updateNickname(String nickname) async {
     _isLoading = true;
@@ -52,4 +84,8 @@ class ProfileProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 }
+
+
+

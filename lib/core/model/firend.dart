@@ -1,3 +1,6 @@
+import '../constants/app_constants.dart';
+import '../util/forest_log.dart';
+
 class Friend {
   final int id;
   final String email;
@@ -21,5 +24,20 @@ class Friend {
       avatar: json['avatar'],
       online: json['online'] ?? false,
     );
+  }
+
+  String? get avatarUrl {
+    if (avatar == null || avatar!.isEmpty) {
+      return null;
+    }
+
+    if (avatar!.startsWith('http://') ||
+        avatar!.startsWith('https://')) {
+      return avatar;
+    }
+
+    final ret = '${AppConstants.kBaseUrl}$avatar';
+    FFLog.d("avatarUrl:$ret");
+    return ret;
   }
 }

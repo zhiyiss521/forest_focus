@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:forest_focus/core/constants/app_constants.dart';
 import 'package:forest_focus/core/util/forest_log.dart';
 import 'package:forest_focus/router/ForestRouter.dart';
 import 'package:forest_focus/ui/page/login/login_page.dart';
@@ -7,9 +8,10 @@ import 'package:forest_focus/ui/widget/hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FFRequest {
+
   static final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.205.55:8080',
+      baseUrl: AppConstants.kBaseUrl,
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: 5),
       sendTimeout: const Duration(seconds: 5),
@@ -223,7 +225,7 @@ class FFRequest {
       Uri uri,
       dynamic data,
       bool needLogin,
-      ) {
+  ) {
     final buffer = StringBuffer(
       "curl -X $method '$uri'",
     );
@@ -243,9 +245,15 @@ class FFRequest {
     }
 
     if (data != null) {
-      buffer.write(
-        " \\\n  -d '${jsonEncode(data)}'",
-      );
+      if (data is FormData) {
+        buffer.write(
+          " \\\n  -F 'file=@${data.files.first.value.filename}'",
+        );
+      } else {
+        buffer.write(
+          " \\\n  -d '${jsonEncode(data)}'",
+        );
+      }
     }
 
     FFLog.d(
@@ -285,4 +293,5 @@ class FFRequest {
       return data.toString();
     }
   }
+
 }

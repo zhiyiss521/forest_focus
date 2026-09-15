@@ -112,6 +112,14 @@ extension FocusProviderAction on FocusProvider {
     notifyListeners();
   }
 
+  Future<void> changeMultiPlayerMode(bool value) async {
+    session = session.copyWith(
+      isMultiPlayer: value,
+    );
+    await saveSession();
+    notifyListeners();
+  }
+
   Future<void> changeCollectibleItem(int collectibleItemId) async {
     session = session.copyWith(currentCollectibleItemId: collectibleItemId);
     await saveSession();
@@ -342,6 +350,7 @@ extension FocusProviderGetter on FocusProvider{
   int get currentCollectibleItemId => session.currentCollectibleItemId;
   int get currentTagId => session.currentTagId;
   bool get isCountdown => session.isCountdown;
+  bool get isMultiPlayer => session.isMultiPlayer;
 
   // MARK: State
   FocusState get state => session.state;
