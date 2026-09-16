@@ -120,15 +120,8 @@ class FriendRequestCell extends StatelessWidget {
       ),
       leading: CircleAvatar(
         radius: 24,
-        backgroundImage:
-        applicant.avatar != null &&
-            applicant.avatar!.isNotEmpty
-            ? NetworkImage(applicant.avatar!)
-            : null,
-        child: applicant.avatar == null ||
-            applicant.avatar!.isEmpty
-            ? const Icon(Icons.person)
-            : null,
+        backgroundImage: applicant.avatarUrl != null && applicant.avatarUrl!.isNotEmpty ? NetworkImage(applicant.avatarUrl!) : null,
+        child: applicant.avatarUrl == null || applicant.avatarUrl!.isEmpty ? const Icon(Icons.person) : null,
       ),
       title: Text(
         applicant.nickname?.isNotEmpty == true

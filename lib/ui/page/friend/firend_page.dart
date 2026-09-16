@@ -4,6 +4,7 @@ import 'package:forest_focus/router/ForestRouter.dart';
 import 'package:forest_focus/ui/page/friendRequest/friend_request_page.dart';
 import 'package:provider/provider.dart';
 import '../../../core/provider/friend_provider.dart';
+import '../chat/chat_page.dart';
 import 'friend_page_provider.dart';
 
 class FriendPage extends StatelessWidget {
@@ -179,7 +180,9 @@ class _FriendPageContent extends StatelessWidget {
       ),
 
       onTap: () {
-        // 后面进入聊天页面
+        ForestRouter.push(
+          ChatPage(friend: friend),
+        );
       },
     );
   }
