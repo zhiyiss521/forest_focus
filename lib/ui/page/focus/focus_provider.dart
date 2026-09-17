@@ -4,11 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:forest_focus/core/model/FocusState.dart';
 import 'package:forest_focus/core/model/focus_record.dart';
 import 'package:forest_focus/core/model/focus_session.dart';
+import 'package:forest_focus/core/network/room_api.dart';
+import 'package:forest_focus/core/network/user_api.dart';
 import 'package:forest_focus/core/repository/collectible_repository.dart';
 import 'package:forest_focus/core/repository/tag_repository.dart';
 import 'package:forest_focus/core/util/extension.dart';
+import 'package:forest_focus/core/util/forest_log.dart';
+import 'package:forest_focus/router/ForestRouter.dart';
+import 'package:forest_focus/ui/page/room/room_page.dart';
+import 'package:forest_focus/ui/widget/hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/model/room.dart';
+import '../../../core/network/friend_api.dart';
 import '../../../core/repository/focus_record_repository.dart';
 import '../../../core/service/notification_service.dart';
 
@@ -253,6 +261,22 @@ extension FocusProviderAction on FocusProvider {
     );
     await saveSession();
     notifyListeners();
+  }
+
+  Future<void> clkCreateRoom() async{
+    try{
+      FFHUD.showLoading();
+      final result = await RoomApi.createRoom();
+      FFHUD.dismiss();
+      final room = Room.fromJson(result);
+      FFRouter.push(RoomPage(roomId: "${room.roomId}", roomCode: room.roomCode, isHost: room.isHost));
+    }catch (e){
+      FFLog.d(e);
+    }
+  }
+
+  Future<void> clkJoinRoom() async{
+
   }
 
 }

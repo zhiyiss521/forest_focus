@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forest_focus/core/model/user.dart';
-import 'package:forest_focus/core/network/api_service.dart';
-import 'package:forest_focus/ui/page/focus/FocusPage.dart';
+import 'package:forest_focus/ui/page/focus/focus_page.dart';
 import 'package:forest_focus/ui/page/register/register_page.dart';
 import 'package:provider/provider.dart';
+import '../../../core/network/user_api.dart';
 import '../../../core/provider/auth_provider.dart';
 import '../../../router/ForestRouter.dart';
 import '../../widget/hud.dart';
@@ -43,7 +43,7 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await ApiService.login(
+      final result = await UserApi.login(
         email: email,
         password: password,
       );
@@ -52,7 +52,7 @@ class LoginProvider extends ChangeNotifier {
       final authProvider = context.read<AuthProvider>();
       await authProvider.saveUser(user);
       FFHUD.showSuccess('登录成功');
-      ForestRouter.push(const FocusPage());
+      FFRouter.push(const FocusPage());
     } catch (e) {
       if (e is Map<String, dynamic>) {
         FFHUD.showError(e['message']?.toString() ?? '登录失败');
@@ -66,7 +66,7 @@ class LoginProvider extends ChangeNotifier {
   }
 
   void register() {
-    ForestRouter.push(RegisterPage());
+    FFRouter.push(RegisterPage());
   }
 
   @override

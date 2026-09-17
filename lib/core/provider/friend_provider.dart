@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:forest_focus/core/model/firend.dart';
 import 'package:forest_focus/core/model/friend_request.dart';
-import 'package:forest_focus/core/network/api_service.dart';
 import 'package:forest_focus/core/util/forest_log.dart';
 import 'package:forest_focus/ui/widget/hud.dart';
 
+import '../network/friend_api.dart';
 import '../service/websocket_service.dart';
 
 class FriendProvider extends ChangeNotifier {
@@ -36,7 +36,7 @@ class FriendProvider extends ChangeNotifier {
 
   Future<void> loadFriends() async {
     try{
-      final result = await ApiService.getFriends();
+      final result = await FriendApi.getFriends();
       FFLog.d(result);
       _friends = (result as List)
           .map(
@@ -53,7 +53,7 @@ class FriendProvider extends ChangeNotifier {
   }
 
   Future<void> loadFriendRequests() async {
-    final result = await ApiService.getFriendRequests();
+    final result = await FriendApi.getFriendRequests();
 
     try{
       _friendRequests = (result as List)
@@ -71,12 +71,12 @@ class FriendProvider extends ChangeNotifier {
   }
 
   Future<void> sendFriendRequest(String email) async {
-    await ApiService.sendFriendRequest(email);
+    await FriendApi.sendFriendRequest(email);
 
   }
 
   Future<void> acceptFriendRequest(int requestId) async {
-    await ApiService.acceptFriendRequest(requestId);
+    await FriendApi.acceptFriendRequest(requestId);
   }
 
   Future<void> rejectFriendRequest(int requestId) async {

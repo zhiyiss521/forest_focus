@@ -177,7 +177,7 @@ class FFRequest {
 
           _token = null;
 
-          ForestRouter.pushAndRemoveUntil(
+          FFRouter.pushAndRemoveUntil(
             const LoginPage(),
           );
         }

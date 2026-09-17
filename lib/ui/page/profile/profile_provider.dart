@@ -1,7 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
-import 'package:forest_focus/core/network/api_service.dart';
+import '../../../core/network/user_api.dart';
 import '../../../core/provider/auth_provider.dart';
 
 class ProfileProvider extends ChangeNotifier {
@@ -35,7 +34,7 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final avatarUrl = await ApiService.uploadAvatar(_avatarFile!);
+      final avatarUrl = await UserApi.uploadAvatar(_avatarFile!);
 
       await authProvider.updateUser(
         avatar: avatarUrl,
@@ -54,7 +53,7 @@ class ProfileProvider extends ChangeNotifier {
     try {
       final value = nickname.trim();
 
-      await ApiService.updateProfile(
+      await UserApi.updateProfile(
         nickname: value,
       );
 
@@ -72,7 +71,7 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await ApiService.updateProfile(
+      await UserApi.updateProfile(
         avatar: avatar,
       );
 

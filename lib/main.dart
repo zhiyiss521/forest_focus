@@ -5,7 +5,7 @@ import 'package:forest_focus/core/provider/friend_provider.dart';
 import 'package:forest_focus/core/repository/tag_repository.dart';
 import 'package:forest_focus/router/ForestRouter.dart';
 import 'package:forest_focus/theme/ff_theme_provider.dart';
-import 'package:forest_focus/ui/page/focus/FocusPage.dart';
+import 'package:forest_focus/ui/page/focus/focus_page.dart';
 import 'package:forest_focus/ui/page/focus/focus_Provider.dart';
 import 'package:forest_focus/ui/page/login/login_page.dart';
 import 'package:forest_focus/ui/page/reward_picker/collectible_provider.dart';
@@ -81,7 +81,7 @@ class App extends StatelessWidget {
     final app = context.watch<AuthProvider>();
 
     return MaterialApp(
-      navigatorKey: ForestRouter.navigatorKey,
+      navigatorKey: FFRouter.navigatorKey,
       debugShowCheckedModeBanner: false,
       builder: FlutterSmartDialog.init(),
       locale: localProvider.locale,

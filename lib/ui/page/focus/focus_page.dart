@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_focus/core/model/FocusState.dart';
-import 'package:forest_focus/ui/page/focus/FocusSettingView.dart';
 import 'package:forest_focus/ui/widget/ff_segment_button.dart';
 import 'package:provider/provider.dart';
 import '../../drawer/AppDrawer.dart';
 import 'focus_Provider.dart';
+import 'focus_content_view.dart';
 import 'focus_countdown_set_dialog.dart';
 
 
@@ -64,7 +64,7 @@ class FocusPage extends StatelessWidget {
                       ),
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 400),
-                        child: const FocusSettingView(),
+                        child: const FocusContentView(),
                       ),
                     ),
                   );

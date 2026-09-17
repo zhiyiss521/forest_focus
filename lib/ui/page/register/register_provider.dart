@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forest_focus/core/network/api_service.dart';
+import '../../../core/network/user_api.dart';
 import '../../../router/ForestRouter.dart';
 import '../../widget/hud.dart';
 
@@ -44,12 +44,12 @@ class RegisterProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await ApiService.register(
+      await UserApi.register(
         email: email,
         password: password,
       );
       FFHUD.showSuccess('注册成功');
-      ForestRouter.back();
+      FFRouter.back();
     } catch (e) {
       if (e is Map<String, dynamic>) {
         FFHUD.showError(e['message']?.toString() ?? '注册失败');

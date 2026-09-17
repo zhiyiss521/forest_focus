@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ForestRouter {
+class FFRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   static NavigatorState get navigator => navigatorKey.currentState!;

@@ -25,7 +25,7 @@ class AppDrawer extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              ForestRouter.push(const ProfilePage());
+              FFRouter.push(const ProfilePage());
             },
             child: Container(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
@@ -118,8 +118,8 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.park),
             title: Text("好友"),
             onTap: () {
-              ForestRouter.pop();
-              ForestRouter.push(const FriendPage());
+              FFRouter.pop();
+              FFRouter.push(const FriendPage());
             },
           ),
 

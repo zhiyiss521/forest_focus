@@ -93,7 +93,7 @@ class _FriendPageContent extends StatelessWidget {
         )
             : const Icon(Icons.chevron_right),
         onTap: () {
-          ForestRouter.push(const FriendRequestPage());
+          FFRouter.push(const FriendRequestPage());
         },
       ),
     );
@@ -180,7 +180,7 @@ class _FriendPageContent extends StatelessWidget {
       ),
 
       onTap: () {
-        ForestRouter.push(
+        FFRouter.push(
           ChatPage(friend: friend),
         );
       },

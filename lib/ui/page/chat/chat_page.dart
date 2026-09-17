@@ -82,7 +82,7 @@ class _ChatPageContent extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () {
-              ForestRouter.push(
+              FFRouter.push(
                 FriendDetailPage(
                   friend: provider.friend,
                 ),

@@ -13,8 +13,8 @@ import 'focus_Provider.dart';
 import 'focus_setup_sheet.dart';
 import 'focus_timer_image_w.dart';
 
-class FocusSettingView extends StatelessWidget {
-  const FocusSettingView();
+class FocusContentView extends StatelessWidget {
+  const FocusContentView();
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +34,7 @@ class FocusSettingView extends StatelessWidget {
 
         FocusTimerImageW(),
 
+        // tag
         Container(
           decoration: BoxDecoration(
             color: Color(tag.color).withOpacity(0.3),
@@ -72,6 +73,7 @@ class FocusSettingView extends StatelessWidget {
 
         const SizedBox(height: 20,),
 
+        // 时间
         if (!provider.isFinished)
           Text(
             provider.displayDuration.mmss,
@@ -80,14 +82,32 @@ class FocusSettingView extends StatelessWidget {
             ),
           ),
 
-        if(provider.isSetting)
-          FFButton(
+        // 开始按钮
+        if (provider.isSetting)
+          provider.isMultiPlayer
+              ? Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FFButton(
+                onPressed: provider.clkCreateRoom,
+                text: '创建房间',
+                width: 100,
+              ),
+              const SizedBox(width: 12),
+              FFButton(
+                onPressed: provider.clkJoinRoom,
+                text: '加入房间',
+                width: 100,
+              ),
+            ],
+          )
+              : FFButton(
             onPressed: provider.clkStart,
             text: AppLocalizations.of(context)!.start,
             width: 100,
           ),
 
-
+        // 取消暂停按钮
         if(provider.isRunning || provider.isPaused)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -125,7 +145,7 @@ class FocusSettingView extends StatelessWidget {
             ],
           ),
 
-
+        // 结束按钮
         if(provider.isFinished)
           FFButton(
             onPressed:(){
